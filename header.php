@@ -59,7 +59,7 @@
                     <!-- sidebar menu -->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu"style="background-color: white;">
                         <div class="menu_section">
-                        <h3 style="color: black;">menu</h3>
+                        <h3 style="color: black;">Menu</h3>
 
                             <ul class="nav side-menu">
                             <li><a href="index.php" style="color: black;"><i class="fa fa-house"></i> หน้าแรก</a></li>
