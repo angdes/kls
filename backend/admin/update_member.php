@@ -120,8 +120,8 @@
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_status">สถานะสมาชิก<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <select id="member_status" name="member_status" value="<?=$member_status;?>"  required="required" class="form-control col-md-7 col-xs-12">
-                                <option value="0">Inactive</option>       
                                 <option value="1">Active</option>
+                                <option value="0">Inactive</option>
                                 
                                 </select>
 
@@ -139,7 +139,7 @@
                         <div class="form-group">
                             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                                 <button type="submit" name="submit" class="btn btn-success">แก้ไข</button>
-                                <button type="reset" name="reset" class="btn btn-danger">ยกเลิก</button>
+                                <button type="reset" name="reset" class="btn btn-danger"  onclick="window.location.href='show_member.php'">ยกเลิก</button>
                             </div>
                         </div>
                     </form>

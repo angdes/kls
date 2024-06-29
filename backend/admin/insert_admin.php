@@ -21,6 +21,12 @@
                                 <input type="text" id="admin_fullname" name="admin_fullname" required="required" class="form-control col-md-7 col-xs-12"> </div>
                         </div>
 
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="admin_email">อีเมลดูแลระบบ<span class="required">:</span> </label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="email" id="admin_email" name="admin_email" required="required" class="form-control col-md-7 col-xs-12"> </div>
+                        </div>
+
                         
 
 
@@ -54,14 +60,14 @@
                         if(isset($_POST['submit']))
                         {
                             $admin_fullname=$_POST['admin_fullname'];
-                            
+                            $admin_email=$_POST['admin_email'];
                             $admin_tel=$_POST['admin_tel'];
                             $admin_username=$_POST['admin_username'];
                             $admin_password=$_POST['admin_password'];
                           
                             
-                            $sql=" insert into `tb_admin`(`admin_fullname`, `admin_tel`, `admin_username`, `admin_password`)";
-                            $sql.=" values ('$admin_fullname','$admin_tel','$admin_username','$admin_password')";
+                            $sql=" insert into `tb_admin`(`admin_fullname`, `admin_email`, `admin_tel`, `admin_username`, `admin_password`)";
+                            $sql.=" values ('$admin_fullname','$admin_email','$admin_tel','$admin_username','$admin_password')";
                             if($cls_conn->write_base($sql)==true)
                             {
                                 echo $cls_conn->show_message('บันทึกข้อมูลสำเร็จ');
