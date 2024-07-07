@@ -102,16 +102,16 @@
 						   }
 						   else
 						   {
-							   $sql3=" select * from tb_member";
+							   $sql3=" select * from tb_teacher";
 							   $sql3.=" where";
-							   $sql3.=" member_email='$username'";
+							   $sql3.=" teacher_username='$username'";
 							   $sql3.=" and";
-							   $sql3.=" member_password='$password'";
+							   $sql3.=" teacher_password='$password'";
 							   $num3=$cls_conn->select_numrows($sql3);
 							   if($num3>=1)
 							   {
 								   echo $cls_conn->show_message('Login Success');
-								   echo $cls_conn->goto_page(1,'backend/admin/index.php');
+								   echo $cls_conn->goto_page(1,'backend/teacher/index.php');
 							   }
 							   else
 							   {

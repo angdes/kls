@@ -86,8 +86,8 @@
                                     <ul class="nav child_menu" style="background-color:  hotpink;" >
                                         <li><a href="insert_member.php"style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลนักเรียน</a></li>
                                         <li><a href="show_member.php"style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลนักเรียน</a></li>
-                                        <li><a href="insert_member.php"style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลครู</a></li>
-                                        <li><a href="show_member.php"style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลครู</a></li>
+                                        <li><a href="insert_teacher.php"style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลครู</a></li>
+                                        <li><a href="show_teacher.php"style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลครู</a></li>
 
                                     </ul>
                                 </li>
