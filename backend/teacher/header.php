@@ -124,7 +124,41 @@
                         <div class="nav toggle"> <a id="menu_toggle"><i class="fa fa-bars"></i></a> </div>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
-                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> <img src="../template/production/images/user.jpg" alt="">ครูผู้สอน <span class=" fa fa-angle-down"></span> </a>
+                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> 
+                                <?php
+// เชื่อมต่อกับฐานข้อมูล
+$con = mysqli_connect("localhost", "root", "", "myproject");
+
+// ตรวจสอบการเชื่อมต่อ
+if (mysqli_connect_errno()) {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+
+// เตรียมคำสั่ง SQL เพื่อดึงข้อมูล admin_fullname จากฐานข้อมูล
+$sql = "SELECT teacher_fullname FROM tb_teacher WHERE teacher_id = 1"; // ตั้งค่า admin_id ที่ต้องการดึงข้อมูล
+
+// ดึงข้อมูลจากฐานข้อมูล
+$result = mysqli_query($con, $sql);
+
+// ตรวจสอบว่ามีข้อมูลที่ดึงมาหรือไม่
+if (mysqli_num_rows($result) > 0) {
+    // วนลูปอ่านข้อมูลที่ดึงมา (แม้ว่าจะมีเพียงรายการเดียวก็ใช้ while เพื่อความเข้ากันได้)
+    while ($row = mysqli_fetch_assoc($result)) {
+        // กำหนดค่าให้กับตัวแปร $admin_fullname
+        $teacher_fullname = $row['teacher_fullname'];
+        
+        
+    }
+} else {
+    // หากไม่พบข้อมูล
+    echo "0 results";
+}
+
+// ปิดการเชื่อมต่อฐานข้อมูล
+mysqli_close($con);
+?>
+                            
+                            <img src="../template/production/images/user.jpg" alt=""><?php echo $teacher_fullname; ?><span class=" fa fa-angle-down"></span> </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
                                     <li><a href="update_admin.php">แก้ไขข้อมูลส่วนตัว</a></li>
                                     
