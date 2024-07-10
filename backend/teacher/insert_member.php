@@ -28,33 +28,12 @@
                             </div>                            
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_tumbol">ตำบล<span class="required">:</span> </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="member_tumbol" name="member_tumbol" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
+                        
+                        
 
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_amphur">อำเภอ<span class="required">:</span> </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="member_amphur" name="member_amphur" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
+                        
 
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_province">จังหวัด<span class="required">:</span> </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="member_province" name="member_province" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_postcode">รหัสไปรษณีย์<span class="required">:</span> </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="member_postcode" name="member_postcode" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
+                        
 
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_tel">เบอร์โทรศัพท์<span class="required">:</span> </label>
@@ -114,8 +93,9 @@
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_status">สถานะสมาชิก<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <select id="member_status" name="member_status" value="<?=$member_status;?>"  required="required" class="form-control col-md-7 col-xs-12">
-                                        <option value="1">Active</option>
-                                        <option value="0">Inactive</option>
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>  
+                                
                                 </select>
 
                             </div>
@@ -135,7 +115,7 @@
                             <div class="form-group">
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                                     <button type="submit" name="submit" class="btn btn-success">บันทึก</button>
-                                    <button type="reset" name="reset" class="btn btn-danger">ยกเลิก</button>
+                                    <button type="reset" name="reset" class="btn btn-danger" onclick="window.location.href='show_member.php'">ยกเลิก</button>
                                 </div>
                             </div>
                         </form>
@@ -144,10 +124,7 @@
                         {
                             $member_fullname=$_POST['member_fullname'];
                             $member_address=$_POST['member_address'];
-                            $member_tumbol=$_POST['member_tumbol'];
-                            $member_amphur=$_POST['member_amphur'];
-                            $member_province=$_POST['member_province'];
-                            $member_postcode=$_POST['member_postcode'];
+                            
                             $member_tel=$_POST['member_tel'];
                             $member_email=$_POST['member_email'];
                             $member_username=$_POST['member_username'];
@@ -157,8 +134,8 @@
                           
                           
                             
-                            $sql=" insert into tb_member(member_fullname,member_address, member_tumbol,member_amphur,member_province,member_postcode, member_tel, member_email, member_username,member_password, member_status, member_datetime)";
-                            $sql.=" values ('$member_fullname','$member_address','$member_tumbol','$member_amphur','$member_province','$member_postcode','$member_tel','$member_email','$member_username','$member_password','$member_status','$member_datetime')";
+                            $sql=" insert into tb_member(member_fullname,member_address, member_tel, member_email, member_username,member_password, member_status, member_datetime)";
+                            $sql.=" values ('$member_fullname','$member_address','$member_tel','$member_email','$member_username','$member_password','$member_status','$member_datetime')";
                             if($cls_conn->write_base($sql)==true)
                             {
                                 echo $cls_conn->show_message('บันทึกข้อมูลสำเร็จ');

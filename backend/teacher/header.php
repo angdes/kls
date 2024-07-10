@@ -1,5 +1,24 @@
 <?php session_start(); ?>
-<?php include('../../class_conn.php'); ?>
+
+<?php
+include('../../class_conn.php'); // เชื่อมต่อกับไฟล์ class_conn.php ที่มีคลาส class_conn อยู่
+
+// สร้างอ็อบเจกต์ของคลาส class_conn
+$cls_conn = new class_conn();
+
+// ตัวอย่างโค้ดเรียกใช้งานฟังก์ชั่น select_base() หลังจากเชื่อมต่อฐานข้อมูลแล้ว
+$sql = "SELECT * FROM tb_member";
+$result = $cls_conn->select_base($sql);
+
+// ตรวจสอบผลลัพธ์และแสดงข้อมูล
+if ($result) {
+    while ($row = mysqli_fetch_array($result)) {
+        // ทำอะไรต่อได้ตามต้องการ
+    }
+} else {
+    echo "ไม่สามารถดึงข้อมูลได้";
+}
+?>
 
 
 <!DOCTYPE html>

@@ -26,10 +26,7 @@
                                     <th>รหัสสมาชิก</th>
                                     <th>ชื่อสมาชิก</th>
                                     <th>ที่อยู่</th>
-                                    <th>ตำบล</th>
-                                    <th>อำเภอ</th>
-                                    <th>จังหวัด</th>
-                                    <th>รหัสไปรษณีย์</th>
+                                    
                                     <th>เบอร์โทรศัพท์</th>
                                     <th>อีเมล</th>
                                     <th>username</th>
@@ -60,21 +57,11 @@
                                         <td>
                                             <?=$row['member_fullname'];?>
                                         </td>
+                                
                                         <td>
                                             <?=$row['member_address'];?>
                                         </td>
-                                        <td>
-                                            <?=$row['member_tumbol'];?>
-                                        </td>
-                                          <td>
-                                            <?=$row['member_amphur'];?>
-                                        </td>
-                                          <td>
-                                            <?=$row['member_province'];?>
-                                        </td>
-                                          <td>
-                                            <?=$row['member_postcode'];?>
-                                        </td>
+                                        
                                         <td>
                                             <?=$row['member_tel'];?>
                                         </td>
@@ -86,7 +73,17 @@
                                         </td>
                                     
                                         <td>
-                                            <?=$row['member_status'];?>
+                                            <?php
+                                            switch($row['member_status']){
+                                                case '0':
+                                                    echo '<span style="color:red;">Inactive</span>';
+                                                    break;
+                                                case '1':
+                                                    echo '<span style="color:green;">active</span>';
+                                                
+                                                    break;
+                                            }
+                                            ?>
                                         </td>
                                         <td>
                                             <?=$row['member_datetime'];?>
