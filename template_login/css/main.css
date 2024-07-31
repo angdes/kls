@@ -180,6 +180,7 @@ iframe {
   background: #fff;
   border-radius: 10px;
   overflow: hidden;
+  position: relative;
 
   display: -webkit-box;
   display: -webkit-flex;
@@ -197,8 +198,13 @@ iframe {
   width: 316px;
 }
 
-.login100-pic img {
-  max-width: 100%;
+
+.login100-pic > img {
+  max-width: 100px;
+  
+}
+.login100-pic  > img{
+  height: 100px;
 }
 
 

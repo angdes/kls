@@ -23,6 +23,16 @@ class class_conn {
         mysqli_close($this->con);
     }
 
+    // ฟังก์ชันในการดึงข้อมูลครูที่ล็อกอินอยู่
+    public function get_logged_in_teacher($teacher_id) {
+        $this->connect();
+        $sql = "SELECT * FROM tb_teacher WHERE teacher_id = '$teacher_id'";
+        $result = mysqli_query($this->con, $sql);
+        $teacher = mysqli_fetch_assoc($result);
+        $this->close();
+        return $teacher;
+    }
+
     // ฟังก์ชันในการดึงข้อมูล
     public function select_base($sql) {
         $this->connect(); // เรียกใช้ฟังก์ชัน connect
@@ -77,26 +87,4 @@ class class_conn {
         $this->close(); // เรียกใช้ฟังก์ชัน close
     }
 }
-
-// Check connection
-
-function conndb() 
-    {
-        global $conn;
-        global $host;
-        global $user;
-        global $pass;
-        global $dbname;
-        $conn = mysqli_connect($host,$user,$pass);
-
-        mysqli_select_db($conn,$dbname);
-        mysqli_query($conn,"SET NAMES utf8");
-
-    }
-
-function closedb() 
-    {
-        global $conn;
-        mysqli_close($conn);
-    }
 ?>

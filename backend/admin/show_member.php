@@ -15,11 +15,12 @@
                 </div>
                 <div class="x_content">
                     <p class="text-muted font-13 m-b-30">
-                        <div align="right">
+                        <div align="left">
                             <a href="insert_member.php">
-                                <button>เพิ่มข้อมูล</button>
+                                <button class="btn btn-success">เพิ่มข้อมูล</button>
                             </a>
                         </div>
+                        
                         <table id="datatable-buttons" class="table table-striped table-bordered">
                             <thead>
                                 <tr>

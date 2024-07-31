@@ -1,6 +1,7 @@
-<?php session_destroy();
-include('../../class_conn.php');
-$cls_conn = new class_conn; 
-echo $cls_conn->goto_page(1,'../../login.php');
+<?php include('header.php');?>
+<?php 
+session_destroy();
+echo $cls_conn->goto_page(0,'../../login.php');
 ?>
 
+<?php include('footer.php');?>
