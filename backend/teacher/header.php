@@ -1,5 +1,5 @@
-<?php session_start(); ?>
-<?php
+<?php session_start(); 
+
 include('../../class_conn.php'); ?>
 <?php $cls_conn = new class_conn; ?>
 
@@ -74,20 +74,19 @@ include('../../class_conn.php'); ?>
 
                                 
 
-                                <li><a style="color: black;"><i class="fa fa-users"></i>ข้อมูลสมาชิก<span class="fa fa-chevron-down" style="color: black;"></span></a>
+                                <!-- <li><a style="color: black;"><i class="fa fa-users"></i>ข้อมูลสมาชิก<span class="fa fa-chevron-down" style="color: black;"></span></a>
                                     <ul class="nav child_menu" style="background-color:  hotpink;" >
                                         <li><a href="insert_member.php"style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลนักเรียน</a></li>
                                         <li><a href="show_member.php"style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลนักเรียน</a></li>
 
                                     </ul>
-                                </li>
+                                </li> -->
 
-                                <li><a style="color: black;"><i class="fa fa-chalkboard-user"></i>การจัดการห้อง<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  hotpink;" >
-                                        <li><a href="insert_type.php" style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลห้อง</a></li>
-                                        <li><a href="show_type.php"style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลห้อง</a></li>
-                                        <li><a href="#"style="color: black;"><i class="fa fa-plus-square"style="color: black;"></i>เพิ่มข้อมูลรายวิชา</a></li>
-                                        <li><a href="#"style="color: black;"><i class="fa fa-list"style="color: black;"></i>แสดงข้อมูลวิชา</a></li>
+                                <li><a style="color: black;"><i class="fa fa-chalkboard-user"></i>จัดการรายวิชา<span class="fa fa-chevron-down" style="color: black;"></span></a>
+                                    <ul class="nav child_menu" style="background-color:  hotpink;">
+                                        
+                                        <li><a href="insert_subject.php" style="color: black;"><i class="fa fa-plus-square" style="color: black;"></i>เพิ่มข้อมูลรายวิชา</a></li>
+                                        <li><a href="show_subject.php" style="color: black;"><i class="fa fa-list" style="color: black;"></i>แสดงข้อมูลรายวิชา</a></li>
                                     </ul>
                                 </li>
 
@@ -97,12 +96,12 @@ include('../../class_conn.php'); ?>
                                         <li><a href="show_product.php"style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลการบ้าน</a></li>
                                     </ul>
                                 </li>
-                                <li><a style="color: black;"><i class="fa fa-bullhorn" ></i>  แจ้งงาน<span class="fa fa-chevron-down" style="color: black;"></span></a>
+                                <!-- <li><a style="color: black;"><i class="fa fa-bullhorn" ></i>  แจ้งงาน<span class="fa fa-chevron-down" style="color: black;"></span></a>
                                     <ul class="nav child_menu" style="background-color:  hotpink;" >
                                         <li><a href="#"style="color: black;"><i class="fa fa-desktop"></i>เพิ่มข้อมูลการแจ้ง</a></li>
                                         <li><a href="#"style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลแจ้ง</a></li>
                                     </ul>
-                                </li>
+                                </li> -->
 
                                 
                                 <li><a href="logout.php" style="color: black;"><i class="fa fa-sign-out"></i>ออกจากระบบ</a></li>

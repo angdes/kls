@@ -1,7 +1,9 @@
-<?php include('header.php');?>
+<?php include('header.php');
+session_unset(); // ล้างข้อมูลเซสชัน
+session_destroy(); // ทำลายเซสชัน ?>
 <?php 
-session_destroy();
-echo $cls_conn->goto_page(0,'../../login.php');
+
+echo $cls_conn->goto_page(1,'../../login.php');
 ?>
 
 <?php include('footer.php');?>

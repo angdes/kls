@@ -85,12 +85,12 @@
                                         <li><a href="show_product.php"style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลการบ้าน</a></li>
                                     </ul>
                                 </li>
-                                <li><a style="color: black;"><i class="fa fa-bullhorn" ></i>  การแจ้งเตือน<span class="fa fa-chevron-down" style="color: black;"></span></a>
+                                <!-- <li><a style="color: black;"><i class="fa fa-bullhorn" ></i>  การแจ้งเตือน<span class="fa fa-chevron-down" style="color: black;"></span></a>
                                     <ul class="nav child_menu" style="background-color:  hotpink;" >
                                         
                                         <li><a href="#"style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลแจ้ง</a></li>
                                     </ul>
-                                </li>
+                                </li> -->
 
                                 
                                 <li><a href="logout.php" style="color: black;"><i class="fa fa-sign-out"></i>ออกจากระบบ</a></li>

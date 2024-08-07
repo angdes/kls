@@ -1,5 +1,6 @@
-
 <?php include('header.php');?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,8 +8,7 @@
     <title>KP</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="template_login/vendor/select2/select2.min.css">
     <link rel="stylesheet" type="text/css" href="template_login/css/util.css">
     <link rel="stylesheet" type="text/css" href="template_login/css/main.css">  
 
@@ -31,6 +31,7 @@
         .logo-container {
             text-align: center;
             margin-bottom: 20px;
+            position: relative;
             animation: glow 1.5s infinite alternate;
         }
         .logo-container img {
@@ -38,6 +39,7 @@
             border: 2px solid #fff;
             border-radius: 50%;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            transition: transform 0.1s;
         }
         @keyframes glow {
             from {
@@ -54,7 +56,7 @@
         <div class="wrap-login100">
             <form class="login100-form validate-form" method="post">
                 <div class="logo-container">
-                    <img src="images/123.jpg" alt="IMG">
+                    <img src="images/123.jpg" alt="IMG" id="logo">
                 </div>
                 <div class="text-center">ยินดีต้อนรับเข้าสู่</div>
                 <span class="login100-form-title">
@@ -134,9 +136,28 @@
             </div>
         </div>
     </div>
-    
-    
-    
+    <script src="template_login/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script src="template_login/vendor/bootstrap/js/popper.js"></script>
+    <script src="template_login/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="template_login/vendor/select2/select2.min.js"></script>
+    <script src="template_login/vendor/tilt/tilt.jquery.min.js"></script>
+    <script>
+        // Mouse move effect
+        document.addEventListener('mousemove', function(e) {
+            var logo = document.getElementById('logo');
+            var rect = logo.getBoundingClientRect();
+            var mouseX = e.clientX;
+            var mouseY = e.clientY;
+            var centerX = rect.left + rect.width / 2;
+            var centerY = rect.top + rect.height / 2;
+            var deltaX = (mouseX - centerX) / 20;
+            var deltaY = (mouseY - centerY) / 20;
+
+            logo.style.transform = 'translate(' + deltaX + 'px, ' + deltaY + 'px)';
+        });
+    </script>
+    <script src="template_login/js/main.js"></script>
+
 <?php include('footer.php');?>
 
 </body>

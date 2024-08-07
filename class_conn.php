@@ -23,14 +23,10 @@ class class_conn {
         mysqli_close($this->con);
     }
 
-    // ฟังก์ชันในการดึงข้อมูลครูที่ล็อกอินอยู่
-    public function get_logged_in_teacher($teacher_id) {
-        $this->connect();
-        $sql = "SELECT * FROM tb_teacher WHERE teacher_id = '$teacher_id'";
-        $result = mysqli_query($this->con, $sql);
-        $teacher = mysqli_fetch_assoc($result);
-        $this->close();
-        return $teacher;
+    public function start_session() {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 
     // ฟังก์ชันในการดึงข้อมูล

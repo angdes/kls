@@ -1,4 +1,11 @@
 <?php include('header.php');?>
+<style>
+    .btn-hotpink {
+        background-color: hotpink;
+        border-color: hotpink;
+        color: black;
+    }
+</style>
     <div class="right_col" role="main">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
@@ -17,7 +24,8 @@
                     <p class="text-muted font-13 m-b-30">
                         <div align="left">
                             <a href="insert_admin.php">
-                                <button class="btn btn-success">เพิ่มข้อมูล</button>
+                            <button class="btn btn-hotpink">เพิ่มข้อมูล</button>
+
                             </a>
                         </div>
                         <table id="datatable-buttons" class="table table-striped table-bordered">

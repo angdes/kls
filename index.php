@@ -1,4 +1,15 @@
 <?php include('header.php'); ?>
+<style>
+     .image-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -10px; /* Adjust this value to control the distance from the image */
+            height: 100%;
+            width: 5px; /* Width of the line */
+            background-color: #F97AB6; /* Color of the line */
+        }
+</style>
 <div class="right_col" role="main">
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -20,9 +31,9 @@ if ($result && mysqli_num_rows($result) > 0) {
         <div class="announcement">
             <h3><?php echo htmlspecialchars($row['announcement_title']); ?></h3>
             <hr>
-            
-            <img src="<?php echo $imagePath; ?>" style="max-width: 400px; max-height: 400px;">
-
+            <div class="image-container">
+            <img src="<?php echo $imagePath; ?>" style="max-width: 400px; max-height: 400px; margin-left: 30px; ">
+            </div>
             
             <br>
             <p style="font-size: 20px; padding-left: 50px;">

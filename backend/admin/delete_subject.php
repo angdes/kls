@@ -4,7 +4,7 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>ลบข้อมูลประเภท</h2>
+                        <h2>ลบข้อมูลวิชา</h2>
                         <ul class="nav navbar-right panel_toolbox">
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
                             <li><a class="close-link"><i class="fa fa-close"></i></a> </li>
@@ -18,14 +18,14 @@
                         if(isset($_GET['id']))
                         {
                             $id=$_GET['id'];
-                            $sql.=" delete from tb_type";
+                            $sql.=" delete from tb_subject";
                             $sql.=" where";
-                            $sql.=" type_id=$id";
+                            $sql.=" subject_id=$id";
                           
                             if($cls_conn->write_base($sql)==true)
                             {
                                 echo $cls_conn->show_message('ลบข้อมูลสำเร็จ');
-                                echo $cls_conn->goto_page(1,'show_type.php');
+                                echo $cls_conn->goto_page(1,'show_subject.php');
                             }
                             else
                             {
