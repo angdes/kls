@@ -92,8 +92,8 @@ include('../../class_conn.php'); ?>
 
                                 <li><a style="color: black;"><i class="fa fa-file-pen"></i>มอบการบ้าน<span class="fa fa-chevron-down" style="color: black;"></span></a>
                                     <ul class="nav child_menu" style="background-color:  hotpink;" >
-                                        <li><a href="insert_product.php"style="color: black;"><i class="fa fa-desktop"></i>เพิ่มข้อมูลการบ้าน</a></li>
-                                        <li><a href="show_product.php"style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลการบ้าน</a></li>
+                                        <li><a href="add_homework.php"style="color: black;"><i class="fa fa-desktop"></i>เพิ่มข้อมูลการบ้าน</a></li>
+                                        <li><a href="show_homework.php"style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลการบ้าน</a></li>
                                     </ul>
                                 </li>
                                 <!-- <li><a style="color: black;"><i class="fa fa-bullhorn" ></i>  แจ้งงาน<span class="fa fa-chevron-down" style="color: black;"></span></a>

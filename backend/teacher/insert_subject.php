@@ -1,60 +1,74 @@
-<?php include('header.php'); ?>
+<?php
+include('header.php');
+
+
+// ตรวจสอบว่ามีการล็อกอินและมี user อยู่ในเซสชันหรือไม่
+if (!isset($_SESSION['user'])) {
+    echo "คุณต้องล็อกอินก่อนเพื่อเพิ่มรายวิชา";
+    exit();
+}
+
+// ดึงค่า teacher_id จากเซสชัน
+$teacher_id = $_SESSION['user']['teacher_id'];
+?>
 <div class="right_col" role="main">
-    <div class="row">
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel">
-                <div class="x_title">
-                    <h2>ข้อมูลรายวิชา</h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
-                        <li><a class="close-link"><i class="fa fa-close"></i></a> </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
-                    <br />
-                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post">
-
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="subject_pass">รหัสรายวิชา<span class="required">:</span> </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="subject_pass" name="subject_pass" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>เพิ่มรายวิชา</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <br />
+                <form id="insert_subject_form" class="form-horizontal form-label-left" method="post">
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="subject_pass">รหัสรายวิชา<span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="subject_pass" name="subject_pass" required="required" class="form-control col-md-7 col-xs-12">
                         </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="subject_name">รายวิชา<span class="required">:</span> </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="subject_name" name="subject_name" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="subject_name">ชื่อรายวิชา<span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="subject_name" name="subject_name" required="required" class="form-control col-md-7 col-xs-12">
                         </div>
-
-
-
-                        <div class="ln_solid"></div>
-                        <div class="form-group">
-                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                <button type="submit" name="submit" class="btn btn-success">บันทึก</button>
-                                <button type="reset" name="reset" class="btn btn-danger">ยกเลิก</button>
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="teacher_id"><span class="required"></span></label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <!-- ใช้ type="hidden" เพื่อซ่อน input field -->
+                            <input type="hidden" id="teacher_id" name="teacher_id" value="<?= htmlspecialchars($teacher_id); ?>" class="form-control col-md-7 col-xs-12">
                         </div>
-                    </form>
-                    <?php
-                    if (isset($_POST['submit'])) {
-                        $subject_name = $_POST['subject_name'];
-                        $subject_pass = $_POST['subject_pass'];
+                    </div>
 
-                        $sql = "INSERT INTO tb_subject (subject_name, subject_pass) VALUES ('$subject_name', '$subject_pass')";
-                        if ($cls_conn->write_base($sql) == true) {
-                            echo $cls_conn->show_message('บันทึกข้อมูลสำเร็จ');
-                            echo $cls_conn->goto_page(1, 'show_subject.php');
-                        } else {
-                            echo $cls_conn->show_message('บันทึกข้อมูลไม่สำเร็จ');
-                            echo $sql;
-                        }
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <button type="submit" name="submit" class="btn btn-success">บันทึก</button>
+                            <button type="reset" name="reset" class="btn btn-danger">ยกเลิก</button>
+                        </div>
+                    </div>
+                </form>
+
+                <?php
+                if (isset($_POST['submit'])) {
+                    $subject_pass = $_POST['subject_pass'];
+                    $subject_name = $_POST['subject_name'];
+                    $teacher_id = $_POST['teacher_id']; // ใช้ค่า teacher_id จากฟอร์ม
+
+                    // Insert data into tb_subject table
+                    $sql = "INSERT INTO tb_subject (subject_pass, subject_name, teacher_id)
+                            VALUES ('$subject_pass', '$subject_name', '$teacher_id')";
+
+                    if ($cls_conn->write_base($sql)) {
+                        echo $cls_conn->show_message('บันทึกข้อมูลสำเร็จ');
+                        echo $cls_conn->goto_page(1, 'show_subject.php');
+                    } else {
+                        echo $cls_conn->show_message('บันทึกข้อมูลไม่สำเร็จ');
+                        echo $sql;
                     }
-                    ?>
-                </div>
+                }
+                ?>
             </div>
         </div>
     </div>

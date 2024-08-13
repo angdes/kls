@@ -47,7 +47,7 @@
                         <a href="index.php" class="site_title">
                             <img src="images/123.jpg" alt="KPS" class="logo_img" style="max-width: 50px; max-height: 50px; border-radius: 50%;  margin-bottom: 6px;"> <!-- เพิ่ม style="border-radius: 50%;" เพื่อทำให้รูปเป็นวงกลม -->
 
-                            <span class="site_title_text" style="color: magenta; font-size: 30px; margin-left: 15px; margin: 8px 0 15 0; font-weight: bold;">K.P</span>
+                            <span class="site_title_text" style="color: magenta; font-size: 35px; margin-left: 15px; margin: 8px 0 15 0; font-weight: bold;">K.P</span>
 
                         </a>
                     </div>
