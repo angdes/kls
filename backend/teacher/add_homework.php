@@ -132,7 +132,7 @@ $mysqli->close();
                     <div class="form-group">
                         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                             <button type="submit" name="submit" class="btn btn-success">บันทึกการบ้าน</button>
-                            <button type="reset" name="reset" class="btn btn-danger">ยกเลิก</button>
+                            <button type="button" class="btn btn-danger" onclick="window.location.href='show_homework.php';">ยกเลิก</button>
                         </div>
                     </div>
                 </form>

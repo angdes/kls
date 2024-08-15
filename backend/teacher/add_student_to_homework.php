@@ -45,31 +45,43 @@ if ($result_members === false) {
 
 if (isset($_POST['submit'])) {
     // ตรวจสอบว่ามีนักเรียนที่เลือกอยู่ใน tb_student_homework แล้วหรือไม่
-
+    ob_start();
     // ดึงข้อมูลจากฟอร์ม
     $homework_id = $_POST['homework_id'];
-    $selected_member = $_POST['member']; // เป็น array ของ member_id
-    if ($result_check->num_rows > 0) {
+    $selected_member = $_POST['member']; // Array of member_id
+
+    // Convert the array to a comma-separated string
+    $selected_member_str = implode(',', $selected_member);
+
+    $check_mem = "SELECT member_id FROM tb_student_homework WHERE member_id IN ($selected_member_str) AND homework_id = $homework_id";
+    $result_mem = $mysqli->query($check_mem);
+
+    if ($result_mem && $result_mem->num_rows > 0) {
+        // Some members already have homework assigned, handle this case
         echo "นักเรียนบางคนที่คุณเลือกมีข้อมูลอยู่แล้วในระบบ";
     } else {
-    // คำสั่ง SQL สำหรับเพิ่มนักเรียนให้กับการบ้าน
-    foreach ($selected_member as $student_id) {
-        $sql_insert = "INSERT INTO tb_student_homework (homework_id, member_id) VALUES ('$homework_id', '$student_id')";
-        if ($mysqli->query($sql_insert) === false) {
-            die("การเพิ่มนักเรียนล้มเหลว: " . $mysqli->error);
+        // No data found, proceed with the insert
+        foreach ($selected_member as $student_id) {
+            $sql_insert = "INSERT INTO tb_student_homework (homework_id, member_id) VALUES ('$homework_id', '$student_id')";
+            if ($mysqli->query($sql_insert) === false) {
+                die("การเพิ่มนักเรียนล้มเหลว: " . $mysqli->error);
+            }
         }
+        echo $cls_conn->show_message('บันทึกข้อมูลสำเร็จ');
+        echo $cls_conn->goto_page(1,'show_homework.php');
+        exit();
     }
-
-
-    echo $cls_conn->show_message('บันทึกข้อมูลสำเร็จ');
-    echo $cls_conn->goto_page(1,'show_homework.php');
-    exit();
-}
+    $alert_message = ob_get_clean();
+     
 }
 ?>
 
 <div class="right_col" role="main">
+
     <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="alert alert-danger" role="alert">
+        <?php echo $alert_message; ?>
+        </div>
         <div class="x_panel">
             <div class="x_title">
                 <h2>เพิ่มนักเรียนให้กับการบ้าน</h2>
@@ -110,7 +122,7 @@ if (isset($_POST['submit'])) {
                     <div class="form-group">
                         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                             <button type="submit" name="submit" class="btn btn-success">บันทึกนักเรียน</button>
-                            <button type="reset" name="reset" class="btn btn-danger">ยกเลิก</button>
+                            <button type="button" class="btn btn-danger" onclick="window.location.href='show_homework.php';">ยกเลิก</button>
                         </div>
                     </div>
                 </form>

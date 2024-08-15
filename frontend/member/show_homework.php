@@ -108,15 +108,15 @@ if (isset($_POST['submit'])) {
                                     <td><?= date("Y-m-d H:i:s", strtotime($homework['deadline'])); ?></td>
                                     <td>
                                         <?php if ($homework['checked']): ?>
-                                            ตรวจแล้ว
+                                            <p style="color: green;">ตรวจแล้ว</p>
                                         <?php else: ?>
-                                            ยังไม่ตรวจ
+                                            <p style="color: red;">ยังไม่ตรวจ</p>
                                         <?php endif; ?>
                                     </td>
                                     <td>
                                         <?php if ($homework['student_file_path']): ?>
                                             <form method="post" action="<?= htmlspecialchars($homework['student_file_path']); ?>" target="_blank">
-                                                <button type="submit" class="btn btn-primary">ดูไฟล์ที่ส่ง</button>
+                                                <button type="submit" class="btn btn-success">ดูไฟล์ที่ส่ง</button>
                                             </form>
                                         <?php else: ?>
                                             <form method="post" enctype="multipart/form-data">
