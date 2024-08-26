@@ -122,9 +122,11 @@ if (isset($_POST['submit'])) {
                                             <form method="post" enctype="multipart/form-data">
                                                 <input type="hidden" name="homework_ids[]" value="<?= htmlspecialchars($homework['homework_id']); ?>">
                                                 <div class="form-group">
-                                                    <input type="file" name="files[]" required>
+                                                    <input type="file" name="files[]" id="fileInput_<?= $homework['homework_id']; ?>" multiple onchange="updateFileCount(this)" required>
+                                                    <span id="fileCount_<?= $homework['homework_id']; ?>">ยังไม่ได้เลือกไฟล์</span>
                                                 </div>
-                                                <button type="submit" name="submit" class="btn btn-success">ส่งงาน</button>
+                                                <button type="button" onclick="confirmSubmission(<?= $homework['homework_id']; ?>)" class="btn btn-success">ยืนยันการส่ง</button>
+                                                <button type="button" onclick="cancelSubmission(<?= $homework['homework_id']; ?>)" class="btn btn-danger">ยกเลิก</button>
                                             </form>
                                         <?php endif; ?>
                                     </td>
@@ -136,10 +138,31 @@ if (isset($_POST['submit'])) {
                     <p>ไม่พบข้อมูลการบ้านที่เกี่ยวข้อง</p>
                 <?php endif; ?>
             </div>
-        </div>
+        </div>   
     </div>
 </div>
 
+<script>
+// ฟังก์ชันสำหรับแสดงจำนวนไฟล์ที่เลือก
+function updateFileCount(input) {
+    const fileCountSpan = document.getElementById('fileCount_' + input.id.split('_')[1]);
+    const fileCount = input.files.length;
+    fileCountSpan.textContent = fileCount + ' ไฟล์ที่เลือกแล้ว';
+}
+
+// ฟังก์ชันสำหรับยืนยันการส่งงาน
+function confirmSubmission(homeworkId) {
+    const form = document.querySelector(`input[name="homework_ids[]"][value="${homeworkId}"]`).closest('form');
+    form.submit();
+}
+
+// ฟังก์ชันสำหรับยกเลิกการส่งงาน
+function cancelSubmission(homeworkId) {
+    const inputFile = document.getElementById('fileInput_' + homeworkId);
+    inputFile.value = ''; // รีเซ็ตค่า input file
+    updateFileCount(inputFile); // อัปเดตจำนวนไฟล์ที่เลือกให้เป็น 0
+}
+</script>
 
 <?php
 $mysqli->close();

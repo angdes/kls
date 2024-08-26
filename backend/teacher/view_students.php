@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $homework_id = intval($_POST['homework_id']);
     $member_id = intval($_POST['member_id']);
     $sql_update = "UPDATE tb_student_homework SET checked = 1 WHERE homework_id = $homework_id AND member_id = $member_id";
-    
+
     if ($mysqli->query($sql_update)) {
         echo "<script>alert('อัปเดตสถานะการตรวจเรียบร้อยแล้ว'); window.location.href = window.location.href;</script>";
     } else {
@@ -74,11 +74,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         border-color: hotpink;
         color: black;
     }
+
     .late-submission {
         color: red;
     }
+
     .on-time {
         color: green;
+    }
+
+    .btn-custom {
+        font-size: 15px;
+        color: white;
+        background-color: #28a745;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 20px; /* Adjust padding as needed */
+        text-decoration: none; /* Remove underline */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease; /* Smooth color transition */
+    }
+
+    .btn-custom:hover {
+        background-color: #218838; /* Darker green on hover */
+    }
+
+    .btn-custom i {
+        margin-right: 8px; /* Space between icon and text */
     }
 </style>
 
@@ -90,19 +114,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
+                <div align="left">
+                    <a href="show_homework.php">
+                        <button class="btn btn-hotpink">ย้อนกลับ</button>
+                    </a>
+                </div>
                 <table id="datatable-buttons" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>รหัสนักเรียน</th>
                             <th>ชื่อ-สกุล</th>
-                            <th>ที่อยู่</th>
-                            <th>โทรศัพท์</th>
-                            <th>อีเมล</th>
+                            
                             <th>วันที่สั่ง</th>
                             <th>วันหมดเขต</th>
                             <th>เวลาส่งการบ้าน</th>
                             <th>สถานะการตรวจ</th>
                             <th>ดูไฟล์งาน</th>
+                            <th>ลบ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -113,21 +141,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $deadlineTime = strtotime($deadline);
                                 $isLate = $submissionTime > $deadlineTime;
                                 $submissionClass = $isLate ? 'late-submission' : 'on-time';
-                                ?>
+                        ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row['member_number']); ?></td>
                                     <td><?= htmlspecialchars($row['member_fullname']); ?></td>
-                                    <td><?= htmlspecialchars($row['member_address']); ?></td>
-                                    <td><?= htmlspecialchars($row['member_tel']); ?></td>
-                                    <td><?= htmlspecialchars($row['member_email']); ?></td>
+                                    
                                     <td><?= htmlspecialchars($assigned_date); ?></td>
                                     <td><?= htmlspecialchars($deadline); ?></td>
                                     <td class="<?= $submissionClass; ?>">
-                                        <?= htmlspecialchars($row['submission_time']); ?>
-                                        <?php if ($isLate) { ?>
-                                            (ส่งช้า)
+                                        <?php if (!empty($row['submission_time'])) { ?>
+                                            <?= htmlspecialchars($row['submission_time']); ?>
+                                            <?php if ($isLate) { ?>
+                                                (ส่งช้า)
+                                            <?php } else { ?>
+                                                (ส่งตามเวลา)
+                                            <?php } ?>
                                         <?php } else { ?>
-                                            (ส่งตามเวลา)
+                                            <p style="color: red">ยังไม่ได้ส่งงาน</p>
                                         <?php } ?>
                                     </td>
                                     <td>
@@ -136,19 +166,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <form method="post">
                                                 <input type="hidden" name="homework_id" value="<?= $row['homework_id']; ?>">
                                                 <input type="hidden" name="member_id" value="<?= $row['member_id']; ?>">
-                                                <button type="submit" class="btn btn-success">ยืนยันการตรวจงาน</button>
+                                                <button type="submit" class="btn btn-success">ยืนยันการตรวจ</button>
                                             </form>
                                         <?php } ?>
                                     </td>
                                     <td>
-                                        <?php if (!empty($row['file_path'])) { ?>
-                                            <a href="<?= htmlspecialchars($row['file_path']); ?>" target="_blank" class="btn btn-primary">ดูไฟล์งาน</a>
+                                        <?php if (!empty($row['submission_time'])) { // ตรวจสอบว่ามีการส่งงานหรือไม่ 
+                                        ?>
+                                            <?php if (!empty($row['file_path'])) { ?>
+                                                <a href="submission_details.php?homework_id=<?= htmlspecialchars($row['homework_id']); ?>&member_id=<?= htmlspecialchars($row['member_id']); ?>"
+                                                    class="btn btn-custom">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+
+                                            <?php } else { ?>
+                                                <span>ไม่มีไฟล์</span>
+                                            <?php } ?>
                                         <?php } else { ?>
-                                            <span>ไม่มีไฟล์</span>
+                                            <p style="color: red">ยังไม่ได้ส่งงาน</p>
                                         <?php } ?>
                                     </td>
+                                    <td>
+                                        <a href="delete_view_students.php?homework_id=<?= htmlspecialchars($row['homework_id']); ?>&member_id=<?= htmlspecialchars($row['member_id']); ?>" onclick="return confirm('คุณต้องการลบนักเรียนนี้หรือไม่?')">
+                                            <img src="../../images/delete.png" />
+                                        </a>
+                                    </td>
+
                                 </tr>
-                                <?php
+                        <?php
                             }
                         } else {
                             echo '<tr><td colspan="10">ไม่มีข้อมูลนักเรียน</td></tr>';

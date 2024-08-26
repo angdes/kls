@@ -22,23 +22,42 @@
                             $subject_id = $row['subject_id'];
                             $subject_name = $row['subject_name'];
                             $subject_pass = $row['subject_pass'];
+                            $subject_detail = $row['subject_detail'];
+                            $subject_cover = $row['subject_cover'];
                         }
                     }
                     ?>
-                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post">
-                        <input type="hidden" name="subject_id" value="<?=$subject_id;?>" />
-                        
+                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="subject_id" value="<?= $subject_id; ?>" />
+
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="subject_name">ชื่อวิชา<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="subject_name" name="subject_name" value="<?=$subject_name;?>" required="required" class="form-control col-md-7 col-xs-12"> 
+                                <input type="text" id="subject_name" name="subject_name" value="<?= $subject_name; ?>" required="required" class="form-control col-md-7 col-xs-12"> 
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="subject_pass">รหัสวิชา<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="subject_pass" name="subject_pass" value="<?=$subject_pass;?>" required="required" class="form-control col-md-7 col-xs-12">
+                                <input type="text" id="subject_pass" name="subject_pass" value="<?= $subject_pass; ?>" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="subject_detail">รายละเอียดวิชา:</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea id="subject_detail" name="subject_detail" class="form-control col-md-7 col-xs-12"><?= $subject_detail; ?></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="subject_cover">รูปปกวิชา:</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <?php if (!empty($subject_cover)) : ?>
+                                    <img src="<?= htmlspecialchars($subject_cover); ?>" alt="Cover Image" style="width: 100px; height: auto;"><br>
+                                <?php endif; ?>
+                                <input type="file" id="subject_cover" name="subject_cover" class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
 
@@ -46,7 +65,8 @@
                         <div class="form-group">
                             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                                 <button type="submit" name="submit" class="btn btn-success">แก้ไข</button>
-                                <button type="reset" name="reset" class="btn btn-danger">ยกเลิก</button>
+                                <button type="button" name="reset" class="btn btn-danger" onclick="window.history.back();">ยกเลิก</button>
+
                             </div>
                         </div>
                     </form>
@@ -55,9 +75,18 @@
                         $subject_id = $_POST['subject_id'];
                         $subject_name = $_POST['subject_name'];
                         $subject_pass = $_POST['subject_pass'];
-                        
-                        $sql = "UPDATE tb_subject SET subject_name='$subject_name', subject_pass='$subject_pass' WHERE subject_id=$subject_id";
-                        
+                        $subject_detail = $_POST['subject_detail'];
+
+                        // ตรวจสอบการอัปโหลดรูปภาพใหม่
+                        if (!empty($_FILES['subject_cover']['name'])) {
+                            $target_dir = "uploads/";
+                            $subject_cover = $target_dir . basename($_FILES["subject_cover"]["name"]);
+                            move_uploaded_file($_FILES["subject_cover"]["tmp_name"], $subject_cover);
+                        }
+
+                        // อัปเดตข้อมูลในตาราง tb_subject
+                        $sql = "UPDATE tb_subject SET subject_name='$subject_name', subject_pass='$subject_pass', subject_detail='$subject_detail', subject_cover='$subject_cover' WHERE subject_id=$subject_id";
+
                         if ($cls_conn->write_base($sql) == true) {
                             echo $cls_conn->show_message('แก้ไขข้อมูลสำเร็จ');
                             echo $cls_conn->goto_page(1, 'show_subject.php');

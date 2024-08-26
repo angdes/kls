@@ -30,10 +30,20 @@ if ($result === false) {
 // แสดงข้อมูล
 ?>
 <style>
-    .btn-hotpink {
+    .btn-danger {
         background-color: hotpink;
-        border-color: hotpink;
+        border-color: black;
         color: black;
+    }
+    .btn-warning {
+        background-color: yellow;
+        border-color: black;
+        color: black;
+    }
+    .btn-info {
+        background-color: blue;
+        border-color: black;
+        color: white;
     }
 </style>
 <div class="right_col" role="main">
@@ -52,7 +62,10 @@ if ($result === false) {
                 <div align="left">
                     <!-- เพิ่มข้อมูลผ่าน URL parameter teacher_id -->
                     <a href="insert_subject.php">
-                        <button class="btn btn-hotpink">เพิ่มข้อมูล</button>
+                        <button class="btn btn-danger">เพิ่มรายวิชา</button>
+                    </a>
+                    <a href="add_student_to_subject.php">
+                        <button class="btn btn-warning">เพิ่มนักเรียนในรายวิชา</button>
                     </a>
                 </div>
                 <table id="datatable-buttons" class="table table-striped table-bordered">
@@ -61,6 +74,9 @@ if ($result === false) {
                             <th>ลำดับ</th>
                             <th>รหัสรายวิชา</th>
                             <th>ชื่อรายวิชา</th>
+                            <th>รายละเอียด</th>
+                            <th>รูปปก</th>
+                            <th>ดูนักเรียน</th>
                             <th>แก้ไข</th>
                             <th>ลบ</th>
                         </tr>
@@ -75,6 +91,17 @@ if ($result === false) {
                                     <td><?= $index++; ?></td>
                                     <td><?= htmlspecialchars($row['subject_pass']); ?></td>
                                     <td><?= htmlspecialchars($row['subject_name']); ?></td>
+                                    <td><?= htmlspecialchars($row['subject_detail']); ?></td>
+                                    <td>
+                                        <?php if (!empty($row['subject_cover'])): ?>
+                                            <img src="<?= htmlspecialchars($row['subject_cover']); ?>" alt="Cover Image" style="width: 100px; height: auto;">
+                                        <?php else: ?>
+                                            ไม่มีรูปภาพ
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <a href="view_students_in_subject.php?subject_id=<?= htmlspecialchars($row['subject_id']); ?>" class="btn btn-info">ดูนักเรียน</a>
+                                    </td>
                                     <td>
                                         <a href="update_subject.php?id=<?= htmlspecialchars($row['subject_id']); ?>&teacher_id=<?= htmlspecialchars($teacher_id); ?>" onclick="return confirm('คุณต้องการแก้ไขหรือไม่?')"><img src="../../images/edit.png" alt="Edit" /></a>
                                     </td>
@@ -85,7 +112,7 @@ if ($result === false) {
                                 <?php
                             }
                         } else {
-                            echo '<tr><td colspan="5">ไม่มีข้อมูล</td></tr>';
+                            echo '<tr><td colspan="8">ไม่มีข้อมูล</td></tr>';
                         }
 
                         $mysqli->close();

@@ -121,23 +121,26 @@ include('../../class_conn.php'); ?>
 <div class="top_nav">
     <div class="nav_menu" style="background-color: #C44AFD;">
         <nav>
-            <div class="nav toggle"> <a id="menu_toggle"><i class="fa fa-bars"></i></a> </div>
+            <div class="nav toggle"> 
+                <a id="menu_toggle"><i class="fa fa-bars"></i></a> 
+            </div>
             <ul class="nav navbar-nav navbar-right">
                 <li class="">
-                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> 
-                    <?php
-                    // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
-                    if (isset($_SESSION['user'])) {
-                        // ดึงข้อมูลผู้ใช้จาก session
-                        $user = $_SESSION['user'];
-                        $teacher_fullname = $user['teacher_fullname'];
-                    } else {
-                        // หากผู้ใช้ยังไม่ได้เข้าสู่ระบบ
-                        $teacher_fullname = "ครู";
-                    }
-                    ?>
-                    
-                    <img src="../template/production/images/user.jpg" alt=""><?php echo htmlspecialchars($teacher_fullname, ENT_QUOTES, 'UTF-8'); ?><span class=" fa fa-angle-down"></span> </a>
+                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="color: white;"> 
+                        <?php
+                        // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
+                        if (isset($_SESSION['user'])) {
+                            // ดึงข้อมูลผู้ใช้จาก session
+                            $user = $_SESSION['user'];
+                            $teacher_fullname = $user['teacher_fullname'];
+                        } else {
+                            // หากผู้ใช้ยังไม่ได้เข้าสู่ระบบ
+                            $teacher_fullname = "ครู";
+                        }
+                        ?>
+                        <img src="../template/production/images/user.jpg" alt=""><?php echo htmlspecialchars($teacher_fullname, ENT_QUOTES, 'UTF-8'); ?>
+                        <span class="fa fa-angle-down"></span>
+                    </a>
                     <ul class="dropdown-menu dropdown-usermenu pull-right">
                         <li><a href="show_teacher.php">แก้ไขข้อมูลส่วนตัว</a></li>
                         <li><a href="logout.php"><i class="fa fa-sign-out pull-right"></i>ออกจากระบบ</a></li>
@@ -147,6 +150,7 @@ include('../../class_conn.php'); ?>
         </nav>
     </div>
 </div>
+
 <!-- /top navigation -->
 
             <!-- page content -->

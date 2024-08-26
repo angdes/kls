@@ -141,21 +141,7 @@
     <script src="template_login/vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="template_login/vendor/select2/select2.min.js"></script>
     <script src="template_login/vendor/tilt/tilt.jquery.min.js"></script>
-    <script>
-        // Mouse move effect
-        document.addEventListener('mousemove', function(e) {
-            var logo = document.getElementById('logo');
-            var rect = logo.getBoundingClientRect();
-            var mouseX = e.clientX;
-            var mouseY = e.clientY;
-            var centerX = rect.left + rect.width / 2;
-            var centerY = rect.top + rect.height / 2;
-            var deltaX = (mouseX - centerX) / 20;
-            var deltaY = (mouseY - centerY) / 20;
-
-            logo.style.transform = 'translate(' + deltaX + 'px, ' + deltaY + 'px)';
-        });
-    </script>
+    
     <script src="template_login/js/main.js"></script>
 
 <?php include('footer.php');?>
