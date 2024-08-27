@@ -56,7 +56,8 @@ $teacher_id = $_SESSION['user']['teacher_id'];
                     <div class="form-group">
                         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                             <button type="submit" name="submit" class="btn btn-success">บันทึก</button>
-                            <button type="button" name="reset" class="btn btn-danger" onclick="window.history.back();">ยกเลิก</button>
+                            <button type="button" name="reset" class="btn btn-danger" onclick="window.location.href='show_subject.php';">ยกเลิก</button>
+
                         </div>
                     </div>
                 </form>

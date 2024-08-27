@@ -22,7 +22,7 @@ if (isset($_POST['delete_selected'])) {
     if (!empty($_POST['selected_members'])) {
         $selected_members = $_POST['selected_members'];
         $ids_to_delete = implode(',', $selected_members);
-        
+
         // ลบข้อมูลนักเรียนที่เลือก
         $delete_sql = "DELETE FROM tb_student_subject WHERE subject_id = $subject_id AND member_id IN ($ids_to_delete)";
         if ($mysqli->query($delete_sql) === TRUE) {
@@ -93,13 +93,13 @@ if ($result === false) {
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
                                     echo "<tr>
-                                            <td><input type='checkbox' name='selected_members[]' value='".htmlspecialchars($row['member_id'])."' /></td>
-                                            <td>".htmlspecialchars($row['member_number'])."</td>
-                                            <td>".htmlspecialchars($row['member_fullname'])."</td>
-                                            <td>".htmlspecialchars($row['member_tel'])."</td>
-                                            <td>".htmlspecialchars($row['member_email'])."</td>
+                                            <td><input type='checkbox' name='selected_members[]' value='" . htmlspecialchars($row['member_id']) . "' /></td>
+                                            <td>" . htmlspecialchars($row['member_number']) . "</td>
+                                            <td>" . htmlspecialchars($row['member_fullname']) . "</td>
+                                            <td>" . htmlspecialchars($row['member_tel']) . "</td>
+                                            <td>" . htmlspecialchars($row['member_email']) . "</td>
                                             <td>
-                                                <a href='view_students_in_subject.php?subject_id=$subject_id&delete_member_id=".htmlspecialchars($row['member_id'])."' onclick=\"return confirm('คุณต้องการลบหรือไม่?')\">
+                                                <a href='view_students_in_subject.php?subject_id=$subject_id&delete_member_id=" . htmlspecialchars($row['member_id']) . "' onclick=\"return confirm('คุณต้องการลบหรือไม่?')\">
                                                     <img src='../../images/delete.png' alt='Delete' />
                                                 </a>
                                             </td>
@@ -118,6 +118,9 @@ if ($result === false) {
                         <button type="submit" name="delete_selected" class="btn btn-danger" onclick="return confirm('คุณต้องการลบรายการที่เลือกหรือไม่?')">ลบที่เลือก</button>
                         <button type="submit" name="delete_all" class="btn btn-danger" onclick="return confirm('คุณต้องการลบนักเรียนทั้งหมดหรือไม่?')">ลบทั้งหมด</button>
                     </div>
+                    <div align="right">
+                        <button type="button" name="reset" class="btn btn-success" onclick="window.location.href='show_subject.php';">ย้อนกลับ</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -125,13 +128,13 @@ if ($result === false) {
 </div>
 
 <script>
-// ฟังก์ชันเลือก/ไม่เลือกทั้งหมด
-document.getElementById('select_all').addEventListener('click', function(e) {
-    var checkboxes = document.querySelectorAll('input[name="selected_members[]"]');
-    for (var checkbox of checkboxes) {
-        checkbox.checked = this.checked;
-    }
-});
+    // ฟังก์ชันเลือก/ไม่เลือกทั้งหมด
+    document.getElementById('select_all').addEventListener('click', function(e) {
+        var checkboxes = document.querySelectorAll('input[name="selected_members[]"]');
+        for (var checkbox of checkboxes) {
+            checkbox.checked = this.checked;
+        }
+    });
 </script>
 
 <?php include('footer.php'); ?>

@@ -1,5 +1,5 @@
 <?php
-
+ob_start(); // เริ่มบัฟเฟอร์เอาต์พุต
 include('header.php');
 
 // ตรวจสอบว่ามีการล็อกอินและมีข้อมูลผู้ใช้ในเซสชันหรือไม่
@@ -19,128 +19,178 @@ if ($mysqli->connect_error) {
     die("การเชื่อมต่อล้มเหลว: " . $mysqli->connect_error);
 }
 
-// ดึงข้อมูลรายวิชาของครู
-$sql = "SELECT * FROM tb_subject WHERE teacher_id = $teacher_id";
-$result = $mysqli->query($sql);
+// รับค่า subject_pass จาก URL
+$subject_pass = $_GET['subject_pass'];
 
-// ตรวจสอบการดึงข้อมูล
-if ($result === false) {
-    die("การดึงข้อมูลล้มเหลว: " . $mysqli->error);
+// ดึง subject_id ที่สัมพันธ์กับ subject_pass
+$subject_sql = "SELECT subject_id FROM tb_subject WHERE subject_pass = '$subject_pass' LIMIT 1";
+$subject_result = $mysqli->query($subject_sql);
+
+// ตรวจสอบว่าพบ subject_id หรือไม่
+if ($subject_result->num_rows > 0) {
+    $subject_row = $subject_result->fetch_assoc();
+    $subject_id = $subject_row['subject_id'];
+} else {
+    die("ไม่พบรหัสวิชาในระบบ กรุณาลองใหม่.");
 }
 
-// ประมวลผลการเพิ่มการบ้าน
-if (isset($_POST['submit'])) {
-    $subject_id = $_POST['subject_id'];
-    $homework_title = $_POST['homework_title'];
-    $homework_description = $_POST['homework_description'];
-    $deadline = $_POST['deadline'];
+// เพิ่มการบ้านใหม่เมื่อผู้ใช้ส่งฟอร์ม
+$alert_message = ''; // กำหนดตัวแปร $alert_message ให้เป็นค่าว่างเริ่มต้น
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $title = $_POST['title'];
+    $description = $_POST['description'];
     $assigned_date = $_POST['assigned_date'];
-    
-    $file_path = null;
+    $deadline = $_POST['deadline'];
 
-    // ตรวจสอบการอัปโหลดไฟล์
-    if (isset($_FILES['file']) && $_FILES['file']['error'] == UPLOAD_ERR_OK) {
-        $file_tmp = $_FILES['file']['tmp_name'];
-        $file_name = basename($_FILES['file']['name']);
-        $file_path = 'uploads/' . $file_name;
+    // ตรวจสอบไฟล์และจัดการอัปโหลดหลายไฟล์
+    $file_paths = [];
+    if (isset($_FILES['files']) && !empty($_FILES['files']['name'][0])) {
+        foreach ($_FILES['files']['name'] as $key => $file_name) {
+            $file_tmp = $_FILES['files']['tmp_name'][$key];
 
-        // ย้ายไฟล์ไปยังตำแหน่งที่ต้องการ
-        if (!move_uploaded_file($file_tmp, $file_path)) {
-            echo "อัปโหลดไฟล์ล้มเหลว";
-            exit();
+            // แปลงชื่อไฟล์ให้เป็น UTF-8
+            $file_name_utf8 = iconv(mb_detect_encoding($file_name, mb_detect_order(), true), "UTF-8", $file_name);
+            $file_path = 'uploads/' . $file_name_utf8;
+
+            // ย้ายไฟล์ไปยังตำแหน่งที่ถูกต้อง
+            if (move_uploaded_file($file_tmp, $file_path)) {
+                $file_paths[] = $file_path; // เก็บเส้นทางไฟล์ที่อัปโหลดสำเร็จ
+            } else {
+                echo "เกิดข้อผิดพลาดในการอัปโหลดไฟล์: $file_name";
+            }
         }
     }
 
-    // คำสั่ง SQL สำหรับเพิ่มการบ้าน
-    $sql = "INSERT INTO tb_homework (subject_id, teacher_id, title, description, deadline, file_path, assigned_date)
-            VALUES ('$subject_id', '$teacher_id', '$homework_title', '$homework_description', '$deadline', '$file_path', '$assigned_date')";
-    if ($mysqli->query($sql) === TRUE) {
-        echo $cls_conn->show_message('เพิ่มการบ้านสำเร็จ');
-        echo $cls_conn->goto_page(1,'show_homework.php');
-        exit();
+    // แปลงเส้นทางไฟล์เป็น JSON เพื่อจัดเก็บในฐานข้อมูล
+    $file_paths_json = json_encode($file_paths, JSON_UNESCAPED_UNICODE); // ใช้ JSON_UNESCAPED_UNICODE เพื่อไม่ให้เข้ารหัส Unicode
+
+    // เพิ่มการบ้านใหม่ในฐานข้อมูล
+    $insert_sql = "INSERT INTO tb_homework (subject_id, subject_pass, teacher_id, title, description, assigned_date, deadline, file_path) 
+                   VALUES ('$subject_id', '$subject_pass', '$teacher_id', '$title', '$description', '$assigned_date', '$deadline', '$file_paths_json')";
+
+    if ($mysqli->query($insert_sql) === TRUE) {
+        // แสดงข้อความแจ้งเตือนเมื่อบันทึกสำเร็จและรีไดเรกต์ไปยังหน้าแสดงการบ้าน
+        $alert_message = '
+            <div class="alert alert-success" role="alert">
+                บันทึกข้อมูลสำเร็จ
+            </div>
+            <script>
+                setTimeout(function(){
+                    window.location.href = "show_homework.php?subject_pass=' . htmlspecialchars($subject_pass) . '";
+                }, 1000); // 1000 milliseconds = 1 second
+            </script>
+        ';
     } else {
-        echo "เพิ่มการบ้านล้มเหลว: " . $mysqli->error;
+        echo "เกิดข้อผิดพลาดในการเพิ่มการบ้าน: " . $mysqli->error;
     }
 }
-
-// ปิดการเชื่อมต่อฐานข้อมูล
-$mysqli->close();
+ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเฟอร์
 ?>
 
-<div class="right_col" role="main">
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="x_panel">
-            <div class="x_title">
-                <h2>เพิ่มการบ้าน</h2>
-                <div class="clearfix"></div>
-            </div>
-            <div class="x_content">
-                <form id="add_homework_form" class="form-horizontal form-label-left" method="post" action="" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="subject">เลือกวิชา<span class="required">*</span></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <select id="subject" name="subject_id" class="form-control col-md-7 col-xs-12" required>
-                                <option value="">เลือกวิชา</option>
-                                <?php
-                                while ($row = $result->fetch_assoc()) {
-                                    ?>
-                                    <option value="<?= htmlspecialchars($row['subject_id']); ?>">
-                                        <?= htmlspecialchars($row['subject_pass']) . " - " . htmlspecialchars($row['subject_name']); ?>
-                                    </option>
-                                    <?php
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
+<!DOCTYPE html>
+<html lang="th">
 
-                    <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="homework_title">หัวข้อการบ้าน<span class="required">*</span></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="text" id="homework_title" name="homework_title" required="required" class="form-control col-md-7 col-xs-12">
-                        </div>
-                    </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่มการบ้าน</title>
+    <style>
+        .btn-danger {
+            background-color: hotpink;
+            border-color: black;
+            color: black;
+        }
 
-                    <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="homework_description">รายละเอียดการบ้าน<span class="required">*</span></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <textarea id="homework_description" name="homework_description" rows="4" required="required" class="form-control col-md-7 col-xs-12"></textarea>
-                        </div>
-                    </div>
+        .btn-warning {
+            background-color: yellow;
+            border-color: black;
+            color: black;
+        }
 
-                    <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assigned_date">วันที่สั่ง<span class="required">*</span></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="datetime-local" id="assigned_date" name="assigned_date" required="required" class="form-control col-md-7 col-xs-12">
-                        </div>
-                    </div>
+        .btn-info {
+            background-color: blue;
+            border-color: black;
+            color: white;
+        }
+    </style>
+</head>
 
-                    <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="deadline">วันหมดเขต<span class="required">*</span></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="datetime-local" id="deadline" name="deadline" required="required" class="form-control col-md-7 col-xs-12">
+<body>
+    <div class="right_col" role="main">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <?php if (!empty($alert_message)) { echo $alert_message; } ?>
+                <div class="x_title">
+                    <h2>เพิ่มการบ้านในวิชา <?= htmlspecialchars($subject_pass); ?></h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form id="add_homework_form" action="add_homework.php?subject_pass=<?= htmlspecialchars($subject_pass); ?>" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="title">หัวข้อการบ้าน:</label>
+                            <input type="text" name="title" class="form-control" required>
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="file">ไฟล์การบ้าน:</label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="file" id="file" name="file" class="form-control col-md-7 col-xs-12">
+                        <div class="form-group">
+                            <label for="description">รายละเอียดการบ้าน:</label>
+                            <textarea name="description" class="form-control" required></textarea>
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                            <button type="submit" name="submit" class="btn btn-success">บันทึกการบ้าน</button>
-                            <button type="button" class="btn btn-danger" onclick="window.location.href='show_homework.php';">ยกเลิก</button>
+                        <div class="form-group">
+                            <label for="assigned_date">วันที่สั่ง:</label>
+                            <input type="datetime-local" name="assigned_date" class="form-control" required>
                         </div>
-                    </div>
-                </form>
+                        <div class="form-group">
+                            <label for="deadline">วันหมดเขต:</label>
+                            <input type="datetime-local" name="deadline" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="files">ไฟล์การบ้าน:</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="file" name="files[]" multiple class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div id="additional_homeworks"></div> <!-- สำหรับเพิ่มการบ้านหลายรายการ -->
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <button type="button" id="add_more_homework" class="btn btn-primary">เพิ่มการบ้านอีกรายการ</button>
+                                <button type="submit" name="submit" class="btn btn-success">บันทึกการบ้าน</button>
+                                <button type="button" class="btn btn-danger" onclick="window.location.href='show_homework.php?subject_pass=<?= htmlspecialchars($subject_pass); ?>';">ยกเลิก</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <?php include('footer.php'); ?>
+</body>
 
-<?php
-include('footer.php');
-?>
+<script>
+    document.getElementById('add_more_homework').addEventListener('click', function() {
+        var additionalHomeworkHTML = `
+        <div class="form-group">
+            <label for="title">หัวข้อการบ้าน:</label>
+            <input type="text" name="title[]" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="description">รายละเอียดการบ้าน:</label>
+            <textarea name="description[]" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="assigned_date">วันที่สั่ง:</label>
+            <input type="datetime-local" name="assigned_date[]" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="deadline">วันหมดเขต:</label>
+            <input type="datetime-local" name="deadline[]" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="files">ไฟล์การบ้าน:</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="file" name="files[]" multiple class="form-control col-md-7 col-xs-12">
+            </div>
+        </div>`;
+        document.getElementById('additional_homeworks').insertAdjacentHTML('beforeend', additionalHomeworkHTML);
+    });
+</script>
+
+</html>
