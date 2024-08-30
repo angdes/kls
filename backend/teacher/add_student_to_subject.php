@@ -95,7 +95,7 @@ if (isset($_POST['submit'])) {
             echo $alert_message;
         } ?>
 
-        <div class="x_panel">
+        <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
             <div class="x_title">
                 <h2>เพิ่มนักเรียนให้กับรายวิชา</h2>
                 <div class="clearfix"></div>

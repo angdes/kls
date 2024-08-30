@@ -2,7 +2,7 @@
     <div class="right_col" role="main">
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
+                <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
                     <div class="x_title">
                         <h3>เพิ่มข้อมูลผู้ใช้งาน</h3>
                         <!--<ul class="nav navbar-right panel_toolbox">

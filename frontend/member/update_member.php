@@ -19,39 +19,49 @@ if (isset($_POST['submit'])) {
     $member_email = $_POST['member_email'];
     $member_username = $_POST['member_username'];
     $member_password = $_POST['member_password'];
-    
-    // สร้างคำสั่ง SQL สำหรับการอัปเดตข้อมูล
-    $sql = "UPDATE tb_member SET 
-            member_fullname='$member_fullname', 
-            member_address='$member_address',
-            member_tel='$member_tel',
-            member_email='$member_email',
-            member_username='$member_username'";
-    
-    // ตรวจสอบว่ามีการเปลี่ยนแปลงรหัสผ่านหรือไม่
-    if (!empty($member_password)) {
-        
-        $sql .= ", member_password='$member_password'";
-    }
-    
-    // เติมเงื่อนไข WHERE เพื่ออัปเดตเฉพาะสมาชิกที่เป็นเจ้าของ session ปัจจุบัน
-    $sql .= " WHERE member_id={$member['member_id']}";
+    $confirm_password = $_POST['confirm_password'];
 
-    // ทำการ execute คำสั่ง SQL
-    if ($cls_conn->write_base($sql) == true) {
-        // อัปเดตข้อมูลใน session
-        $_SESSION['user']['member_fullname'] = $member_fullname;
-        $_SESSION['user']['member_address'] = $member_address;
-        $_SESSION['user']['member_tel'] = $member_tel;
-        $_SESSION['user']['member_email'] = $member_email;
-        $_SESSION['user']['member_username'] = $member_username;
-
-        // แสดงข้อความแจ้งเตือนและ redirect ไปยังหน้าแสดงข้อมูลส่วนตัว
-        echo $cls_conn->show_message('แก้ไขข้อมูลสำเร็จ');
-        echo $cls_conn->goto_page(1, 'logout.php');
-        echo $cls_conn->show_message('กรุณาเข้าสู่ระบบใหม่เพื่อให้ข้อมูลอัพเดต');
+    // ตรวจสอบว่ารหัสผ่านและยืนยันรหัสผ่านตรงกันหรือไม่
+    if (!empty($member_password) && $member_password !== $confirm_password) {
+        echo $cls_conn->show_message('รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน');
     } else {
-        echo $cls_conn->show_message('แก้ไขข้อมูลไม่สำเร็จ');
+        // สร้างคำสั่ง SQL สำหรับการอัปเดตข้อมูล
+        $sql = "UPDATE tb_member SET 
+                member_fullname='$member_fullname', 
+                member_address='$member_address',
+                member_tel='$member_tel',
+                member_email='$member_email',
+                member_username='$member_username'";
+        
+        // ตรวจสอบว่ามีการเปลี่ยนแปลงรหัสผ่านหรือไม่
+        if (!empty($member_password)) {
+            // บันทึกรหัสผ่านใหม่เป็น plain text (ไม่แนะนำในทางปฏิบัติ)
+            $sql .= ", member_password='$member_password'";
+        }
+        
+        // เติมเงื่อนไข WHERE เพื่ออัปเดตเฉพาะสมาชิกที่เป็นเจ้าของ session ปัจจุบัน
+        $sql .= " WHERE member_id={$member['member_id']}";
+
+        // ทำการ execute คำสั่ง SQL
+        if ($cls_conn->write_base($sql) == true) {
+            // อัปเดตข้อมูลใน session ด้วย
+            $_SESSION['user']['member_fullname'] = $member_fullname;
+            $_SESSION['user']['member_address'] = $member_address;
+            $_SESSION['user']['member_tel'] = $member_tel;
+            $_SESSION['user']['member_email'] = $member_email;
+            $_SESSION['user']['member_username'] = $member_username;
+
+            // อัปเดตรหัสผ่านใน session ด้วย หากมีการเปลี่ยนแปลง
+            if (!empty($member_password)) {
+                $_SESSION['user']['member_password'] = $member_password;
+            }
+
+            // แสดงข้อความแจ้งเตือนและ redirect ไปยังหน้าแสดงข้อมูลส่วนตัว
+            echo $cls_conn->show_message('แก้ไขข้อมูลสำเร็จ');
+            echo $cls_conn->goto_page(1, 'show_member.php'); // เปลี่ยนเส้นทางไปยังหน้าแสดงข้อมูลสมาชิกโดยไม่ต้องล็อกอินใหม่
+        } else {
+            echo $cls_conn->show_message('แก้ไขข้อมูลไม่สำเร็จ');
+        }
     }
 }
 ?>
@@ -59,7 +69,7 @@ if (isset($_POST['submit'])) {
 <div class="right_col" role="main">
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel">
+            <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
                 <div class="x_title">
                     <h2>แก้ไขข้อมูลส่วนตัว</h2>
                     <div class="clearfix"></div>
@@ -101,6 +111,12 @@ if (isset($_POST['submit'])) {
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input type="password" id="member_password" name="member_password" class="form-control col-md-7 col-xs-12">
                                 <small>หากไม่ต้องการเปลี่ยนรหัสผ่าน ให้เว้นว่างไว้</small>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="confirm_password">ยืนยันรหัสผ่านใหม่</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="password" id="confirm_password" name="confirm_password" class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
                         <div class="ln_solid"></div>

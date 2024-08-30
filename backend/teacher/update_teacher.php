@@ -13,30 +13,43 @@ if (isset($_POST['submit'])) {
     $teacher_username = $_POST['teacher_username'];
     $teacher_tel = $_POST['teacher_tel'];
     $teacher_password = $_POST['teacher_password'];
+    $confirm_password = $_POST['confirm_password'];
 
-    $sql = "UPDATE tb_teacher SET 
-            teacher_fullname='$teacher_fullname', 
-            teacher_username='$teacher_username', 
-            teacher_tel='$teacher_tel'";
-
-    // ตรวจสอบว่ามีการกรอกรหัสผ่านใหม่หรือไม่
-    if (!empty($teacher_password)) {
-        $sql .= ", teacher_password='$teacher_password'";
-    }
-
-    $sql .= " WHERE teacher_id={$teacher['teacher_id']}";
-
-    if ($cls_conn->write_base($sql) == true) {
-        // อัปเดตข้อมูลใน session ด้วย
-        $_SESSION['user']['teacher_fullname'] = $teacher_fullname;
-        $_SESSION['user']['teacher_username'] = $teacher_username;
-        $_SESSION['user']['teacher_tel'] = $teacher_tel;
-
-        echo $cls_conn->show_message('แก้ไขข้อมูลสำเร็จ');
-        echo $cls_conn->goto_page(1, 'logout.php');
-        echo $cls_conn->show_message('กรุณาเข้าสู่ระบบใหม่เพื่อให้ข้อมูลอัพเดต');
+    // ตรวจสอบว่ารหัสผ่านใหม่กับยืนยันรหัสผ่านตรงกันหรือไม่
+    if (!empty($teacher_password) && $teacher_password !== $confirm_password) {
+        echo $cls_conn->show_message('รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน');
     } else {
-        echo $cls_conn->show_message('แก้ไขข้อมูลไม่สำเร็จ');
+        $sql = "UPDATE tb_teacher SET 
+                teacher_fullname='$teacher_fullname', 
+                teacher_username='$teacher_username', 
+                teacher_tel='$teacher_tel'";
+
+        // ตรวจสอบว่ามีการกรอกรหัสผ่านใหม่หรือไม่
+        if (!empty($teacher_password)) {
+            // Store the new password as plain text (not recommended)
+            $sql .= ", teacher_password='$teacher_password'";
+        }
+
+        $sql .= " WHERE teacher_id={$teacher['teacher_id']}";
+
+        if ($cls_conn->write_base($sql) == true) {
+            // อัปเดตข้อมูลใน session ด้วย
+            $_SESSION['user']['teacher_fullname'] = $teacher_fullname;
+            $_SESSION['user']['teacher_username'] = $teacher_username;
+            $_SESSION['user']['teacher_tel'] = $teacher_tel;
+
+            // อัปเดตรหัสผ่านใน session ด้วย หากมีการเปลี่ยนแปลง
+            if (!empty($teacher_password)) {
+                $_SESSION['user']['teacher_password'] = $teacher_password;
+            }
+
+            echo $cls_conn->show_message('แก้ไขข้อมูลสำเร็จ');
+
+            // เปลี่ยนเส้นทางไปยังหน้าแสดงข้อมูลครู
+            echo $cls_conn->goto_page(1, 'show_teacher1.php');
+        } else {
+            echo $cls_conn->show_message('แก้ไขข้อมูลไม่สำเร็จ');
+        }
     }
 }
 ?>
@@ -74,6 +87,12 @@ if (isset($_POST['submit'])) {
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input type="password" id="teacher_password" name="teacher_password" class="form-control col-md-7 col-xs-12">
                                 <small>หากไม่ต้องการเปลี่ยนรหัสผ่าน ให้เว้นว่างไว้</small>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="confirm_password">ยืนยันรหัสผ่านใหม่</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="password" id="confirm_password" name="confirm_password" class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
                         <div class="ln_solid"></div>

@@ -2,6 +2,14 @@
 <?php include('../../class_conn.php'); ?>
 <?php $cls_conn = new class_conn; ?>
 
+<?php
+// ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
+if (!isset($_SESSION['user'])) {
+    header("Location: http://localhost/kls/login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

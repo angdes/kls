@@ -1,8 +1,13 @@
-<?php session_start(); 
- include('../../class_conn.php'); ?>
+<?php session_start();
+include('../../class_conn.php'); ?>
 <?php $cls_conn = new class_conn; ?>
-
-
+<?php
+// ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
+if (!isset($_SESSION['user'])) {
+    header("Location: http://localhost/kls/login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,6 +43,18 @@
     <script src="https://kit.fontawesome.com/ec837941fe.js" crossorigin="anonymous"></script>
 </head>
 
+<style>
+    
+    
+
+    .nav.side-menu>li>a:hover {
+        color: black !important;
+        background-color: #fff !important;
+        /* เปลี่ยนพื้นหลังเป็นสีเทาเมื่อเมาส์อยู่เหนือ */
+    }
+</style>
+
+
 <body class="nav-md">
     <div class="container body">
         <div class="main_container">
@@ -62,12 +79,12 @@
                         <div class="menu_section">
                             <h3 style="color: black;">menu</h3>
 
-                            <ul class="nav side-menu">
+                            <ul class="nav side-menu" style="color: black;">
                                 <li><a href="index.php" style="color: black;"><i class="fa fa-house"></i> หน้าแรก</a></li>
 
                                 <li><a style="color: black;"><i class="fa fa-user" style="color: black;"></i>ข้อมูลส่วนตัว<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  hotpink;">
-                                        
+                                    <ul class="nav child_menu" style="background-color:  white;">
+
                                         <li><a href="show_admin1.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลส่วนตัว</a></li>
                                     </ul>
                                 </li>
@@ -102,7 +119,7 @@
 
                                 <li><a style="color: black;"><i class="fa fa-chalkboard-user"></i>จัดการรายวิชา<span class="fa fa-chevron-down" style="color: black;"></span></a>
                                     <ul class="nav child_menu" style="background-color:  hotpink;">
-                                        
+
                                         <li><a href="insert_subject.php" style="color: black;"><i class="fa fa-plus-square" style="color: black;"></i>เพิ่มข้อมูลรายวิชา</a></li>
                                         <li><a href="show_subject.php" style="color: black;"><i class="fa fa-list" style="color: black;"></i>แสดงข้อมูลรายวิชา</a></li>
                                     </ul>
@@ -140,7 +157,7 @@
                         <div class="nav toggle"> <a id="menu_toggle"><i class="fa fa-bars"></i></a> </div>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
-                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="color: white;">
                                     <?php
                                     // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
                                     if (isset($_SESSION['user'])) {
