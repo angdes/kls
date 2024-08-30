@@ -20,9 +20,9 @@ html , body{
 }
 .daterangepicker .ranges li.active,
 .daterangepicker .ranges li:hover {
-    background: #c2d4e4;
-    border: 1px solid #d3e6f7;
-    color: #fff
+    background: #000000;
+    border: 1px solid #000000;
+    color: #000000
 }
 .daterangepicker .input-mini {
     background-color: #eee;
@@ -791,12 +791,12 @@ a:focus {
     background: none
 }
 .nav li li.current-page a {
-    color: #fff
+    color: black
 }
 .nav.side-menu>li.active>a {
     text-shadow: rgba(0, 0, 0, 0.25) 0 -1px 0;
-    background: linear-gradient(#C44AFD, #ffffff), #C44AFD;
-    box-shadow: rgba(0, 0, 0, 0.25) 0 1px 0, inset rgba(255, 255, 255, 0.16) 0 1px 0
+    background: linear-gradient(hotpink, hotpink), hotpink;
+    box-shadow: rgba(0, 0, 0, 0.25) 0 1px 0, inset rgba(0, 0, 0, 0.25) 0 1px 0
 }
 .navbar-brand,
 .navbar-nav>li>a {

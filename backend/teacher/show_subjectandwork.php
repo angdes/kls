@@ -10,7 +10,7 @@ if ($mysqli->connect_error) {
 }
 
 // ดึงข้อมูลรายวิชาจากฐานข้อมูล
-$sql = "SELECT subject_pass, subject_name, subject_detail, subject_cover FROM tb_subject";
+$sql = "SELECT subject_id, subject_pass, subject_name, subject_detail, subject_cover FROM tb_subject";
 $result = $mysqli->query($sql);
 
 // ตรวจสอบการดึงข้อมูล
@@ -26,6 +26,7 @@ if ($result === false) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แสดงข้อมูลรายวิชา</title>
     <style>
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -47,14 +48,15 @@ if ($result === false) {
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-start;
-            margin: 20px;
+            margin: 0px;
             width: 100%;
+            padding: 30px;
             max-width: 1000px; /* กำหนดขนาดสูงสุดของคอนเทนเนอร์ */
         }
         .card {
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             margin: 10px;
             width: calc(50% - 20px); /* กำหนดให้การ์ดมีขนาดครึ่งหนึ่งของความกว้างทั้งหมดลบด้วยระยะขอบ */
             display: flex;
@@ -91,19 +93,40 @@ if ($result === false) {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 10px;
+            color: #C44AFD; /* สีหัวข้อการ์ด */
         }
         .card-description {
             font-size: 14px;
             margin-bottom: 10px;
+        }
+        .card-stats {
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        .text-green {
+            color: green;
+        }
+        .text-red {
+            color: red;
+        }
+        .text-work {
+            color: black;
+        }
+        .text-stus{
+            color: magenta;
+        }
+        .colorfont{
+            color: black;
+            font-size: 22px;
         }
     </style>
 </head>
 
 <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="x_panel">
+        <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
             <div class="x_title">
-                <h2>รายวิชาที่สอน</h2>
+                <h2 class="colorfont" >รายวิชาที่สอน</h2>
                 <ul class="nav navbar-right panel_toolbox">
                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                     <li><a class="close-link"><i class="fa fa-close"></i></a></li>
@@ -116,18 +139,43 @@ if ($result === false) {
         // แสดงข้อมูลรายวิชาในรูปแบบการ์ด
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
+                $subject_id = $row['subject_id'];
                 $subject_pass = htmlspecialchars($row['subject_pass']);
                 $subject_name = htmlspecialchars($row['subject_name']);
                 $subject_detail = htmlspecialchars($row['subject_detail']);
                 $subject_cover = htmlspecialchars($row['subject_cover']);
-                
+
+                // ใช้ rawurlencode เพื่อเข้ารหัส URL ของรูปภาพ
+                $image_path = !empty($subject_cover) ? '../../backend/teacher/uploads/' . rawurlencode(basename($subject_cover)) : 'path/to/placeholder/image.png';
+
+                // คำนวณสถิติการบ้านและข้อมูลเพิ่มเติม
+                $total_homework_sql = "SELECT COUNT(*) as total_homework FROM tb_homework WHERE subject_id = '$subject_id'";
+                $total_students_sql = "SELECT COUNT(*) as total_students FROM tb_student_subject WHERE subject_id = '$subject_id'";
+                $submitted_sql = "SELECT COUNT(DISTINCT member_id) as submitted FROM tb_student_homework WHERE homework_id IN (SELECT homework_id FROM tb_homework WHERE subject_id = '$subject_id')";
+                $not_submitted_sql = "SELECT (SELECT COUNT(*) FROM tb_student_subject WHERE subject_id = '$subject_id') - IFNULL((SELECT COUNT(DISTINCT member_id) FROM tb_student_homework WHERE homework_id IN (SELECT homework_id FROM tb_homework WHERE subject_id = '$subject_id')), 0) as not_submitted";
+                $unchecked_sql = "SELECT IFNULL((SELECT COUNT(*) FROM tb_student_homework WHERE homework_id IN (SELECT homework_id FROM tb_homework WHERE subject_id = '$subject_id') AND checked = 0), 0) as unchecked";
+
+                $total_homework = $mysqli->query($total_homework_sql)->fetch_assoc()['total_homework'];
+                $total_students = $mysqli->query($total_students_sql)->fetch_assoc()['total_students'];
+                $submitted = $mysqli->query($submitted_sql)->fetch_assoc()['submitted'];
+                $not_submitted = $mysqli->query($not_submitted_sql)->fetch_assoc()['not_submitted'];
+                $unchecked = $mysqli->query($unchecked_sql)->fetch_assoc()['unchecked'];
+
+                // Display "0" for "ยังไม่ส่ง" if there are no homework assignments
+                $not_submitted = ($total_homework > 0) ? $not_submitted : 0;
+
                 echo '<div class="card" onclick="window.location.href=\'show_homework.php?subject_pass=' . $subject_pass . '\'">';
                 echo '<div class="card-image">';
-                echo '<img src="' . $subject_cover . '" alt="รูปปก">';
+                echo '<img src="' . $image_path . '" alt="รูปปก">';
                 echo '</div>';
                 echo '<div class="card-content">';
                 echo '<div class="card-title">' . $subject_name . '</div>';
                 echo '<div class="card-description">' . $subject_detail . '</div>';
+                echo '<div class="card-stats text-work">การบ้านทั้งหมด: ' . $total_homework . ' งาน</div>';
+                echo '<div class="card-stats text-stus">นักเรียนทั้งหมด: ' . $total_students . ' คน</div>';
+                // echo '<div class="card-stats text-green">ส่งงานแล้ว: ' . $submitted . ' คน</div>';
+                // echo '<div class="card-stats text-red">ยังไม่ส่ง: ' . $not_submitted . ' คน</div>';
+                // echo '<div class="card-stats text-black">ยังไม่ตรวจ: ' . $unchecked . ' งาน</div>';
                 echo '</div>';
                 echo '</div>';
             }

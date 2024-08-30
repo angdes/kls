@@ -62,7 +62,7 @@ $homework = $result->fetch_assoc();
 
 <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="x_panel">
+        <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
             <div class="x_title">
                 <h2>สรุปรายละเอียดการบ้าน</h2>
                 <div class="clearfix"></div>
@@ -119,7 +119,7 @@ $homework = $result->fetch_assoc();
                         $icon = 'file-icon.png';
                 }
                 // ตรวจสอบให้แน่ใจว่าเส้นทางไฟล์เป็นเส้นทางที่ถูกต้อง
-                echo "<li><a href='" . htmlspecialchars($file) . "' target='_blank'>
+                echo "<li><a href='" . htmlspecialchars($file) . "' target='_blank' style='color: black;'>
                     <img src='icons/$icon' alt='$file_extension icon' class='icon-img'> "
                     . htmlspecialchars($file_name) . "</a></li>";
             }

@@ -33,24 +33,29 @@ if ($result === false) {
 
 <style>
     .btn-danger {
-        background-color: hotpink;
+        background-color: #C44AFD;
         border-color: black;
         color: black;
     }
     .btn-Warning {
-        background-color: yellow;
+        background-color: magenta;
         border-color: black;
-        color: black;
+        color: white;
     }
     .btn-info {
-        background-color: blue;
+        background-color: magenta;
+        border-color: black;
+        color: white;
+    }
+    .btn-green {
+        background-color: #C44AFD;
         border-color: black;
         color: white;
     }
 </style>
 <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="x_panel">
+        <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
             <div class="x_title">
                 <h2>รายการการบ้านสำหรับวิชา <?= htmlspecialchars($subject_pass); ?></h2>
                 <ul class="nav navbar-right panel_toolbox">
@@ -60,8 +65,9 @@ if ($result === false) {
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-                <a href="add_homework.php?subject_pass=<?= htmlspecialchars($subject_pass); ?>" class="btn btn-success">เพิ่มการบ้านใหม่</a>
-                <table id="datatable-buttons" class="table table-striped table-bordered">
+                <a href="add_homework.php?subject_pass=<?= htmlspecialchars($subject_pass); ?>" class="btn btn-danger">เพิ่มการบ้านใหม่</a>
+                <br>
+                <table id="datatable" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>ลำดับ</th>
@@ -71,6 +77,7 @@ if ($result === false) {
                             <th>วันหมดเขต</th>
                             <th>ตรวจแล้ว</th>
                             <th>ยังไม่ตรวจ</th>
+                            <th>ยังไม่ส่ง</th>
                             <th>ตรวจงาน</th>
                             <th>สรุปงาน</th>
                             <th>ลบ</th>
@@ -83,9 +90,26 @@ if ($result === false) {
                             while ($row = $result->fetch_assoc()) {
                                 $homework_id = htmlspecialchars($row['homework_id']);
                                 
-                                // ตัวอย่างการคำนวณ "ตรวจแล้ว" และ "ยังไม่ตรวจ"
-                                $checked_count = rand(1, 10); // สมมติข้อมูล
-                                $unchecked_count = rand(1, 10); // สมมติข้อมูล
+                                // คำนวณ "ตรวจแล้ว" และ "ยังไม่ตรวจ" จากฐานข้อมูล
+                                $checked_sql = "SELECT COUNT(*) as checked_count FROM tb_student_homework WHERE homework_id = $homework_id AND checked = 1";
+                                $unchecked_sql = "SELECT COUNT(*) as unchecked_count FROM tb_student_homework WHERE homework_id = $homework_id AND (checked = 0 OR checked IS NULL)";
+                                
+                                $checked_result = $mysqli->query($checked_sql);
+                                $unchecked_result = $mysqli->query($unchecked_sql);
+
+                                $checked_count = $checked_result->fetch_assoc()['checked_count'] ?? 0;
+                                $unchecked_count = $unchecked_result->fetch_assoc()['unchecked_count'] ?? 0;
+
+                                // คำนวณ "ยังไม่ส่ง" โดยดึงข้อมูลนักเรียนทั้งหมดในวิชาและลบจำนวนที่ส่งงานแล้ว
+                                $students_sql = "SELECT COUNT(*) as total_students FROM tb_student_subject WHERE subject_id = (SELECT subject_id FROM tb_subject WHERE subject_pass = '$subject_pass' LIMIT 1)";
+                                $submitted_students_sql = "SELECT COUNT(DISTINCT member_id) as submitted_count FROM tb_student_homework WHERE homework_id = $homework_id";
+                                
+                                $students_result = $mysqli->query($students_sql);
+                                $submitted_result = $mysqli->query($submitted_students_sql);
+
+                                $total_students = $students_result->fetch_assoc()['total_students'] ?? 0;
+                                $submitted_count = $submitted_result->fetch_assoc()['submitted_count'] ?? 0;
+                                $not_submitted_count = $total_students - $submitted_count;
                                 ?>
                                 <tr>
                                     <td><?= $index++; ?></td>
@@ -93,8 +117,9 @@ if ($result === false) {
                                     <td><?= htmlspecialchars($row['description']); ?></td>
                                     <td><?= htmlspecialchars($row['assigned_date']); ?></td>
                                     <td><?= htmlspecialchars($row['deadline']); ?></td>
-                                    <td><?= $checked_count; ?></td>
-                                    <td><?= $unchecked_count; ?></td>
+                                    <td style="color: green;"><?= $checked_count; ?></td>
+                                    <td style="color: black;"><?= $unchecked_count; ?></td>
+                                    <td style="color: red;"><?= $not_submitted_count; ?></td>
                                     <td>
                                         <a href="check_homework.php?homework_id=<?= $homework_id; ?>" class="btn btn-info">ตรวจงาน</a>
                                     </td>
@@ -108,14 +133,22 @@ if ($result === false) {
                                 <?php
                             }
                         } else {
-                            echo '<tr><td colspan="10">ไม่มีการบ้านที่จะแสดง</td></tr>';
+                            echo '<tr><td colspan="11">ไม่มีการบ้านที่จะแสดง</td></tr>';
                         }
 
                         $mysqli->close();
                         ?>
                     </tbody>
                 </table>
+                </div>
+            <div class="x_title">
+                <div class="clearfix"></div>
             </div>
+            <div align="right">
+                <button class="btn btn-green" onclick="window.history.back()">ย้อนกลับ</button>
+            </div>
+            </div>
+            
         </div>
     </div>
 </div>

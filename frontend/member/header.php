@@ -78,7 +78,7 @@
                                 <li><a style="color: black;"><i class="fa fa-file-pen"></i>การบ้าน<span class="fa fa-chevron-down" style="color: black;"></span></a>
                                     <ul class="nav child_menu" style="background-color:  hotpink;">
                                         <!-- <li><a href="submit_homework.php"style="color: black;"><i class="fa fa-list"></i>ส่งข้อมูลการบ้าน</a></li> -->
-                                        <li><a href="show_homework.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลการบ้าน</a></li>
+                                        <li><a href="show_student_subjects.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลการบ้าน</a></li>
                                     </ul>
                                 </li>
                                 <!-- <li><a style="color: black;"><i class="fa fa-bullhorn" ></i>  การแจ้งเตือน<span class="fa fa-chevron-down" style="color: black;"></span></a>

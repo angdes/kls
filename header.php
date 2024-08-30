@@ -105,7 +105,7 @@
                         <ul class="nav navbar-nav navbar-right" style="margin: 5px 10px 2px 1px;">
                             <li class="">
                                 <button onclick="location.href='login.php'" style="background-color: #F97AB6; color: black; border: none; padding: 5px 10px; text-align: center; text-decoration: none; display: inline-block; font-size: 14px; margin: 2px 1px; cursor: pointer; border-radius: 4px;">
-                                    กดเข้าสู่ระบบ
+                                    เข้าสู่ระบบ
                                 </button>
                             </li>
 

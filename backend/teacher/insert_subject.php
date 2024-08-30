@@ -12,7 +12,7 @@ $teacher_id = $_SESSION['user']['teacher_id'];
 ?>
 <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="x_panel">
+        <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
             <div class="x_title">
                 <h2>เพิ่มรายวิชา</h2>
                 <div class="clearfix"></div>
