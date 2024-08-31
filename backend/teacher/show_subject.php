@@ -30,15 +30,15 @@ if ($result === false) {
 // แสดงข้อมูล
 ?>
 <style>
-    .btn-danger {
-        background-color: hotpink;
+    .btn-m{
+        color: white;
+        background-color: #FF00FF;
         border-color: black;
-        color: black;
     }
-    .btn-warning {
-        background-color: yellow;
+    .btn-d{
+        color: white;
+        background-color: #BA55D3;
         border-color: black;
-        color: black;
     }
     .btn-info {
         background-color: blue;
@@ -62,10 +62,10 @@ if ($result === false) {
                 <div align="left">
                     <!-- เพิ่มข้อมูลผ่าน URL parameter teacher_id -->
                     <a href="insert_subject.php">
-                        <button class="btn btn-danger">เพิ่มรายวิชา</button>
+                        <button class="btn btn-m">เพิ่มรายวิชา</button>
                     </a>
                     <a href="add_student_to_subject.php">
-                        <button class="btn btn-warning">เพิ่มนักเรียนในรายวิชา</button>
+                        <button class="btn btn-d">เพิ่มนักเรียนในรายวิชา</button>
                     </a>
                 </div>
                 <table id="datatable-buttons" class="table table-striped table-bordered">

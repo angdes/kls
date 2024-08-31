@@ -6,8 +6,8 @@
                 <div class="x_title">
                     <h2>ลบข้อมูลสมาชิก</h2>
                     <ul class="nav navbar-right panel_toolbox">
-                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
-                        <li><a class="close-link"><i class="fa fa-close"></i></a> </li>
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
                     </ul>
                     <div class="clearfix"></div>
                 </div>
@@ -27,17 +27,34 @@
                             echo "Failed to connect to MySQL: " . mysqli_connect_error();
                         }
 
-                        // เตรียมคำสั่ง SQL เพื่อลบข้อมูล
-                        $sql = "DELETE FROM tb_member WHERE member_id = $id";
+                        // ลบข้อมูลที่เกี่ยวข้องใน tb_student_homework ก่อน
+                        $delete_homework_sql = "DELETE FROM tb_student_homework WHERE member_id = $id";
 
-                        // ทำการลบข้อมูล
-                        if (mysqli_query($con, $sql)) {
-                            echo $cls_conn->show_message('ลบข้อมูลสำเร็จ');
-                            echo $cls_conn->goto_page(1, 'show_member.php'); // นำผู้ใช้ไปยังหน้า show_member.php
-                            exit;
+                        if (mysqli_query($con, $delete_homework_sql)) {
+                            // ลบข้อมูลที่เกี่ยวข้องใน tb_student_subject ต่อไป
+                            $delete_subject_sql = "DELETE FROM tb_student_subject WHERE member_id = $id";
+
+                            if (mysqli_query($con, $delete_subject_sql)) {
+                                // ลบข้อมูลใน tb_member ต่อไป
+                                $sql = "DELETE FROM tb_member WHERE member_id = $id";
+
+                                // ทำการลบข้อมูล
+                                if (mysqli_query($con, $sql)) {
+                                    echo "ลบข้อมูลสำเร็จ";
+                                    echo $cls_conn->show_message('ลบข้อมูลสำเร็จ');
+                                    echo $cls_conn->goto_page(1, 'show_member.php'); // นำผู้ใช้ไปยังหน้า show_member.php
+                                    exit;
+                                } else {
+                                    echo $cls_conn->show_message('ลบข้อมูลไม่สำเร็จ');
+                                    echo "Error: " . $sql . "<br>" . mysqli_error($con);
+                                }
+                            } else {
+                                echo $cls_conn->show_message('ลบข้อมูลที่เกี่ยวข้องใน tb_student_subject ไม่สำเร็จ');
+                                echo "Error: " . $delete_subject_sql . "<br>" . mysqli_error($con);
+                            }
                         } else {
-                            echo $cls_conn->show_message('ลบข้อมูลไม่สำเร็จ');
-                            echo "Error: " . $sql . "<br>" . mysqli_error($con);
+                            echo $cls_conn->show_message('ลบข้อมูลที่เกี่ยวข้องใน tb_student_homework ไม่สำเร็จ');
+                            echo "Error: " . $delete_homework_sql . "<br>" . mysqli_error($con);
                         }
 
                         // ปิดการเชื่อมต่อฐานข้อมูล

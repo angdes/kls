@@ -10,6 +10,20 @@ if (!isset($_SESSION['user'])) {
 // ดึงค่า teacher_id จากเซสชัน
 $teacher_id = $_SESSION['user']['teacher_id'];
 ?>
+
+<style>
+    .btn-m{
+        color: white;
+        background-color: #FF00FF;
+        border-color: black;
+    }
+    .btn-d{
+        color: white;
+        background-color: #BA55D3;
+        border-color: black;
+    }
+</style>
+
 <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
@@ -55,8 +69,8 @@ $teacher_id = $_SESSION['user']['teacher_id'];
                     <div class="ln_solid"></div>
                     <div class="form-group">
                         <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                            <button type="submit" name="submit" class="btn btn-success">บันทึก</button>
-                            <button type="button" name="reset" class="btn btn-danger" onclick="window.location.href='show_subject.php';">ยกเลิก</button>
+                            <button type="submit" name="submit" class="btn btn-m">บันทึก</button>
+                            <button type="button" name="reset" class="btn btn-d" onclick="window.location.href='show_subject.php';">ยกเลิก</button>
 
                         </div>
                     </div>

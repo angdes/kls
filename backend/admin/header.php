@@ -49,7 +49,7 @@ if (!isset($_SESSION['user'])) {
 
     .nav.side-menu>li>a:hover {
         color: black !important;
-        background-color: #fff !important;
+        background-color: #D8BFD8 !important;
         /* เปลี่ยนพื้นหลังเป็นสีเทาเมื่อเมาส์อยู่เหนือ */
     }
 </style>
@@ -80,17 +80,17 @@ if (!isset($_SESSION['user'])) {
                             <h3 style="color: black;">menu</h3>
 
                             <ul class="nav side-menu" style="color: black;">
-                                <li><a href="index.php" style="color: black;"><i class="fa fa-house"></i> หน้าแรก</a></li>
+                                <li><a href="index.php" style="color: black;"><i class="fa fa-house"></i> หน้าแรก </a></li>
 
                                 <li><a style="color: black;"><i class="fa fa-user" style="color: black;"></i>ข้อมูลส่วนตัว<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  white;">
+                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
 
                                         <li><a href="show_admin1.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลส่วนตัว</a></li>
                                     </ul>
                                 </li>
 
                                 <li><a style="color: black;"><i class="fa fa-users" style="color: black;"></i>จัดการผู้ดูแลระบบ<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  hotpink;">
+                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
                                         <li><a href="insert_admin.php" style="color: black;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
                                                     <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                                                     <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5" />
@@ -100,7 +100,7 @@ if (!isset($_SESSION['user'])) {
                                 </li>
 
                                 <li><a style="color: black;"><i class="fa fa-chart-line"></i>จัดการประกาศ<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  hotpink;">
+                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
                                         <li><a href="add_announcement.php" style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลประกาศ</a></li>
                                         <li><a href="show_announcements.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลประกาศ</a></li>
 
@@ -108,7 +108,7 @@ if (!isset($_SESSION['user'])) {
                                 </li>
 
                                 <li><a style="color: black;"><i class="fa fa-users"></i>ข้อมูลสมาชิก<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  hotpink;">
+                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
                                         <li><a href="insert_member.php" style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลนักเรียน</a></li>
                                         <li><a href="show_member.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลนักเรียน</a></li>
                                         <li><a href="insert_teacher.php" style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลครู</a></li>
@@ -117,13 +117,13 @@ if (!isset($_SESSION['user'])) {
                                     </ul>
                                 </li>
 
-                                <li><a style="color: black;"><i class="fa fa-chalkboard-user"></i>จัดการรายวิชา<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  hotpink;">
+                                <!-- <li><a style="color: black;"><i class="fa fa-chalkboard-user"></i>จัดการรายวิชา<span class="fa fa-chevron-down" style="color: black;"></span></a>
+                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
 
                                         <li><a href="insert_subject.php" style="color: black;"><i class="fa fa-plus-square" style="color: black;"></i>เพิ่มข้อมูลรายวิชา</a></li>
                                         <li><a href="show_subject.php" style="color: black;"><i class="fa fa-list" style="color: black;"></i>แสดงข้อมูลรายวิชา</a></li>
                                     </ul>
-                                </li>
+                                </li> -->
 
                                 <!-- <li><a style="color: black;"><i class="fa fa-file-pen"></i>มอบการบ้าน<span class="fa fa-chevron-down" style="color: black;"></span></a>
                                     <ul class="nav child_menu" style="background-color:  hotpink;" >

@@ -32,25 +32,37 @@ if ($result === false) {
 ?>
 
 <style>
-    .btn-danger {
-        background-color: #C44AFD;
-        border-color: black;
-        color: black;
-    }
-    .btn-Warning {
-        background-color: magenta;
-        border-color: black;
+    .btn-m {
         color: white;
-    }
-    .btn-info {
-        background-color: magenta;
+        background-color: #FF00FF;
         border-color: black;
-        color: white;
     }
-    .btn-green {
-        background-color: #C44AFD;
-        border-color: black;
+
+    .btn-d {
         color: white;
+        background-color: #BA55D3;
+        border-color: black;
+    }
+    .btn-m1 {
+        color: white;
+        background-color: #FF00FF;
+        border-color: black;
+    }
+
+    .btn-d1 {
+        color: white;
+        background-color: #BA55D3;
+        border-color: black;
+    }
+   
+
+    th {
+        font-size: 13px;
+        /* กำหนดขนาดตัวอักษรที่ต้องการ */
+    }
+
+    td {
+        font-size: 12px;
     }
 </style>
 <div class="right_col" role="main">
@@ -65,7 +77,7 @@ if ($result === false) {
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-                <a href="add_homework.php?subject_pass=<?= htmlspecialchars($subject_pass); ?>" class="btn btn-danger">เพิ่มการบ้านใหม่</a>
+                <a href="add_homework.php?subject_pass=<?= htmlspecialchars($subject_pass); ?>" class="btn btn-m">เพิ่มการบ้านใหม่</a>
                 <br>
                 <table id="datatable" class="table table-striped table-bordered">
                     <thead>
@@ -89,11 +101,11 @@ if ($result === false) {
                         if ($result->num_rows > 0) {
                             while ($row = $result->fetch_assoc()) {
                                 $homework_id = htmlspecialchars($row['homework_id']);
-                                
+
                                 // คำนวณ "ตรวจแล้ว" และ "ยังไม่ตรวจ" จากฐานข้อมูล
                                 $checked_sql = "SELECT COUNT(*) as checked_count FROM tb_student_homework WHERE homework_id = $homework_id AND checked = 1";
                                 $unchecked_sql = "SELECT COUNT(*) as unchecked_count FROM tb_student_homework WHERE homework_id = $homework_id AND (checked = 0 OR checked IS NULL)";
-                                
+
                                 $checked_result = $mysqli->query($checked_sql);
                                 $unchecked_result = $mysqli->query($unchecked_sql);
 
@@ -103,14 +115,14 @@ if ($result === false) {
                                 // คำนวณ "ยังไม่ส่ง" โดยดึงข้อมูลนักเรียนทั้งหมดในวิชาและลบจำนวนที่ส่งงานแล้ว
                                 $students_sql = "SELECT COUNT(*) as total_students FROM tb_student_subject WHERE subject_id = (SELECT subject_id FROM tb_subject WHERE subject_pass = '$subject_pass' LIMIT 1)";
                                 $submitted_students_sql = "SELECT COUNT(DISTINCT member_id) as submitted_count FROM tb_student_homework WHERE homework_id = $homework_id";
-                                
+
                                 $students_result = $mysqli->query($students_sql);
                                 $submitted_result = $mysqli->query($submitted_students_sql);
 
                                 $total_students = $students_result->fetch_assoc()['total_students'] ?? 0;
                                 $submitted_count = $submitted_result->fetch_assoc()['submitted_count'] ?? 0;
                                 $not_submitted_count = $total_students - $submitted_count;
-                                ?>
+                        ?>
                                 <tr>
                                     <td><?= $index++; ?></td>
                                     <td><?= htmlspecialchars($row['title']); ?></td>
@@ -121,16 +133,16 @@ if ($result === false) {
                                     <td style="color: black;"><?= $unchecked_count; ?></td>
                                     <td style="color: red;"><?= $not_submitted_count; ?></td>
                                     <td>
-                                        <a href="check_homework.php?homework_id=<?= $homework_id; ?>" class="btn btn-info">ตรวจงาน</a>
+                                        <a href="check_homework.php?homework_id=<?= $homework_id; ?>" class="btn btn-m1">ตรวจงาน</a>
                                     </td>
                                     <td>
-                                        <a href="summary.php?homework_id=<?= $homework_id; ?>" class="btn btn-Warning">สรุปงาน</a>
+                                        <a href="summary.php?homework_id=<?= $homework_id; ?>" class="btn btn-d1">สรุปงาน</a>
                                     </td>
                                     <td>
                                         <a href="delete_homework.php?homework_id=<?= $homework_id; ?>&subject_pass=<?= $subject_pass; ?>" onclick="return confirm('คุณต้องการลบหรือไม่?')"><img src="../../images/delete.png" /></a>
                                     </td>
                                 </tr>
-                                <?php
+                        <?php
                             }
                         } else {
                             echo '<tr><td colspan="11">ไม่มีการบ้านที่จะแสดง</td></tr>';
@@ -140,16 +152,16 @@ if ($result === false) {
                         ?>
                     </tbody>
                 </table>
-                </div>
+            </div>
             <div class="x_title">
                 <div class="clearfix"></div>
             </div>
             <div align="right">
-                <button class="btn btn-green" onclick="window.history.back()">ย้อนกลับ</button>
+                <a href="show_subjectandwork.php"><button class="btn btn-d">ย้อนกลับ</button></a>
             </div>
-            </div>
-            
         </div>
+
     </div>
+</div>
 </div>
 <?php include('footer.php'); ?>

@@ -1,6 +1,7 @@
 <?php
 include('header.php');
 
+
 // ตรวจสอบว่ามีการล็อกอินและมีข้อมูลผู้ใช้ในเซสชันหรือไม่
 if (!isset($_SESSION['user'])) {
     echo "คุณต้องล็อกอินก่อนเพื่อดูรายละเอียดการส่งงาน";
@@ -15,15 +16,15 @@ if ($mysqli->connect_error) {
     die("การเชื่อมต่อล้มเหลว: " . $mysqli->connect_error);
 }
 
-// ดึงข้อมูลการส่งงาน
+// รับค่า homework_id และ member_id จาก URL
 $homework_id = isset($_GET['homework_id']) ? intval($_GET['homework_id']) : 0;
 $member_id = isset($_GET['member_id']) ? intval($_GET['member_id']) : 0;
 
-$sql = "SELECT tb_student_homework.submission_time, tb_member.member_fullname, tb_member.member_address, tb_member.member_tel, tb_member.member_email, tb_student_homework.file_path
-        FROM tb_student_homework
-        JOIN tb_member ON tb_student_homework.member_id = tb_member.member_id
-        WHERE tb_student_homework.homework_id = $homework_id AND tb_student_homework.member_id = $member_id";
-
+// ดึงข้อมูลการส่งงาน
+$sql = "SELECT sh.submission_time, sh.file_path, sh.grade, sh.feedback, m.member_fullname 
+        FROM tb_student_homework sh 
+        JOIN tb_member m ON sh.member_id = m.member_id 
+        WHERE sh.homework_id = '$homework_id' AND sh.member_id = '$member_id'";
 $result = $mysqli->query($sql);
 
 if ($result === false || $result->num_rows === 0) {
@@ -33,102 +34,120 @@ if ($result === false || $result->num_rows === 0) {
 $submission = $result->fetch_assoc();
 ?>
 
-<style>
-    .icon-img {
-        width: 50px;
-        height: auto;
-        vertical-align: middle;
-    }
+<!DOCTYPE html>
+<html lang="th">
 
-    .btn-green {
-        background-color: #28a745;
-        border-color: #28a745;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สรุปการส่งงาน</title>
+    <style>
+        .icon-img {
+            width: 50px;
+            height: auto;
+            vertical-align: middle;
+        }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-row label {
+            flex: 0 0 150px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .form-row h4 {
+            margin: 0;
+        }
+        .btn-d {
         color: white;
+        background-color: #BA55D3;
+        border-color: black;
     }
-    .form-row {
-        display: flex;
-        align-items: center; /* Aligns items vertically centered */
-        margin-bottom: 10px; /* Adds space between rows */
-    }
-    
-    .form-row label {
-        flex: 0 0 150px; /* Sets a fixed width for labels */
-        margin-right: 10px; /* Adds space between label and value */
-        font-weight: bold; /* Makes the label text bold */
-    }
-    
-    .form-row h4 {
-        margin: 0; /* Removes default margin around the h4 tag */
-    }
-</style>
+        
+    </style>
+</head>
 
+<body>
+    <div class="right_col" role="main">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                <div class="x_title">
+                    <h2>สรุปการส่งงานของนักเรียน</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="form-row">
+                        <label>ขื่อ:</label>
+                        <h4><?= htmlspecialchars($submission['member_fullname']); ?></h4>
+                    </div>
+                    <div class="form-row">
+                        <label>เวลาที่ส่ง:</label>
+                        <h4><?= htmlspecialchars($submission['submission_time']); ?></h4>
+                    </div>
 
-<div class="right_col" role="main">
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-            <div class="x_title">
-                <h2 style="color: black;">รายละเอียดการส่งงาน</h2>
-                <div class="clearfix"></div>
-            </div>
-            <div class="x_content">
-
-                <div class="form-row">
-                    <label>ชื่อ-สกุลนักเรียน:</label>
-                    <h4><?= htmlspecialchars($submission['member_fullname']); ?></h4>
-                </div>
-                
-                <div class="form-row">
-                    <label>ที่อยู่:</label>
-                    <h4><?= htmlspecialchars($submission['member_address']); ?></h4>
-                </div>
-                <div class="form-row">
-                    <label>ช่องทางติดต่อ:</label>
-                    <h4><?= htmlspecialchars($submission['member_tel']); ?></h4>
-                </div>
-                <div class="form-row">
-                    <label>อีเมล:</label>
-                    <h4><?= htmlspecialchars($submission['member_email']); ?></h4>
-                </div>
-                <div class="form-row">
-                    <label>วันที่และเวลาการส่ง:</label>
-                    <h4><?= htmlspecialchars($submission['submission_time']); ?></h4>
-                </div>
-                <div class="form-group">
-                    <label>ไฟล์ที่แนบมา:</label>
-                    <ul>
-                        <?php
-                        $files = explode(',', $submission['file_path']);
-                        foreach ($files as $file) {
-                            $file_extension = pathinfo($file, PATHINFO_EXTENSION);
-                            $file_name = basename($file);
-                            switch ($file_extension) {
-                                case 'docx':
-                                case 'doc':
-                                    $icon = 'word-icon.jpg';
-                                    break;
-                                case 'pdf':
-                                    $icon = 'pdf-icon.png';
-                                    break;
-                                case 'xlsx':
-                                case 'xls':
-                                    $icon = 'excel-icon.png';
-                                    break;
-                                default:
-                                    $icon = 'file-icon.png';
+                    <div class="form-row">
+                        <label>ไฟล์ที่ส่ง:</label>
+                        <ul>
+                            <?php
+                            if (!empty($submission['file_path'])) {
+                                $files = json_decode($submission['file_path'], true); // ใช้ JSON decode สำหรับแยกไฟล์
+                                if (json_last_error() === JSON_ERROR_NONE && !empty($files)) {
+                                    foreach ($files as $file) {
+                                        $file = trim($file); // ตัดช่องว่างที่อาจเกิดขึ้น
+                                        if (!empty($file)) {
+                                            $file_extension = pathinfo($file, PATHINFO_EXTENSION);
+                                            $file_name = basename($file);
+                                            switch ($file_extension) {
+                                                case 'docx':
+                                                case 'doc':
+                                                    $icon = 'word-icon.jpg';
+                                                    break;
+                                                case 'pdf':
+                                                    $icon = 'pdf-icon.png';
+                                                    break;
+                                                case 'xlsx':
+                                                case 'xls':
+                                                    $icon = 'excel-icon.png';
+                                                    break;
+                                                default:
+                                                    $icon = 'file-icon.png';
+                                            }
+                                            // สร้างลิงก์สำหรับดาวน์โหลดไฟล์โดยใช้ teacher_download.php
+                                            echo "<li><a href='teacher_download.php?file=" . urlencode($file) . "' style='color: black;'>
+                                                <img src='icons/$icon' alt='$file_extension icon' class='icon-img'> "
+                                                . htmlspecialchars($file_name) . "</a></li>";
+                                        }
+                                    }
+                                } else {
+                                    echo "<p>ไม่มีไฟล์ที่ส่งหรือข้อมูลไฟล์ผิดพลาด</p>";
+                                }
+                            } else {
+                                echo "<p>ไม่มีไฟล์ที่ส่ง</p>";
                             }
-                            echo "<li><a href='" . htmlspecialchars($file) . "' target='_blank'  style='color: black;' >
-                                <img src='icons/$icon' alt='$file_extension icon' class='icon-img'> "
-                                . htmlspecialchars($file_name) . "</a></li>";
-                        }
-                        ?>
-                    </ul>
+                            ?>
+                        </ul>
+                    </div>
+
+                    <div class="form-row">
+                        <label>คะแนน:</label>
+                        <h4><?= htmlspecialchars($submission['grade']) ?? 'ยังไม่มีคะแนน'; ?></h4>
+                    </div>
+                    <div class="form-row">
+                        <label>ความคิดเห็น:</label>
+                        <h4><?= htmlspecialchars($submission['feedback']) ?? 'ไม่มีความคิดเห็น'; ?></h4>
+                    </div>
                 </div>
             </div>
             <div class="x_title">
                 <div class="clearfix"></div>
             </div>
             <div align="right">
-                <button class="btn btn-green" onclick="window.history.back()">ย้อนกลับ</button>
+            <a href="check_homework.php?homework_id=<?= urlencode($homework_id) ?>"><button class="btn btn-d">ย้อนกลับ</button></a>
             </div>
         </div>
     </div>
@@ -137,3 +156,6 @@ $submission = $result->fetch_assoc();
     $mysqli->close();
     include('footer.php');
     ?>
+</body>
+
+</html>

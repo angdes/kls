@@ -38,25 +38,26 @@ $homework = $result->fetch_assoc();
         vertical-align: middle;
     }
 
-    .btn-green {
-        background-color: #28a745;
-        border-color: #28a745;
+    .btn-d {
         color: white;
+        background-color: #BA55D3;
+        border-color: black;
     }
+
     .form-row {
         display: flex;
-        align-items: center; /* Aligns items vertically centered */
-        margin-bottom: 10px; /* Adds space between rows */
+        align-items: center;
+        margin-bottom: 10px;
     }
-    
+
     .form-row label {
-        flex: 0 0 150px; /* Sets a fixed width for labels */
-        margin-right: 10px; /* Adds space between label and value */
-        font-weight: bold; /* Makes the label text bold */
+        flex: 0 0 150px;
+        margin-right: 10px;
+        font-weight: bold;
     }
-    
+
     .form-row h4 {
-        margin: 0; /* Removes default margin around the h4 tag */
+        margin: 0;
     }
 </style>
 
@@ -73,68 +74,71 @@ $homework = $result->fetch_assoc();
                     <label>รหัสวิชา</label>
                     <h4><?= htmlspecialchars($homework['subject_pass']); ?></h4>
                 </div>
-                
+
                 <div class="form-row">
                     <label>หัวข้อการบ้าน</label>
                     <h4><?= htmlspecialchars($homework['title']); ?></h4>
                 </div>
-                
+
                 <div class="form-row">
                     <label>รายละเอียดการบ้าน:</label>
                     <h4><?= htmlspecialchars($homework['description']); ?></h4>
                 </div>
-                
+
                 <div class="form-row">
                     <label>วันหมดเขต:</label>
                     <h4><?= htmlspecialchars($homework['deadline']); ?></h4>
                 </div>
-                
+
                 <div class="form-row">
                     <label>วันที่สั่ง:</label>
                     <h4><?= htmlspecialchars($homework['assigned_date']); ?></h4>
                 </div>
-                
+
                 <div class="form-group">
-    <label>ไฟล์งานที่แนบมา:</label>
-    <ul>
-        <?php
-        $files = json_decode($homework['file_path'], true); // Decode JSON file path
-        if (json_last_error() === JSON_ERROR_NONE && !empty($files)) { // Check for JSON errors and if files exist
-            foreach ($files as $file) {
-                $file_extension = pathinfo($file, PATHINFO_EXTENSION);
-                $file_name = basename($file);
-                switch ($file_extension) {
-                    case 'docx':
-                    case 'doc':
-                        $icon = 'word-icon.jpg';
-                        break;
-                    case 'pdf':
-                        $icon = 'pdf-icon.png';
-                        break;
-                    case 'xlsx':
-                    case 'xls':
-                        $icon = 'excel-icon.png';
-                        break;
-                    default:
-                        $icon = 'file-icon.png';
-                }
-                // ตรวจสอบให้แน่ใจว่าเส้นทางไฟล์เป็นเส้นทางที่ถูกต้อง
-                echo "<li><a href='" . htmlspecialchars($file) . "' target='_blank' style='color: black;'>
-                    <img src='icons/$icon' alt='$file_extension icon' class='icon-img'> "
-                    . htmlspecialchars($file_name) . "</a></li>";
-            }
-        } else {
-            echo "<li>ไม่มีไฟล์แนบ หรือเกิดข้อผิดพลาดในการแปลง JSON</li>";
-        }
-        ?>
-    </ul>
-</div>
+                    <label>ไฟล์งานที่แนบมา:</label>
+                    <ul>
+                        <?php
+                        $files = json_decode($homework['file_path'], true); // Decode JSON file path
+                        if (json_last_error() === JSON_ERROR_NONE && !empty($files)) { // Check for JSON errors and if files exist
+                            foreach ($files as $file) {
+                                $file_extension = pathinfo($file, PATHINFO_EXTENSION);
+                                $file_name = basename($file);
+                                switch ($file_extension) {
+                                    case 'docx':
+                                    case 'doc':
+                                        $icon = 'word-icon.jpg';
+                                        break;
+                                    case 'pdf':
+                                        $icon = 'pdf-icon.png';
+                                        break;
+                                    case 'xlsx':
+                                    case 'xls':
+                                        $icon = 'excel-icon.png';
+                                        break;
+                                    default:
+                                        $icon = 'file-icon.png';
+                                }
+
+                                // สร้างลิงก์ดาวน์โหลดไฟล์โดยใช้สคริปต์ teacher_download.php
+                                $download_url = "teacher_download.php?file=" . urlencode($file);
+
+                                echo "<li><a href='$download_url' style='color: black;'>
+                                        <img src='icons/$icon' alt='$file_extension icon' class='icon-img'> "
+                                        . htmlspecialchars($file_name) . "</a></li>";
+                            }
+                        } else {
+                            echo "<li>ไม่มีไฟล์แนบ หรือเกิดข้อผิดพลาดในการแปลง JSON</li>";
+                        }
+                        ?>
+                    </ul>
+                </div>
             </div>
             <div class="x_title">
                 <div class="clearfix"></div>
             </div>
             <div align="right">
-                <button class="btn btn-green" onclick="window.history.back()">ย้อนกลับ</button>
+                <button class="btn btn-d" onclick="window.history.back()">ย้อนกลับ</button>
             </div>
         </div>
     </div>

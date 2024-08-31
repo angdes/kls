@@ -1,4 +1,4 @@
-<?php session_start(); 
+<?php session_start();
 
 include('../../class_conn.php'); ?>
 <?php $cls_conn = new class_conn; ?>
@@ -10,6 +10,16 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 ?>
+
+<style>
+    .nav.side-menu>li>a:hover,
+    .nav.side-menu>li.active>a {
+        background-color: #D8BFD8 !important;
+        /* เปลี่ยนพื้นหลังเป็นสีเทาเมื่อเมาส์อยู่เหนือ */
+        color: black !important;
+        /* เปลี่ยนสีตัวอักษรเป็นสีดำเมื่อเมาส์อยู่เหนือ */
+    }
+</style>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +33,7 @@ if (!isset($_SESSION['user'])) {
     <title>KLS</title>
     <link rel="icon" type="image/x-icon" href="../../images/123.jpg">
 
-    
+
 
     <!-- Bootstrap -->
     <link href="../template/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -46,14 +56,14 @@ if (!isset($_SESSION['user'])) {
     <script src="https://kit.fontawesome.com/ec837941fe.js" crossorigin="anonymous"></script>
 </head>
 
-<body class="nav-md"style="background-color: white;">
-    <div class="container body"style="background-color: white;">
-        <div class="main_container"style="background-color: white;" >
-            <div class="col-md-3 left_col"style="background-color: white;">
+<body class="nav-md" style="background-color: white;">
+    <div class="container body" style="background-color: white;">
+        <div class="main_container" style="background-color: white;">
+            <div class="col-md-3 left_col" style="background-color: white;">
                 <div class="left_col scroll-view" style="background-color: white;">
                     <div class="navbar nav_title" style="border: 0; display: flex; align-items: center;background-color: white; ">
                         <a href="index.php" class="site_title">
-                        <img src="../../images/123.jpg" alt="KPS" class="logo_img" style="max-width: 50px; border-radius: 50%;  margin-bottom: 6px;"> <!-- เพิ่ม style="border-radius: 50%;" เพื่อทำให้รูปเป็นวงกลม -->
+                            <img src="../../images/123.jpg" alt="KPS" class="logo_img" style="max-width: 50px; border-radius: 50%;  margin-bottom: 6px;"> <!-- เพิ่ม style="border-radius: 50%;" เพื่อทำให้รูปเป็นวงกลม -->
 
                             <span class="site_title_text" style="color: magenta; font-size: 30px; margin-left: 15px; margin: 8px 0 15 0; font-weight: bold;">K.P.</span>
 
@@ -66,21 +76,21 @@ if (!isset($_SESSION['user'])) {
                     <!-- /menu profile quick info -->
                     <br />
                     <!-- sidebar menu -->
-                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu"style="background-color: white;">
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu" style="background-color: white;">
                         <div class="menu_section">
-                        <h3 style="color: black;">menu</h3>
+                            <h3 style="color: black;">menu</h3>
 
                             <ul class="nav side-menu">
-                            <li><a href="index.php" style="color: black;"><i class="fa fa-house"></i> หน้าแรก</a></li>
-                            <li><a style="color: black;"><i class="fa fa-user"style="color: black;"></i>ข้อมูลส่วนตัว<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu"style="background-color:  hotpink;" >
-                                        
-                                        <li><a href="show_teacher.php" style="color: black;" ><i class="fa fa-list"></i>แสดงข้อมูลส่วนตัว</a></li>
+                                <li><a href="index.php" style="color: black;"><i class="fa fa-house"></i> หน้าแรก</a></li>
+                                <li style="color: black;"><a style="color: black;"><i class="fa fa-user" style="color: black;"></i>ข้อมูลส่วนตัว<span class="fa fa-chevron-down" style="color: black;"></span></a>
+                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
+
+                                        <li><a href="show_teacher.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลส่วนตัว</a></li>
                                     </ul>
                                 </li>
-                           
 
-                                
+
+
 
                                 <!-- <li><a style="color: black;"><i class="fa fa-users"></i>ข้อมูลสมาชิก<span class="fa fa-chevron-down" style="color: black;"></span></a>
                                     <ul class="nav child_menu" style="background-color:  hotpink;" >
@@ -91,18 +101,18 @@ if (!isset($_SESSION['user'])) {
                                 </li> -->
 
                                 <li><a style="color: black;"><i class="fa fa-chalkboard-user"></i>จัดการรายวิชา<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  hotpink;">
-                                        
+                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
+
                                         <li><a href="insert_subject.php" style="color: black;"><i class="fa fa-plus-square" style="color: black;"></i>เพิ่มข้อมูลรายวิชา</a></li>
                                         <li><a href="show_subject.php" style="color: black;"><i class="fa fa-list" style="color: black;"></i>แสดงข้อมูลรายวิชา</a></li>
                                     </ul>
                                 </li>
 
                                 <li><a style="color: black;"><i class="fa fa-file-pen"></i>มอบการบ้าน<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  hotpink;" >
+                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
                                         <!-- <li><a href="add_homework.php"style="color: black;"><i class="fa fa-desktop"></i>เพิ่มข้อมูลการบ้าน</a></li> -->
                                         <!-- <li><a href="show_homework.php"style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลการบ้าน</a></li> -->
-                                        <li><a href="show_subjectandwork.php"style="color: black;"><i class="fa fa-list"></i>แสดงรายวิชาที่สอน</a></li>
+                                        <li><a href="show_subjectandwork.php" style="color: black;"><i class="fa fa-list"></i>แสดงรายวิชาที่สอน</a></li>
                                     </ul>
                                 </li>
                                 <!-- <li><a style="color: black;"><i class="fa fa-bullhorn" ></i>  แจ้งงาน<span class="fa fa-chevron-down" style="color: black;"></span></a>
@@ -112,7 +122,7 @@ if (!isset($_SESSION['user'])) {
                                     </ul>
                                 </li> -->
 
-                                
+
                                 <li><a href="logout.php" style="color: black;"><i class="fa fa-sign-out"></i>ออกจากระบบ</a></li>
 
 
@@ -124,43 +134,43 @@ if (!isset($_SESSION['user'])) {
                     <!-- /menu footer buttons -->
                 </div>
             </div>
-            
 
-<!-- top navigation -->
-<div class="top_nav">
-    <div class="nav_menu" style="background-color: #C44AFD;">
-        <nav>
-            <div class="nav toggle"> 
-                <a id="menu_toggle"><i class="fa fa-bars"></i></a> 
+
+            <!-- top navigation -->
+            <div class="top_nav">
+                <div class="nav_menu" style="background-color: #C44AFD;">
+                    <nav>
+                        <div class="nav toggle">
+                            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                        </div>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="">
+                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="color: white;">
+                                    <?php
+                                    // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
+                                    if (isset($_SESSION['user'])) {
+                                        // ดึงข้อมูลผู้ใช้จาก session
+                                        $user = $_SESSION['user'];
+                                        $teacher_fullname = $user['teacher_fullname'];
+                                    } else {
+                                        // หากผู้ใช้ยังไม่ได้เข้าสู่ระบบ
+                                        $teacher_fullname = "ครู";
+                                    }
+                                    ?>
+                                    <img src="uploads/User.jpg" alt=""><?php echo htmlspecialchars($teacher_fullname, ENT_QUOTES, 'UTF-8'); ?>
+                                    <span class="fa fa-angle-down"></span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                    <li><a href="show_teacher.php">แก้ไขข้อมูลส่วนตัว</a></li>
+                                    <li><a href="logout.php"><i class="fa fa-sign-out pull-right"></i>ออกจากระบบ</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             </div>
-            <ul class="nav navbar-nav navbar-right">
-                <li class="">
-                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="color: white;"> 
-                        <?php
-                        // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
-                        if (isset($_SESSION['user'])) {
-                            // ดึงข้อมูลผู้ใช้จาก session
-                            $user = $_SESSION['user'];
-                            $teacher_fullname = $user['teacher_fullname'];
-                        } else {
-                            // หากผู้ใช้ยังไม่ได้เข้าสู่ระบบ
-                            $teacher_fullname = "ครู";
-                        }
-                        ?>
-                        <img src="uploads/User.jpg" alt=""><?php echo htmlspecialchars($teacher_fullname, ENT_QUOTES, 'UTF-8'); ?>
-                        <span class="fa fa-angle-down"></span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-usermenu pull-right">
-                        <li><a href="show_teacher.php">แก้ไขข้อมูลส่วนตัว</a></li>
-                        <li><a href="logout.php"><i class="fa fa-sign-out pull-right"></i>ออกจากระบบ</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </div>
-</div>
 
-<!-- /top navigation -->
+            <!-- /top navigation -->
 
             <!-- page content -->
 </body>

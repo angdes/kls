@@ -48,6 +48,19 @@ $subject_id = $homework['subject_id'];
 $assigned_date = $homework['assigned_date'];
 $deadline = $homework['deadline'];
 
+// ดึง subject_pass โดยใช้ subject_id
+$subject_sql = "SELECT subject_pass FROM tb_subject WHERE subject_id = $subject_id";
+$subject_result = $mysqli->query($subject_sql);
+
+if ($subject_result === false || $subject_result->num_rows === 0) {
+    $alert_message = '<div class="alert alert-danger">ไม่พบข้อมูลวิชาในระบบ.</div>';
+    ob_end_flush(); // Flush output buffer
+    exit();
+}
+
+$subject_row = $subject_result->fetch_assoc();
+$subject_pass = $subject_row['subject_pass'];
+
 // ดึงข้อมูลนักเรียนที่ลงทะเบียนในรายวิชา
 $students_sql = "SELECT m.member_id, m.member_number, m.member_fullname, s.submission_time, s.file_path, s.grade, s.feedback, s.checked 
                  FROM tb_student_subject ss
@@ -167,7 +180,11 @@ ob_end_flush();
             border-color: black;
             color: white;
         }
-
+        .btn-d {
+            color: white;
+            background-color: #BA55D3;
+            border-color: black;
+        }
         .btn-custom {
             background-color: #28a745;
             border-color: black;
@@ -188,6 +205,12 @@ ob_end_flush();
         /* ปรับขนาด input ให้เล็กลง */
         .grade-input {
             width: 60px;
+        }
+        td {
+            font-size: 12px;
+        }
+        th {
+            font-size: 13px;
         }
     </style>
 </head>
@@ -300,7 +323,10 @@ ob_end_flush();
                         <div class="clearfix"></div>
                     </div>
                     <div align="right">
-                        <button class="btn btn-green" onclick="window.history.back()">ย้อนกลับ</button>
+                        <!-- ลิงก์ไปยังหน้า show_homework.php พร้อมพารามิเตอร์ subject_pass -->
+                        <a href="show_homework.php?subject_pass=<?= urlencode($subject_pass) ?>">
+                            <button class="btn btn-d">ย้อนกลับ</button>
+                        </a>
                     </div>
                 </div>
             </div>

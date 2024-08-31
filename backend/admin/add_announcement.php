@@ -1,4 +1,16 @@
 <?php include('header.php'); ?>
+
+<style>
+    .btn-m{
+        color: white;
+        background-color: #FF00FF;
+    }
+    .btn-d{
+        color: white;
+        background-color: #BA55D3;
+    }
+</style>
+
 <div class="right_col" role="main">
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -31,8 +43,8 @@
                         <div class="ln_solid"></div>
                         <div class="form-group">
                             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                <button type="submit" name="submit" class="btn btn-success">บันทึก</button>
-                                <button type="reset" name="reset" class="btn btn-danger">ยกเลิก</button>
+                                <button type="submit" name="submit" class="btn btn-m">บันทึก</button>
+                                <button type="reset" name="reset" class="btn btn-d">ยกเลิก</button>
                             </div>
                         </div>
                     </form>

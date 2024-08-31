@@ -10,7 +10,18 @@ if (!isset($_SESSION['user'])) {
 // ดึงข้อมูลผู้ใช้จาก session
 $user = $_SESSION['user'];
 ?>
-
+<style>
+    .btn-m{
+        color: white;
+        background-color: #FF00FF;
+        border-color: black;
+    }
+    .btn-d{
+        color: white;
+        background-color: #BA55D3;
+        border-color: black;
+    }
+</style>
 <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
@@ -39,8 +50,8 @@ $user = $_SESSION['user'];
                     </tr>
                 </table>
                 <div align="right">
-                    <a href="update_teacher.php"><button class="btn btn-success">แก้ไข</button></a>
-                    <a href="index.php"><button class="btn btn-danger">ยกเลิก</button></a>
+                    <a href="update_teacher.php"><button class="btn btn-m">แก้ไข</button></a>
+                    <a href="index.php"><button class="btn btn-d">ยกเลิก</button></a>
                 </div>
             </div>
         </div>

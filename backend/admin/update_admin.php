@@ -1,10 +1,20 @@
 <?php include('header.php');?>
+<style>
+    .btn-m{
+        color: white;
+        background-color: #FF00FF;
+    }
+    .btn-d{
+        color: white;
+        background-color: #BA55D3;
+    }
+</style>
     <div class="right_col" role="main">
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
                     <div class="x_title">
-                        <h3>แก้ไขข้อมูลผู้ดูแลระบบ</h3>
+                        <h2>แก้ไขข้อมูลผู้ดูแลระบบ</h2>
                         <ul class="nav navbar-right panel_toolbox">
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> </li>
                             <li><a class="close-link"><i class="fa fa-close"></i></a> </li>
@@ -68,8 +78,8 @@
                             <div class="ln_solid"></div>
                             <div class="form-group">
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                    <button type="submit" name="submit" class="btn btn-success">แก้ไข</button>
-                                    <button type="reset" name="reset" class="btn btn-danger">ยกเลิก</button>
+                                    <button type="submit" name="submit" class="btn btn-m">แก้ไข</button>
+                                    <a href="show_admin.php" class="btn btn-d">ยกเลิก</a>
                                 </div>
                             </div>
                         </form>

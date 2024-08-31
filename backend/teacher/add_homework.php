@@ -95,10 +95,16 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เพิ่มการบ้าน</title>
     <style>
-        .btn-danger {
-            background-color: hotpink;
+        .btn-m {
+            color: white;
             border-color: black;
-            color: black;
+            background-color: #FF00FF;
+        }
+
+        .btn-d {
+            color: white;
+            border-color: black;
+            background-color: #BA55D3;
         }
 
         .btn-warning {
@@ -112,6 +118,21 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
             border-color: black;
             color: white;
         }
+
+        /* ปรับขนาดฟิลด์วันที่ให้เท่ากัน */
+        input[type="datetime-local"] {
+            width: 100%;
+            max-width: 400px; /* กำหนดความกว้างสูงสุด */
+        }
+        input[type="text"] {
+            width: 100%;
+            max-width: 700px; /* กำหนดความกว้างสูงสุด */
+        }
+        
+
+        .form-group-file {
+            margin-bottom: 35px; /* เพิ่มระยะห่างระหว่างฟอร์มกรุ๊ปไฟล์กับปุ่ม */
+        }
     </style>
 </head>
 
@@ -119,7 +140,9 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
     <div class="right_col" role="main">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-                <?php if (!empty($alert_message)) { echo $alert_message; } ?>
+                <?php if (!empty($alert_message)) {
+                    echo $alert_message;
+                } ?>
                 <div class="x_title">
                     <h2>เพิ่มการบ้านในวิชา <?= htmlspecialchars($subject_pass); ?></h2>
                     <div class="clearfix"></div>
@@ -142,18 +165,19 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
                             <label for="deadline">วันหมดเขต:</label>
                             <input type="datetime-local" name="deadline" class="form-control" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group form-group-file">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="files">ไฟล์การบ้าน:</label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input type="file" name="files[]" multiple class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
+                        <br>
                         <div id="additional_homeworks"></div> <!-- สำหรับเพิ่มการบ้านหลายรายการ -->
                         <div class="form-group">
                             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                <button type="button" id="add_more_homework" class="btn btn-primary">เพิ่มการบ้านอีกรายการ</button>
-                                <button type="submit" name="submit" class="btn btn-success">บันทึกการบ้าน</button>
-                                <button type="button" class="btn btn-danger" onclick="window.location.href='show_homework.php?subject_pass=<?= htmlspecialchars($subject_pass); ?>';">ยกเลิก</button>
+                                <button type="button" id="add_more_homework" class="btn btn-d">เพิ่มการบ้านอีกรายการ</button>
+                                <button type="submit" name="submit" class="btn btn-d">บันทึกการบ้าน</button>
+                                <button type="button" class="btn btn-m" onclick="window.location.href='show_homework.php?subject_pass=<?= htmlspecialchars($subject_pass); ?>';">ยกเลิก</button>
                             </div>
                         </div>
                     </form>
@@ -183,7 +207,7 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
             <label for="deadline">วันหมดเขต:</label>
             <input type="datetime-local" name="deadline[]" class="form-control" required>
         </div>
-        <div class="form-group">
+        <div class="form-group form-group-file">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="files">ไฟล์การบ้าน:</label>
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <input type="file" name="files[]" multiple class="form-control col-md-7 col-xs-12">
