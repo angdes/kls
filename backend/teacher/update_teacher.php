@@ -19,10 +19,38 @@ if (isset($_POST['submit'])) {
     if (!empty($teacher_password) && $teacher_password !== $confirm_password) {
         echo $cls_conn->show_message('รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน');
     } else {
+        // ตรวจสอบว่ามีการอัปโหลดไฟล์รูปโปรไฟล์หรือไม่
+        if (isset($_FILES['teacher_profile_pic']) && $_FILES['teacher_profile_pic']['error'] === UPLOAD_ERR_OK) {
+            $upload_dir = 'profile_teacher/'; // โฟลเดอร์สำหรับเก็บไฟล์อัปโหลด
+            $upload_file = $upload_dir . basename($_FILES['teacher_profile_pic']['name']);
+            $imageFileType = strtolower(pathinfo($upload_file, PATHINFO_EXTENSION));
+
+            // ตรวจสอบว่าเป็นไฟล์ภาพหรือไม่
+            $check = getimagesize($_FILES['teacher_profile_pic']['tmp_name']);
+            if ($check !== false) {
+                // ตรวจสอบว่ารูปภาพมีนามสกุลที่ถูกต้องหรือไม่
+                if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+                    // ย้ายไฟล์อัปโหลดไปยังโฟลเดอร์ที่ระบุ
+                    if (move_uploaded_file($_FILES['teacher_profile_pic']['tmp_name'], $upload_file)) {
+                        $teacher_profile_pic = $upload_file; // เก็บที่อยู่ไฟล์ไว้ในตัวแปร
+                    } else {
+                        echo $cls_conn->show_message('เกิดข้อผิดพลาดในการอัปโหลดไฟล์รูปภาพ');
+                    }
+                } else {
+                    echo $cls_conn->show_message('รองรับเฉพาะไฟล์รูปภาพประเภท JPG, JPEG, PNG, และ GIF เท่านั้น');
+                }
+            } else {
+                echo $cls_conn->show_message('ไฟล์ที่อัปโหลดไม่ใช่รูปภาพ');
+            }
+        } else {
+            $teacher_profile_pic = $teacher['teacher_profile_pic']; // ใช้รูปเดิมหากไม่มีการอัปโหลดใหม่
+        }
+
         $sql = "UPDATE tb_teacher SET 
                 teacher_fullname='$teacher_fullname', 
                 teacher_username='$teacher_username', 
-                teacher_tel='$teacher_tel'";
+                teacher_tel='$teacher_tel', 
+                teacher_profile_pic='$teacher_profile_pic'";
 
         // ตรวจสอบว่ามีการกรอกรหัสผ่านใหม่หรือไม่
         if (!empty($teacher_password)) {
@@ -37,6 +65,7 @@ if (isset($_POST['submit'])) {
             $_SESSION['user']['teacher_fullname'] = $teacher_fullname;
             $_SESSION['user']['teacher_username'] = $teacher_username;
             $_SESSION['user']['teacher_tel'] = $teacher_tel;
+            $_SESSION['user']['teacher_profile_pic'] = $teacher_profile_pic;
 
             // อัปเดตรหัสผ่านใน session ด้วย หากมีการเปลี่ยนแปลง
             if (!empty($teacher_password)) {
@@ -54,12 +83,13 @@ if (isset($_POST['submit'])) {
 }
 ?>
 <style>
-    .btn-m{
+    .btn-m {
         color: white;
         background-color: #FF00FF;
         border-color: black;
     }
-    .btn-d{
+
+    .btn-d {
         color: white;
         background-color: #BA55D3;
         border-color: black;
@@ -74,7 +104,7 @@ if (isset($_POST['submit'])) {
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <form method="post" class="form-horizontal form-label-left">
+                    <form method="post" enctype="multipart/form-data" class="form-horizontal form-label-left">
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="teacher_fullname">ชื่อครู</label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -104,6 +134,13 @@ if (isset($_POST['submit'])) {
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="confirm_password">ยืนยันรหัสผ่านใหม่</label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input type="password" id="confirm_password" name="confirm_password" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="teacher_profile_pic">รูปโปรไฟล์</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="file" id="teacher_profile_pic" name="teacher_profile_pic" class="form-control col-md-7 col-xs-12">
+                                <small>อัปโหลดรูปภาพใหม่ หากต้องการเปลี่ยน</small>
                             </div>
                         </div>
                         <div class="ln_solid"></div>

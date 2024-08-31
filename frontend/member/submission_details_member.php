@@ -110,7 +110,7 @@ $submission = $result->fetch_assoc();
                                             default:
                                                 $icon = 'file-icon.png';
                                         }
-                                        echo "<li><a href='download.php?file=" . urlencode(basename($file)) . "' target='_blank'>
+                                        echo "<li><a href='download.php?file=" . urlencode(basename($file)) . "' style='color: black;'>
                                             <img src='icons/$icon' alt='$file_extension icon' class='icon-img'> "
                                             . htmlspecialchars($file_name) . "</a></li>";
                                     }

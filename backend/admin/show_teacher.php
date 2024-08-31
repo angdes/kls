@@ -5,6 +5,13 @@
         border-color: hotpink;
         color: black;
     }
+
+    .profile-pic {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
 </style>
 <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -32,6 +39,7 @@
                             <th>ชื่อผู้ใช้งาน</th>
                             <th>รหัสผ่าน</th>
                             <th>เบอร์โทรศัพท์</th>
+                            <th>รูปโปรไฟล์</th> <!-- เพิ่มคอลัมน์สำหรับแสดงรูปโปรไฟล์ -->
                             <th>แก้ไข</th>
                             <th>ลบ</th>
                         </tr>
@@ -43,16 +51,27 @@
                         while ($row = mysqli_fetch_array($result)) {
                         ?>
                             <tr>
-                                <td><?=$row['teacher_id'];?></td>
-                                <td><?=$row['teacher_fullname'];?></td>
-                                <td><?=$row['teacher_username'];?></td>
-                                <td><?=$row['teacher_password'];?></td>
-                                <td><?=$row['teacher_tel'];?></td>
+                                <td><?= $row['teacher_id']; ?></td>
+                                <td><?= $row['teacher_fullname']; ?></td>
+                                <td><?= $row['teacher_username']; ?></td>
+                                <td><?= $row['teacher_password']; ?></td>
+                                <td><?= $row['teacher_tel']; ?></td>
                                 <td>
-                                    <a href="update_teacher.php?id=<?=$row['teacher_id'];?>" onclick="return confirm('คุณต้องการแก้ไขหรือไม่?')"><img src="../../images/edit.png" /></a>
+                                    <?php if (!empty($row['teacher_profile_pic'])): ?>
+                                        <img src="<?= htmlspecialchars($row['teacher_profile_pic']); ?>" alt="Profile Picture" class="profile-pic">
+                                    <?php else: ?>
+                                        <img src="profile_teacher/default_profile.png" alt="Default Profile Picture" class="profile-pic"> <!-- รูปโปรไฟล์เริ่มต้น -->
+                                    <?php endif; ?>
                                 </td>
                                 <td>
-                                    <a href="delete_teacher.php?id=<?=$row['teacher_id'];?>" onclick="return confirm('คุณต้องการลบหรือไม่?')"><img src="../../images/delete.png" /></a>
+                                    <a href="update_teacher.php?id=<?= $row['teacher_id']; ?>" onclick="return confirm('คุณต้องการแก้ไขหรือไม่?')">
+                                        <img src="../../images/edit.png" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="delete_teacher.php?id=<?= $row['teacher_id']; ?>" onclick="return confirm('คุณต้องการลบหรือไม่?')">
+                                        <img src="../../images/delete.png" />
+                                    </a>
                                 </td>
                             </tr>
                         <?php

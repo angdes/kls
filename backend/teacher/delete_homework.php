@@ -94,12 +94,14 @@ $mysqli->close();
 </head>
 
 <body>
+    
     <div class="container">
         <!-- แสดงข้อความแจ้งเตือน -->
         <?php if (!empty($alert_message)) {
             echo $alert_message;
         } ?>
     </div>
+
 </body>
 
 </html>

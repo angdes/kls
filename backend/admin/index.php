@@ -162,7 +162,7 @@ $submission_stats = $submission_stats_result->fetch_assoc();
                     <div class="dashboard-grid">
                         <div class="dashboard-card">
                             <a href="show_announcements.php" class="btn-primary">จัดการข้อมูลประกาศ</a>
-                        </div>
+                            </div>
                         <div class="dashboard-card">
                             <a href="show_teacher.php" class="btn-primary">จัดการข้อมูลครู</a>
                         </div>

@@ -25,6 +25,30 @@ if (isset($_POST['submit'])) {
     if (!empty($member_password) && $member_password !== $confirm_password) {
         echo $cls_conn->show_message('รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน');
     } else {
+        // จัดการการอัปโหลดรูปภาพ
+        if (isset($_FILES['member_profile_pic']) && $_FILES['member_profile_pic']['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES['member_profile_pic']['tmp_name'];
+            $fileName = $_FILES['member_profile_pic']['name'];
+            $fileSize = $_FILES['member_profile_pic']['size'];
+            $fileType = $_FILES['member_profile_pic']['type'];
+            $fileNameCmps = explode(".", $fileName);
+            $fileExtension = strtolower(end($fileNameCmps));
+
+            $allowedfileExtensions = array('jpg', 'jpeg', 'png');
+            if (in_array($fileExtension, $allowedfileExtensions)) {
+                $uploadFileDir = 'profile_member/';
+                $dest_path = $uploadFileDir . $fileName;
+
+                if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                    $member_profile_pic = $dest_path;
+                } else {
+                    echo $cls_conn->show_message('เกิดข้อผิดพลาดในการย้ายไฟล์ไปยังไดเรกทอรีอัปโหลด');
+                }
+            } else {
+                echo $cls_conn->show_message('การอัปโหลดล้มเหลว สามารถอัปโหลดได้เฉพาะไฟล์ JPG, JPEG และ PNG เท่านั้น');
+            }
+        }
+
         // สร้างคำสั่ง SQL สำหรับการอัปเดตข้อมูล
         $sql = "UPDATE tb_member SET 
                 member_fullname='$member_fullname', 
@@ -35,10 +59,14 @@ if (isset($_POST['submit'])) {
         
         // ตรวจสอบว่ามีการเปลี่ยนแปลงรหัสผ่านหรือไม่
         if (!empty($member_password)) {
-            // บันทึกรหัสผ่านใหม่เป็น plain text (ไม่แนะนำในทางปฏิบัติ)
             $sql .= ", member_password='$member_password'";
         }
-        
+
+        // ตรวจสอบว่ามีการอัปโหลดรูปภาพใหม่หรือไม่
+        if (isset($member_profile_pic)) {
+            $sql .= ", member_profile_pic='$member_profile_pic'";
+        }
+
         // เติมเงื่อนไข WHERE เพื่ออัปเดตเฉพาะสมาชิกที่เป็นเจ้าของ session ปัจจุบัน
         $sql .= " WHERE member_id={$member['member_id']}";
 
@@ -56,9 +84,14 @@ if (isset($_POST['submit'])) {
                 $_SESSION['user']['member_password'] = $member_password;
             }
 
+            // อัปเดตรูปภาพโปรไฟล์ใน session ด้วย หากมีการอัปโหลดใหม่
+            if (isset($member_profile_pic)) {
+                $_SESSION['user']['member_profile_pic'] = $member_profile_pic;
+            }
+
             // แสดงข้อความแจ้งเตือนและ redirect ไปยังหน้าแสดงข้อมูลส่วนตัว
             echo $cls_conn->show_message('แก้ไขข้อมูลสำเร็จ');
-            echo $cls_conn->goto_page(1, 'show_member.php'); // เปลี่ยนเส้นทางไปยังหน้าแสดงข้อมูลสมาชิกโดยไม่ต้องล็อกอินใหม่
+            echo $cls_conn->goto_page(1, 'show_member.php');
         } else {
             echo $cls_conn->show_message('แก้ไขข้อมูลไม่สำเร็จ');
         }
@@ -75,7 +108,7 @@ if (isset($_POST['submit'])) {
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <form method="post" class="form-horizontal form-label-left">
+                    <form method="post" class="form-horizontal form-label-left" enctype="multipart/form-data">
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_fullname">ชื่อสมาชิก</label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -117,6 +150,15 @@ if (isset($_POST['submit'])) {
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="confirm_password">ยืนยันรหัสผ่านใหม่</label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input type="password" id="confirm_password" name="confirm_password" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_profile_pic">รูปโปรไฟล์</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="file" id="member_profile_pic" name="member_profile_pic" class="form-control col-md-7 col-xs-12">
+                                <?php if (!empty($member['member_profile_pic'])): ?>
+                                    <img src="<?php echo htmlspecialchars($member['member_profile_pic'], ENT_QUOTES, 'UTF-8'); ?>" alt="Profile Picture" style="max-width: 100px; margin-top: 10px;">
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="ln_solid"></div>

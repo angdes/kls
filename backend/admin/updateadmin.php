@@ -20,11 +20,24 @@ if (isset($_POST['submit'])) {
     if (!empty($admin_password) && $admin_password !== $confirm_password) {
         echo $cls_conn->show_message('รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน');
     } else {
+        // จัดการการอัปโหลดรูปโปรไฟล์
+        $profile_pic_path = $admin['admin_profile_pic']; // ใช้เส้นทางรูปภาพที่มีอยู่แล้ว
+        if (!empty($_FILES['admin_profile_pic']['name'])) {
+            $target_dir = "profile_admin/";
+            $target_file = $target_dir . basename($_FILES["admin_profile_pic"]["name"]);
+            if (move_uploaded_file($_FILES["admin_profile_pic"]["tmp_name"], $target_file)) {
+                $profile_pic_path = $target_file;
+            } else {
+                echo $cls_conn->show_message('อัปโหลดรูปโปรไฟล์ไม่สำเร็จ');
+            }
+        }
+
         $sql = "UPDATE tb_admin SET 
                 admin_fullname='$admin_fullname', 
                 admin_username='$admin_username',
                 admin_email='$admin_email',
-                admin_tel='$admin_tel'";
+                admin_tel='$admin_tel',
+                admin_profile_pic='$profile_pic_path'"; // เพิ่มการอัปเดตเส้นทางรูปโปรไฟล์
 
         // ตรวจสอบว่ามีการกรอกรหัสผ่านใหม่หรือไม่
         if (!empty($admin_password)) {
@@ -40,6 +53,7 @@ if (isset($_POST['submit'])) {
             $_SESSION['user']['admin_username'] = $admin_username;
             $_SESSION['user']['admin_email'] = $admin_email;
             $_SESSION['user']['admin_tel'] = $admin_tel;
+            $_SESSION['user']['admin_profile_pic'] = $profile_pic_path; // อัปเดตรูปโปรไฟล์ใน session
 
             // อัปเดตรหัสผ่านใน session ด้วย หากมีการเปลี่ยนแปลง
             if (!empty($admin_password)) {
@@ -58,13 +72,23 @@ if (isset($_POST['submit'])) {
 ?>
 
 <style>
-    .btn-m{
+    .btn-m {
         color: white;
         background-color: #FF00FF;
     }
-    .btn-d{
+
+    .btn-d {
         color: white;
         background-color: #BA55D3;
+    }
+
+    .profile-pic {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
+        margin-bottom: 10px;
     }
 </style>
 
@@ -77,7 +101,7 @@ if (isset($_POST['submit'])) {
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <form method="post" class="form-horizontal form-label-left">
+                    <form method="post" class="form-horizontal form-label-left" enctype="multipart/form-data">
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="admin_fullname">ชื่อแอดมิน</label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -99,7 +123,19 @@ if (isset($_POST['submit'])) {
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="admin_email">อีเมล</label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="admin_email" name="admin_email" value="<?php echo htmlspecialchars($admin['admin_email'], ENT_QUOTES, 'UTF-8'); ?>" required="required" class="form-control col-md-7 col-xs-12">
+                                <input type="email" id="admin_email" name="admin_email" value="<?php echo htmlspecialchars($admin['admin_email'], ENT_QUOTES, 'UTF-8'); ?>" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <!-- Profile Picture -->
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="admin_profile_pic">รูปโปรไฟล์</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <?php if (!empty($admin['admin_profile_pic'])) : ?>
+                                    <img src="<?php echo htmlspecialchars($admin['admin_profile_pic'], ENT_QUOTES, 'UTF-8'); ?>" alt="Profile Picture" class="profile-pic">
+                                <?php else : ?>
+                                    <img src="default_profile.png" alt="Default Profile Picture" class="profile-pic">
+                                <?php endif; ?>
+                                <input type="file" id="admin_profile_pic" name="admin_profile_pic" class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
                         <div class="form-group">

@@ -35,6 +35,7 @@
                                 <th>username</th>
                                 <th>สถานะสมาชิก</th>
                                 <th>วันเกิด</th>
+                                <th>รูปโปรไฟล์</th> <!-- เพิ่มคอลัมน์สำหรับรูปโปรไฟล์ -->
                                 <th>แก้ไข</th>
                                 <th>ลบ</th>
                             </tr>
@@ -65,6 +66,13 @@
                                         ?>
                                     </td>
                                     <td><?=$row['member_datetime'];?></td>
+                                    <td>
+                                        <?php if (!empty($row['member_profile_pic'])): ?>
+                                            <img src="<?= htmlspecialchars($row['member_profile_pic'], ENT_QUOTES, 'UTF-8'); ?>" alt="Profile Picture" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                                        <?php else: ?>
+                                            <img src="uploads/default_profile.png" alt="Default Profile Picture" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                                        <?php endif; ?>
+                                    </td>
                                     <td>
                                         <a href="update_member.php?id=<?=$row['member_id'];?>" onclick="return confirm('คุณต้องการแก้ไขหรือไม่?')">
                                             <img src="../../images/edit.png" />

@@ -42,10 +42,14 @@ $member = $_SESSION['user'];
                             <th>ชื่อผู้ใช้งาน</th>
                             <td><?php echo htmlspecialchars($member['member_username'], ENT_QUOTES, 'UTF-8'); ?></td>
                         </tr>
-                        <!-- ไม่แสดงรหัสผ่าน -->
                         <tr>
                             <th>รหัสผ่าน</th>
-                            <td><?php echo htmlspecialchars($member['member_password'], ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td>
+                                <?php
+                                // แสดงรหัสผ่านเป็นเครื่องหมาย * ตามความยาวของรหัสผ่าน
+                                echo str_repeat('*', strlen($member['member_password']));
+                                ?>
+                            </td>
                         </tr>
                     </table>
                     <div align="right">

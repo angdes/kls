@@ -1,10 +1,34 @@
-<?php session_start(); ?>
-<?php include('../../class_conn.php'); ?>
-<?php $cls_conn = new class_conn; ?>
-
 <?php
+session_start();
+include('../../class_conn.php');
+
+$cls_conn = new class_conn;
+
 // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
 if (!isset($_SESSION['user'])) {
+    header("Location: http://localhost/kls/login.php");
+    exit();
+}
+
+// ดึงข้อมูลผู้ใช้จาก session
+$member_id = $_SESSION['user']['member_id']; // สมมติว่าคุณมี member_id ใน session
+
+// ดึงข้อมูลผู้ใช้จากฐานข้อมูล
+$sql = "SELECT member_fullname, member_profile_pic FROM tb_member WHERE member_id = $member_id";
+$result = $cls_conn->select_base($sql);
+
+// ตรวจสอบว่ามีข้อมูลที่ตรงกันหรือไม่
+if ($result && mysqli_num_rows($result) > 0) {
+    $member_data = mysqli_fetch_assoc($result);
+    $member_fullname = $member_data['member_fullname'];
+    $member_profile_pic = !empty($member_data['member_profile_pic']) ? $member_data['member_profile_pic'] : 'uploads/default_member.jpg'; // ถ้าไม่มีรูปภาพให้ใช้รูปภาพเริ่มต้น
+
+    // ตรวจสอบว่ารูปภาพมีอยู่ในโฟลเดอร์ที่ระบุหรือไม่
+    if (!file_exists($member_profile_pic)) {
+        $member_profile_pic = 'default_member.jpg'; // ถ้ารูปภาพไม่พบ ให้ใช้รูปภาพเริ่มต้น
+    }
+} else {
+    // หากไม่พบข้อมูลในฐานข้อมูล ให้กลับไปหน้าเข้าสู่ระบบ
     header("Location: http://localhost/kls/login.php");
     exit();
 }
@@ -71,64 +95,38 @@ if (!isset($_SESSION['user'])) {
 
                             <ul class="nav side-menu">
                                 <li><a href="index.php" style="color: black;"><i class="fa fa-house"></i> หน้าแรก</a></li>
-
-                                <li><a style="color: black;"><i class="fa fa-user" style="color: black;"></i>ข้อมูลส่วนตัว<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  hotpink;">
-                                        <li><a href="update_member.php" style="color: black;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-person-plus-fill" viewBox="0 0 640 512">
-                                                    <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H322.8c-3.1-8.8-3.7-18.4-1.4-27.8l15-60.1c2.8-11.3 8.6-21.5 16.8-29.7l40.3-40.3c-32.1-31-75.7-50.1-123.9-50.1H178.3zm435.5-68.3c-15.6-15.6-40.9-15.6-56.6 0l-29.4 29.4 71 71 29.4-29.4c15.6-15.6 15.6-40.9 0-56.6l-14.4-14.4zM375.9 417c-4.1 4.1-7 9.2-8.4 14.9l-15 60.1c-1.4 5.5 .2 11.2 4.2 15.2s9.7 5.6 15.2 4.2l60.1-15c5.6-1.4 10.8-4.3 14.9-8.4L576.1 358.7l-71-71L375.9 417z" />
-                                                </svg> แก้ไขข้อมูลส่วนตัว</a></li>
+                                <li style="color: black;"><a style="color: black;"><i class="fa fa-user" style="color: black;"></i>ข้อมูลส่วนตัว<span class="fa fa-chevron-down" style="color: black;"></span></a>
+                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
                                         <li><a href="show_member.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลส่วนตัว</a></li>
                                     </ul>
                                 </li>
-
-                                
-
                                 <li><a style="color: black;"><i class="fa fa-file-pen"></i>การบ้าน<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  hotpink;">
-                                        <!-- <li><a href="submit_homework.php"style="color: black;"><i class="fa fa-list"></i>ส่งข้อมูลการบ้าน</a></li> -->
+                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
                                         <li><a href="show_student_subjects.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลการบ้าน</a></li>
                                     </ul>
                                 </li>
-                                <!-- <li><a style="color: black;"><i class="fa fa-bullhorn" ></i>  การแจ้งเตือน<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  hotpink;" >
-                                        
-                                        <li><a href="#"style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลแจ้ง</a></li>
-                                    </ul>
-                                </li> -->
-
-
                                 <li><a href="logout.php" style="color: black;"><i class="fa fa-sign-out"></i>ออกจากระบบ</a></li>
-
-
                             </ul>
                         </div>
                     </div>
                     <!-- /sidebar menu -->
-                    <!-- /menu footer buttons -->
-                    <!-- /menu footer buttons -->
                 </div>
             </div>
+
             <!-- top navigation -->
             <div class="top_nav">
                 <div class="nav_menu" style="background-color: #C44AFD;">
                     <nav>
-                        <div class="nav toggle"> <a id="menu_toggle"><i class="fa fa-bars"></i></a> </div>
+                        <div class="nav toggle">
+                            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                        </div>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
-                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <?php
-                                    // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
-                                    if (isset($_SESSION['user'])) {
-                                        // ดึงข้อมูลผู้ใช้จาก session
-                                        $user = $_SESSION['user'];
-                                        $member_fullname = $user['member_fullname'];
-                                    } else {
-                                        // หากผู้ใช้ยังไม่ได้เข้าสู่ระบบ
-                                        $member_fullname = "นักเรียน";
-                                    }
-                                    ?>
-
-                                    <img src="../../backend/template/production/images/user.jpg" alt=""><?php echo htmlspecialchars($member_fullname, ENT_QUOTES, 'UTF-8'); ?><span class=" fa fa-angle-down"></span> </a>
+                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="color: white;">
+                                    <img src="<?= htmlspecialchars($member_profile_pic, ENT_QUOTES, 'UTF-8'); ?>" alt="Profile Picture" style="width: 33px; height: 33px; border-radius: 50%;">
+                                    <?= htmlspecialchars($member_fullname, ENT_QUOTES, 'UTF-8'); ?>
+                                    <span class="fa fa-angle-down"></span>
+                                </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
                                     <li><a href="show_member.php">แก้ไขข้อมูลส่วนตัว</a></li>
                                     <li><a href="logout.php"><i class="fa fa-sign-out pull-right"></i>ออกจากระบบ</a></li>
@@ -138,7 +136,10 @@ if (!isset($_SESSION['user'])) {
                     </nav>
                 </div>
             </div>
+
             <!-- /top navigation -->
 
             <!-- page content -->
 </body>
+
+</html>

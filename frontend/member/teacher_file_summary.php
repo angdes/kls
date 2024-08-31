@@ -100,7 +100,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                                 }
 
                                 echo "<li>
-                                        <a href='../../backend/teacher/uploads/" . rawurlencode($file_name) . "' target='_blank' download='$file_name'>
+                                        <a href='../../backend/teacher/uploads/" . rawurlencode($file_name) . "' style='color: black;' download='$file_name'>
                                             <img src='icons/$icon' alt='$file_extension icon' class='icon-img'>
                                             <span class='file-name'>" . htmlspecialchars($file_name) . "</span>
                                         </a>

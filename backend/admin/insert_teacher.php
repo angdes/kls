@@ -1,10 +1,11 @@
 <?php include('header.php'); ?>
 <style>
-    .btn-m{
+    .btn-m {
         color: white;
         background-color: #FF00FF;
     }
-    .btn-d{
+
+    .btn-d {
         color: white;
         background-color: #BA55D3;
     }
@@ -24,7 +25,7 @@
                 </div>
                 <div class="x_content">
                     <br />
-                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post">
+                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="teacher_fullname">ชื่อครู<span class="required">:</span></label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -53,6 +54,13 @@
                             </div>
                         </div>
 
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="teacher_profile_pic">รูปโปรไฟล์<span class="required">:</span></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="file" id="teacher_profile_pic" name="teacher_profile_pic" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+
                         <div class="ln_solid"></div>
                         <div class="form-group">
                             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
@@ -67,8 +75,36 @@
                         $teacher_username = $_POST['teacher_username'];
                         $teacher_password = $_POST['teacher_password'];
                         $teacher_tel = $_POST['teacher_tel'];
+                        $teacher_profile_pic = '';
 
-                        $sql = "INSERT INTO tb_teacher (teacher_fullname, teacher_username, teacher_password, teacher_tel) VALUES ('$teacher_fullname', '$teacher_username', '$teacher_password', '$teacher_tel')";
+                        // ตรวจสอบว่ามีการอัปโหลดไฟล์รูปโปรไฟล์หรือไม่
+                        if (isset($_FILES['teacher_profile_pic']) && $_FILES['teacher_profile_pic']['error'] === UPLOAD_ERR_OK) {
+                            $upload_dir = '../teacher/profile_teacher/'; // โฟลเดอร์สำหรับเก็บไฟล์อัปโหลด
+                            $upload_file = $upload_dir . basename($_FILES['teacher_profile_pic']['name']);
+                            $imageFileType = strtolower(pathinfo($upload_file, PATHINFO_EXTENSION));
+
+                            // ตรวจสอบว่าเป็นไฟล์ภาพหรือไม่
+                            $check = getimagesize($_FILES['teacher_profile_pic']['tmp_name']);
+                            if ($check !== false) {
+                                // ตรวจสอบว่ารูปภาพมีนามสกุลที่ถูกต้องหรือไม่
+                                if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+                                    // ย้ายไฟล์อัปโหลดไปยังโฟลเดอร์ที่ระบุ
+                                    if (move_uploaded_file($_FILES['teacher_profile_pic']['tmp_name'], $upload_file)) {
+                                        $teacher_profile_pic = $upload_file; // เก็บที่อยู่ไฟล์ไว้ในตัวแปร
+                                    } else {
+                                        echo $cls_conn->show_message('เกิดข้อผิดพลาดในการอัปโหลดไฟล์รูปภาพ');
+                                    }
+                                } else {
+                                    echo $cls_conn->show_message('รองรับเฉพาะไฟล์รูปภาพประเภท JPG, JPEG, PNG, และ GIF เท่านั้น');
+                                }
+                            } else {
+                                echo $cls_conn->show_message('ไฟล์ที่อัปโหลดไม่ใช่รูปภาพ');
+                            }
+                        }
+
+                        $sql = "INSERT INTO tb_teacher (teacher_fullname, teacher_username, teacher_password, teacher_tel, teacher_profile_pic) 
+                                VALUES ('$teacher_fullname', '$teacher_username', '$teacher_password', '$teacher_tel', '$teacher_profile_pic')";
+
                         if ($cls_conn->write_base($sql) == true) {
                             echo $cls_conn->show_message('บันทึกข้อมูลสำเร็จ');
                             echo $cls_conn->goto_page(1, 'show_teacher.php');
