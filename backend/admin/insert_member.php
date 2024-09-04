@@ -198,9 +198,18 @@
                         }
                     }
                     ?>
+
+                <!-- ปุ่มเพิ่มข้อมูลจากไฟล์ Excel -->
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <button onclick="window.location.href='upload_excel.php'" class="btn btn-d">เพิ่มข้อมูลจากไฟล์ Excel</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <?php include('footer.php'); ?>

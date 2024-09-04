@@ -39,8 +39,10 @@ $alert_message = ''; // กำหนดตัวแปร $alert_message ให�
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $title = $_POST['title'];
     $description = $_POST['description'];
-    $assigned_date = $_POST['assigned_date'];
-    $deadline = $_POST['deadline'];
+
+    // แปลงวันที่จากรูปแบบไทยเป็นรูปแบบที่ฐานข้อมูลรองรับ (Y-m-d H:i:s)
+    $assigned_date = DateTime::createFromFormat('d/m/Y H:i', $_POST['assigned_date'])->format('Y-m-d H:i:s');
+    $deadline = DateTime::createFromFormat('d/m/Y H:i', $_POST['deadline'])->format('Y-m-d H:i:s');
 
     // ตรวจสอบไฟล์และจัดการอัปโหลดหลายไฟล์
     $file_paths = [];
@@ -64,24 +66,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // แปลงเส้นทางไฟล์เป็น JSON เพื่อจัดเก็บในฐานข้อมูล
     $file_paths_json = json_encode($file_paths, JSON_UNESCAPED_UNICODE); // ใช้ JSON_UNESCAPED_UNICODE เพื่อไม่ให้เข้ารหัส Unicode
 
-    // เพิ่มการบ้านใหม่ในฐานข้อมูล
-    $insert_sql = "INSERT INTO tb_homework (subject_id, subject_pass, teacher_id, title, description, assigned_date, deadline, file_path) 
-                   VALUES ('$subject_id', '$subject_pass', '$teacher_id', '$title', '$description', '$assigned_date', '$deadline', '$file_paths_json')";
+    // ตรวจสอบว่ามีหัวข้อและรายละเอียดการบ้านที่ซ้ำกันในฐานข้อมูลหรือไม่
+    $check_duplicate_sql = "SELECT * FROM tb_homework WHERE subject_id = '$subject_id' AND title = '$title' AND description = '$description' LIMIT 1";
+    $duplicate_result = $mysqli->query($check_duplicate_sql);
 
-    if ($mysqli->query($insert_sql) === TRUE) {
-        // แสดงข้อความแจ้งเตือนเมื่อบันทึกสำเร็จและรีไดเรกต์ไปยังหน้าแสดงการบ้าน
+    if ($duplicate_result->num_rows > 0) {
+        // ถ้ามีข้อมูลซ้ำให้แสดงข้อความแจ้งเตือน
         $alert_message = '
-            <div class="alert alert-success" role="alert">
-                บันทึกข้อมูลสำเร็จ
+            <div class="alert alert-danger" role="alert">
+                มีการบ้านที่มีหัวข้อและรายละเอียดซ้ำกันอยู่แล้วในระบบ กรุณาตรวจสอบข้อมูลอีกครั้ง
             </div>
-            <script>
-                setTimeout(function(){
-                    window.location.href = "show_homework.php?subject_pass=' . htmlspecialchars($subject_pass) . '";
-                }, 1000); // 1000 milliseconds = 1 second
-            </script>
         ';
     } else {
-        echo "เกิดข้อผิดพลาดในการเพิ่มการบ้าน: " . $mysqli->error;
+        // ถ้าไม่มีข้อมูลซ้ำ ให้ทำการเพิ่มการบ้านใหม่ในฐานข้อมูล
+        $insert_sql = "INSERT INTO tb_homework (subject_id, subject_pass, teacher_id, title, description, assigned_date, deadline, file_path) 
+                       VALUES ('$subject_id', '$subject_pass', '$teacher_id', '$title', '$description', '$assigned_date', '$deadline', '$file_paths_json')";
+
+        if ($mysqli->query($insert_sql) === TRUE) {
+            // แสดงข้อความแจ้งเตือนเมื่อบันทึกสำเร็จและรีไดเรกต์ไปยังหน้าแสดงการบ้าน
+            $alert_message = '
+                <div class="alert alert-success" role="alert">
+                    บันทึกข้อมูลสำเร็จ
+                </div>
+                <script>
+                    setTimeout(function(){
+                        window.location.href = "show_homework.php?subject_pass=' . htmlspecialchars($subject_pass) . '";
+                    }, 1000); // 1000 milliseconds = 1 second
+                </script>
+            ';
+        } else {
+            echo "เกิดข้อผิดพลาดในการเพิ่มการบ้าน: " . $mysqli->error;
+        }
     }
 }
 ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเฟอร์
@@ -120,20 +135,38 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
         }
 
         /* ปรับขนาดฟิลด์วันที่ให้เท่ากัน */
-        input[type="datetime-local"] {
+        input[type="text"] {
             width: 100%;
             max-width: 400px; /* กำหนดความกว้างสูงสุด */
         }
-        input[type="text"] {
-            width: 100%;
-            max-width: 700px; /* กำหนดความกว้างสูงสุด */
-        }
-        
 
         .form-group-file {
             margin-bottom: 35px; /* เพิ่มระยะห่างระหว่างฟอร์มกรุ๊ปไฟล์กับปุ่ม */
         }
+
+        /* ปรับขนาด Flatpickr */
+        .flatpickr-calendar {
+            width: 300px !important; /* ปรับความกว้างของป๊อปอัพ */
+            font-size: 14px !important; /* ปรับขนาดตัวอักษร */
+        }
+
+        .flatpickr-time {
+            font-size: 12px !important; /* ปรับขนาดตัวอักษรของส่วนเวลา */
+        }
+
+        .flatpickr-time .flatpickr-time-separator {
+            font-size: 12px !important; /* ปรับขนาดตัวอักษรของตัวคั่นเวลา */
+        }
+
+        .flatpickr-day {
+            height: 30px !important; /* ปรับความสูงของวันที่ */
+            width: 40px !important; /* ปรับความกว้างของวันที่ */
+        }
     </style>
+
+    <!-- เพิ่ม Flatpickr CSS และ JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 
 <body>
@@ -159,11 +192,11 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
                         </div>
                         <div class="form-group">
                             <label for="assigned_date">วันที่สั่ง:</label>
-                            <input type="datetime-local" name="assigned_date" class="form-control" required>
+                            <input type="text" name="assigned_date" id="assigned_date" class="form-control datetimepicker" required placeholder="วัน/เดือน/ปี ชั่วโมง:นาที">
                         </div>
                         <div class="form-group">
                             <label for="deadline">วันหมดเขต:</label>
-                            <input type="datetime-local" name="deadline" class="form-control" required>
+                            <input type="text" name="deadline" id="deadline" class="form-control datetimepicker" required placeholder="วัน/เดือน/ปี ชั่วโมง:นาที">
                         </div>
                         <div class="form-group form-group-file">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="files">ไฟล์การบ้าน:</label>
@@ -189,31 +222,49 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
 </body>
 
 <script>
-    document.getElementById('add_more_homework').addEventListener('click', function() {
-        var additionalHomeworkHTML = `
-        <div class="form-group">
-            <label for="title">หัวข้อการบ้าน:</label>
-            <input type="text" name="title[]" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="description">รายละเอียดการบ้าน:</label>
-            <textarea name="description[]" class="form-control" required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="assigned_date">วันที่สั่ง:</label>
-            <input type="datetime-local" name="assigned_date[]" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="deadline">วันหมดเขต:</label>
-            <input type="datetime-local" name="deadline[]" class="form-control" required>
-        </div>
-        <div class="form-group form-group-file">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="files">ไฟล์การบ้าน:</label>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <input type="file" name="files[]" multiple class="form-control col-md-7 col-xs-12">
+    document.addEventListener('DOMContentLoaded', function() {
+        // ใช้ Flatpickr กับฟิลด์อินพุตวันที่
+        flatpickr('.datetimepicker', {
+            enableTime: true,
+            dateFormat: "d/m/Y H:i",
+            time_24hr: true,
+            position: "above" // ตั้งค่าให้แสดง pop-up ด้านบน
+        });
+
+        document.getElementById('add_more_homework').addEventListener('click', function() {
+            var additionalHomeworkHTML = `
+            <div class="form-group">
+                <label for="title">หัวข้อการบ้าน:</label>
+                <input type="text" name="title[]" class="form-control" required>
             </div>
-        </div>`;
-        document.getElementById('additional_homeworks').insertAdjacentHTML('beforeend', additionalHomeworkHTML);
+            <div class="form-group">
+                <label for="description">รายละเอียดการบ้าน:</label>
+                <textarea name="description[]" class="form-control" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="assigned_date">วันที่สั่ง:</label>
+                <input type="text" name="assigned_date[]" class="form-control datetimepicker" required placeholder="วัน/เดือน/ปี ชั่วโมง:นาที">
+            </div>
+            <div class="form-group">
+                <label for="deadline">วันหมดเขต:</label>
+                <input type="text" name="deadline[]" class="form-control datetimepicker" required placeholder="วัน/เดือน/ปี ชั่วโมง:นาที">
+            </div>
+            <div class="form-group form-group-file">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="files">ไฟล์การบ้าน:</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="file" name="files[]" multiple class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>`;
+            document.getElementById('additional_homeworks').insertAdjacentHTML('beforeend', additionalHomeworkHTML);
+
+            // ใช้ Flatpickr กับฟิลด์ใหม่ที่ถูกเพิ่มเข้ามา
+            flatpickr('.datetimepicker', {
+                enableTime: true,
+                dateFormat: "d/m/Y H:i",
+                time_24hr: true,
+                position: "above" // ตั้งค่าให้แสดง pop-up ด้านบน
+            });
+        });
     });
 </script>
 

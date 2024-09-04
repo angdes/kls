@@ -57,75 +57,58 @@ if ($result === false) {
             justify-content: flex-start;
             margin: 0px;
             width: 100%;
-            
             padding: 30px;
-            max-width: 1000px;
+            max-width: 1000px; /* กำหนดขนาดสูงสุดของคอนเทนเนอร์ */
         }
-
         .card {
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             margin: 10px;
-            width: calc(50% - 20px);
+            width: calc(50% - 20px); /* กำหนดให้การ์ดมีขนาดครึ่งหนึ่งของความกว้างทั้งหมดลบด้วยระยะขอบ */
             display: flex;
             flex-direction: row;
-            padding: 0px;
+            padding: 10px;
             cursor: pointer;
             transition: transform 0.2s;
         }
-
         .card:nth-child(odd) {
-            justify-content: flex-start;
+            justify-content: flex-start; /* การ์ดที่เป็นเลขคี่จะแสดงด้านซ้าย */
         }
-
         .card:nth-child(even) {
-            justify-content: flex-end;
+            justify-content: flex-end; /* การ์ดที่เป็นเลขคู่จะแสดงด้านขวา */
         }
-
         .card:hover {
             transform: scale(1.05);
         }
-
         .card-image {
             flex: 1;
             background-color: #eaeaea;
-            border-radius: 5px;
+            border-radius: 8px;
             overflow: hidden;
         }
-
         .card-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
         .card-content {
             flex: 2;
             padding-left: 15px;
         }
-
         .card-title {
             font-size: 18px;
             font-weight: bold;
-            margin-bottom: 5px;
-            color: #C44AFD; /* สีที่กำหนดสำหรับตัวอักษร */
-        }
-
-        .card-pass {
-            font-size: 16px;
-            color: #555;
             margin-bottom: 10px;
+            color: #C44AFD; /* สีหัวข้อการ์ด */
         }
-
         .card-description {
             font-size: 14px;
             margin-bottom: 10px;
         }
-
-        .stats {
-            font-size: 14px;
-            margin-top: 10px;
+        .card-stats {
+            font-size: 12px;
+            margin-bottom: 5px;
         }
 
         .stats .total {
@@ -169,7 +152,6 @@ if ($result === false) {
                         while ($row = $result->fetch_assoc()) {
                             $subject_pass = htmlspecialchars($row['subject_pass']);
                             $subject_name = htmlspecialchars($row['subject_name']);
-                            // $subject_detail = htmlspecialchars($row['subject_detail']);
                             $subject_cover = htmlspecialchars($row['subject_cover']);
                             $subject_id = htmlspecialchars($row['subject_id']);
                             $teacher_fullname = htmlspecialchars($row['teacher_fullname']);
@@ -180,7 +162,7 @@ if ($result === false) {
                             // คำสั่ง SQL เพื่อดึงข้อมูลจำนวนการบ้านทั้งหมด, ส่งแล้ว, ยังไม่ส่ง, และตรวจแล้ว
                             $total_sql = "SELECT COUNT(*) as total FROM tb_homework WHERE subject_id = '$subject_id'";
                             $submitted_sql = "SELECT COUNT(*) as submitted FROM tb_student_homework WHERE homework_id IN (SELECT homework_id FROM tb_homework WHERE subject_id = '$subject_id') AND member_id = '$student_id' AND submission_time IS NOT NULL";
-                            $not_submitted_sql = "SELECT COUNT(*) as not_submitted FROM tb_student_homework WHERE homework_id IN (SELECT homework_id FROM tb_homework WHERE subject_id = '$subject_id') AND member_id = '$student_id' AND submission_time IS NULL";
+                            $not_submitted_sql = "SELECT COUNT(*) as not_submitted FROM tb_homework WHERE subject_id = '$subject_id' AND homework_id NOT IN (SELECT homework_id FROM tb_student_homework WHERE member_id = '$student_id' AND submission_time IS NOT NULL)";
                             $checked_sql = "SELECT COUNT(*) as checked FROM tb_student_homework WHERE homework_id IN (SELECT homework_id FROM tb_homework WHERE subject_id = '$subject_id') AND member_id = '$student_id' AND checked = 1";
 
                             // ดึงข้อมูลการบ้าน
@@ -201,12 +183,11 @@ if ($result === false) {
                             echo '<div class="card-content">';
                             echo '<div class="card-title">' . $subject_name . '</div>';
                             echo '<div class="card-pass">รหัสวิชา: ' . $subject_pass . '</div>';
-                            // echo '<div class="card-description">' . $subject_detail . '</div>';
-                            echo '<div class="teacher-fullname">ครูผู้สอน: ' . $teacher_fullname . '</div>'; // แสดงชื่อครูผู้สอน
+                            echo '<div class="teacher-fullname">ครูผู้สอน: ' . $teacher_fullname . '</div>';
                             echo '<div class="stats">';
                             echo '<p class="total">การบ้านทั้งหมด: ' . $total . '</p>';
                             echo '<p class="submitted">ส่งแล้ว: ' . $submitted . '</p>';
-                            echo '<p class="not-submitted">ยังไม่ส่ง: ' . $not_submitted . '</p>';
+                            echo '<p class="not-submitted">ยังไม่ส่ง: ' . ($total - $submitted) . '</p>'; // ปรับเพื่อแสดงจำนวนการบ้านที่ยังไม่ส่งอย่างถูกต้อง
                             echo '<p class="checked">ครูตรวจแล้ว: ' . $checked . '</p>';
                             echo '</div>';
                             echo '</div>';

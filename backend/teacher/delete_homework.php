@@ -21,9 +21,11 @@ $subject_pass = isset($_GET['subject_pass']) ? $_GET['subject_pass'] : '';
 
 // ตรวจสอบว่า homework_id ถูกต้อง
 if ($homework_id > 0) {
-    // ลบการบ้านจากฐานข้อมูล
-    $delete_sql = "DELETE FROM tb_homework WHERE homework_id = '$homework_id'";
-    if ($mysqli->query($delete_sql) === TRUE) {
+    // เตรียมคำสั่ง SQL สำหรับลบการบ้านโดยใช้ prepared statement เพื่อป้องกัน SQL Injection
+    $stmt = $mysqli->prepare("DELETE FROM tb_homework WHERE homework_id = ?");
+    $stmt->bind_param('i', $homework_id);
+
+    if ($stmt->execute()) {
         // แสดงข้อความแจ้งเตือนเมื่อการลบสำเร็จ
         $alert_message = '
         <div class="alert alert-success" role="alert">
@@ -31,21 +33,22 @@ if ($homework_id > 0) {
         </div>
         <script>
             setTimeout(function(){
-                window.location.href = "show_homework.php?subject_pass=' . htmlspecialchars($subject_pass) . '";
+                window.location.href = "show_homework.php?subject_pass=' . htmlspecialchars($subject_pass, ENT_QUOTES, 'UTF-8') . '";
             }, 1000); // 1000 milliseconds = 1 second
         </script>';
     } else {
         // แสดงข้อความแจ้งเตือนเมื่อการลบล้มเหลว
         $alert_message = '
         <div class="alert alert-danger" role="alert">
-            การลบการบ้านล้มเหลว: ' . htmlspecialchars($mysqli->error) . '
+            การลบการบ้านล้มเหลว: ' . htmlspecialchars($stmt->error, ENT_QUOTES, 'UTF-8') . '
         </div>
         <script>
             setTimeout(function(){
                 window.history.back();
-            }, 1000); // 1000 milliseconds = 1 seconds
+            }, 1000); // 1000 milliseconds = 1 second
         </script>';
     }
+    $stmt->close(); // ปิด statement
 } else {
     // แสดงข้อความแจ้งเตือนเมื่อข้อมูลไม่ถูกต้อง
     $alert_message = '
@@ -55,7 +58,7 @@ if ($homework_id > 0) {
     <script>
         setTimeout(function(){
             window.history.back();
-        }, 1000); // 1000 milliseconds = 1 seconds
+        }, 1000); // 1000 milliseconds = 1 second
     </script>';
 }
 
@@ -75,16 +78,19 @@ $mysqli->close();
             padding: 20px;
             border-radius: 5px;
         }
+
         .alert-success {
             background-color: #d4edda;
             color: #155724;
             border-color: #c3e6cb;
         }
+
         .alert-danger {
             background-color: #f8d7da;
             color: #721c24;
             border-color: #f5c6cb;
         }
+
         .alert-warning {
             background-color: #fff3cd;
             color: #856404;
@@ -94,16 +100,27 @@ $mysqli->close();
 </head>
 
 <body>
-    
-    <div class="container">
-        <!-- แสดงข้อความแจ้งเตือน -->
-        <?php if (!empty($alert_message)) {
-            echo $alert_message;
-        } ?>
+    <div class="right_col" role="main">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>ลบข้อมูลการบ้าน</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <!-- แสดงข้อความแจ้งเตือน -->
+                        <?php if (!empty($alert_message)) {
+                            echo $alert_message;
+                        } ?>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+<?php include('footer.php'); ?>
 
 </body>
 
 </html>
-
-<?php include('footer.php'); ?>

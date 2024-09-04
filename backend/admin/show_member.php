@@ -18,15 +18,21 @@
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-                <p class="text-muted font-13 m-b-30">
-                    <div align="left">
-                        <a href="insert_member.php">
-                            <button class="btn btn-hotpink">เพิ่มข้อมูล</button>
-                        </a>
+                <div align="left">
+                    <a href="insert_member.php">
+                        <button class="btn btn-hotpink">เพิ่มข้อมูล</button>
+                    </a>
+                </div>
+                <!-- ฟอร์มสำหรับการลบหลายรายการ -->
+                <form method="post" action="delete_selected_members.php" id="deleteForm">
+                    <div align="right">
+                        <button type="submit" name="delete_selected" class="btn btn-danger" onclick="return confirmDeleteSelected()">ลบที่เลือก</button>
+                        <button type="submit" name="delete_all" class="btn btn-danger" onclick="return confirm('คุณต้องการลบสมาชิกทั้งหมดหรือไม่?')">ลบทั้งหมด</button>
                     </div>
                     <table id="datatable-buttons" class="table table-striped table-bordered">
                         <thead>
                             <tr>
+                                <th><input type="checkbox" id="checkAll"></th> <!-- เช็คบ็อกซ์สำหรับเลือกทั้งหมด -->
                                 <th>รหัสสมาชิก</th>
                                 <th>ชื่อสมาชิก</th>
                                 <th>ที่อยู่</th>
@@ -35,7 +41,7 @@
                                 <th>username</th>
                                 <th>สถานะสมาชิก</th>
                                 <th>วันเกิด</th>
-                                <th>รูปโปรไฟล์</th> <!-- เพิ่มคอลัมน์สำหรับรูปโปรไฟล์ -->
+                                <th>รูปโปรไฟล์</th>
                                 <th>แก้ไข</th>
                                 <th>ลบ</th>
                             </tr>
@@ -47,7 +53,8 @@
                             while ($row = mysqli_fetch_array($result)) {
                             ?>
                                 <tr>
-                                    <td><?=$row['member_number'];?></td> <!-- รหัสประจำตัว -->
+                                    <td><input type="checkbox" name="selected_members[]" value="<?=$row['member_id'];?>"></td> <!-- เช็คบ็อกซ์สำหรับเลือกแต่ละรายการ -->
+                                    <td><?=$row['member_number'];?></td>
                                     <td><?=$row['member_fullname'];?></td>
                                     <td><?=$row['member_address'];?></td>
                                     <td><?=$row['member_tel'];?></td>
@@ -55,14 +62,7 @@
                                     <td><?=$row['member_username'];?></td>
                                     <td>
                                         <?php
-                                        switch ($row['member_status']) {
-                                            case '0':
-                                                echo '<span style="color:red;">Inactive</span>';
-                                                break;
-                                            case '1':
-                                                echo '<span style="color:green;">Active</span>';
-                                                break;
-                                        }
+                                        echo $row['member_status'] == '1' ? '<span style="color:green;">Active</span>' : '<span style="color:red;">Inactive</span>';
                                         ?>
                                     </td>
                                     <td><?=$row['member_datetime'];?></td>
@@ -89,9 +89,29 @@
                             ?>
                         </tbody>
                     </table>
-                </p>
+                </form>
             </div>
         </div>
     </div>
 </div>
 <?php include('footer.php'); ?>
+
+<script>
+    // JavaScript สำหรับเช็คบ็อกซ์เลือกทั้งหมด
+    document.getElementById('checkAll').onclick = function() {
+        var checkboxes = document.getElementsByName('selected_members[]');
+        for (var checkbox of checkboxes) {
+            checkbox.checked = this.checked;
+        }
+    }
+
+    // ฟังก์ชันยืนยันการลบที่เลือก
+    function confirmDeleteSelected() {
+        var checkboxes = document.querySelectorAll('input[name="selected_members[]"]:checked');
+        if (checkboxes.length === 0) {
+            alert('กรุณาเลือกสมาชิกที่ต้องการลบ');
+            return false;
+        }
+        return confirm('คุณต้องการลบสมาชิกที่เลือกหรือไม่?');
+    }
+</script>

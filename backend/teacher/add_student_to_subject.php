@@ -91,16 +91,18 @@ if (isset($_POST['submit'])) {
 <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <!-- แสดงข้อความแจ้งเตือนเฉพาะเมื่อมีข้อความแจ้งเตือน -->
-        <?php if (!empty($alert_message)) {
-            echo $alert_message;
-        } ?>
+
 
         <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
             <div class="x_title">
+                
                 <h2>เพิ่มนักเรียนให้กับรายวิชา</h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
+            <?php if (!empty($alert_message)) {
+                    echo $alert_message;
+                } ?>
                 <form id="add_member_form" class="form-horizontal form-label-left" method="post" action="">
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="subject">เลือกรายวิชา<span class="required">*</span></label>

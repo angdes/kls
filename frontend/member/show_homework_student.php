@@ -141,7 +141,7 @@ if ($result === false) {
             <div class="clearfix"></div>
         </div>
         <div align="right">
-            <button class="btn btn-green" onclick="window.history.back()">ย้อนกลับ</button>
+            <a href="show_student_subjects.php"><button class="btn btn-green" >ย้อนกลับ</button></a>
         </div>
     </div>
     <?php include('footer.php'); ?>

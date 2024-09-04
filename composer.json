@@ -1,0 +1,17 @@
+{
+    "name": "khada/kls",
+    "autoload": {
+        "psr-4": {
+            "Khada\\Kls\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "feefew",
+            "email": "406459017@yru.ac.th"
+        }
+    ],
+    "require": {
+        "phpoffice/phpspreadsheet": "^2.2"
+    }
+}

@@ -18,8 +18,8 @@ if ($mysqli->connect_error) {
 // รับค่า homework_id จาก URL
 $homework_id = isset($_GET['homework_id']) ? intval($_GET['homework_id']) : 0;
 
-// ดึงข้อมูลไฟล์ที่อาจารย์ส่งจากฐานข้อมูล
-$sql = "SELECT file_path FROM tb_homework WHERE homework_id = '$homework_id'";
+// ดึงข้อมูลไฟล์ที่อาจารย์ส่งจากฐานข้อมูล รวมถึงข้อมูลการบ้าน
+$sql = "SELECT * FROM tb_homework WHERE homework_id = '$homework_id'";
 $result = $mysqli->query($sql);
 
 if ($result === false || $result->num_rows === 0) {
@@ -72,10 +72,17 @@ if (json_last_error() !== JSON_ERROR_NONE) {
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
                 <div class="x_title">
-                    <h2>ไฟล์ที่อาจารย์ส่งสำหรับการบ้านนี้</h2>
+                    <h2>ข้อมูลการบ้านและไฟล์ที่อาจารย์ส่ง</h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
+                    <!-- แสดงข้อมูลการบ้าน -->
+                    <h2 style="color: black;">หัวข้อการบ้าน: <?php echo htmlspecialchars($homework['title'], ENT_QUOTES, 'UTF-8'); ?></h2>
+                    <p><strong>รายละเอียด:</strong> <?php echo nl2br(htmlspecialchars($homework['description'], ENT_QUOTES, 'UTF-8')); ?></p>
+                    <p><strong>วันที่สั่ง:</strong> <?php echo date('d/m/Y', strtotime($homework['assigned_date'])); ?></p>
+                    <p><strong>วันหมดเขต:</strong> <?php echo date('d/m/Y', strtotime($homework['deadline'])); ?></p>
+
+                    <!-- แสดงรายการไฟล์ที่อาจารย์ส่ง -->
                     <ul class="file-list">
                         <?php if (!empty($teacher_files) && is_array($teacher_files)) {
                             foreach ($teacher_files as $file) {
@@ -112,9 +119,6 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                         ?>
                     </ul>
                 </div>
-            </div>
-            <div class="x_title">
-                <div class="clearfix"></div>
             </div>
             <div align="right">
                 <button class="btn btn-green" onclick="window.history.back()">ย้อนกลับ</button>
