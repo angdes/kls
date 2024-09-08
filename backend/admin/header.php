@@ -57,10 +57,10 @@ if ($result && mysqli_num_rows($result) > 0) {
         <div class="main_container">
             <div class="col-md-3 left_col" style="background-color: white;">
                 <div class="left_col scroll-view" style="background-color: white;">
-                    <div class="navbar nav_title" style="border: 0; display: flex; align-items: center; background-color: white;">
+                    <div class="navbar nav_title" style="border: 0; display: flex; align-items: center; background-color: white;  " >
                         <a href="index.php" class="site_title">
                             <img src="../../images/123.jpg" alt="KPS" class="logo_img" style="max-width: 50px; border-radius: 50%; margin-bottom: 6px;">
-                            <span class="site_title_text" style="color: magenta; font-size: 30px; margin-left: 15px; margin: 8px 0 15 0; font-weight: bold;">K.P</span>
+                            <span class="site_title_text" style="color: magenta; font-size: 35px; margin-left: 15px; margin: 8px 0 15 0; font-weight: bold;">K.P</span>
                         </a>
                     </div>
                     <div class="clearfix"></div>
@@ -92,7 +92,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                                     </ul>
                                 </li>
                                 <li><a style="color: black;"><i class="fa fa-users"></i>ข้อมูลสมาชิก<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
+                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;" >
                                         <li><a href="insert_member.php" style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลนักเรียน</a></li>
                                         <li><a href="show_member.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลนักเรียน</a></li>
                                         <li><a href="insert_teacher.php" style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลครู</a></li>
@@ -108,7 +108,7 @@ if ($result && mysqli_num_rows($result) > 0) {
             </div>
             <!-- top navigation -->
             <div class="top_nav">
-                <div class="nav_menu" style="background-color: #DA70D6;">
+                <div class="nav_menu" style="background-color: #BA55D3;">
                     <nav>
                         <div class="nav toggle"> <a id="menu_toggle"><i class="fa fa-bars"></i></a> </div>
                         <ul class="nav navbar-nav navbar-right">

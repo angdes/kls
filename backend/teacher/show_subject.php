@@ -27,100 +27,172 @@ if ($result === false) {
     die("การดึงข้อมูลล้มเหลว: " . $mysqli->error);
 }
 
-// แสดงข้อมูล
-?>
-<style>
-    .btn-m{
-        color: white;
-        background-color: #FF00FF;
-        border-color: black;
-    }
-    .btn-d{
-        color: white;
-        background-color: #BA55D3;
-        border-color: black;
-    }
-    .btn-info {
-        background-color: blue;
-        border-color: black;
-        color: white;
-    }
-</style>
-<div class="right_col" role="main">
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-            <div class="x_title">
-                <h2>แสดงข้อมูลรายวิชา</h2>
-                <ul class="nav navbar-right panel_toolbox">
-                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-                    <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-                </ul>
-                <div class="clearfix"></div>
-            </div>
-            <div class="x_content">
-                <p class="text-muted font-13 m-b-30">
-                <div align="left">
-                    <!-- เพิ่มข้อมูลผ่าน URL parameter teacher_id -->
-                    <a href="insert_subject.php">
-                        <button class="btn btn-m">เพิ่มรายวิชา</button>
-                    </a>
-                    <a href="add_student_to_subject.php">
-                        <button class="btn btn-d">เพิ่มนักเรียนในรายวิชา</button>
-                    </a>
-                </div>
-                <table id="datatable" class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>ลำดับ</th>
-                            <th>รหัสรายวิชา</th>
-                            <th>ชื่อรายวิชา</th>
-                            <th>รายละเอียด</th>
-                            <th>รูปปก</th>
-                            <th>ดูนักเรียน</th>
-                            <th>แก้ไข</th>
-                            <th>ลบ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $index = 1;
-                        if ($result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
-                                ?>
-                                <tr>
-                                    <td><?= $index++; ?></td>
-                                    <td><?= htmlspecialchars($row['subject_pass']); ?></td>
-                                    <td><?= htmlspecialchars($row['subject_name']); ?></td>
-                                    <td><?= htmlspecialchars($row['subject_detail']); ?></td>
-                                    <td>
-                                        <?php if (!empty($row['subject_cover'])): ?>
-                                            <img src="<?= htmlspecialchars($row['subject_cover']); ?>" alt="Cover Image" style="width: 100px; height: auto;">
-                                        <?php else: ?>
-                                            ไม่มีรูปภาพ
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <a href="view_students_in_subject.php?subject_id=<?= htmlspecialchars($row['subject_id']); ?>" class="btn btn-d">ดูนักเรียน</a>
-                                    </td>
-                                    <td>
-                                        <a href="update_subject.php?id=<?= htmlspecialchars($row['subject_id']); ?>&teacher_id=<?= htmlspecialchars($teacher_id); ?>" onclick="return confirm('คุณต้องการแก้ไขหรือไม่?')"><img src="../../images/edit.png" alt="Edit" /></a>
-                                    </td>
-                                    <td>
-                                        <a href="delete_subject.php?id=<?= htmlspecialchars($row['subject_id']); ?>&teacher_id=<?= htmlspecialchars($teacher_id); ?>" onclick="return confirm('คุณต้องการลบหรือไม่?')"><img src="../../images/delete.png" alt="Delete" /></a>
-                                    </td>
-                                </tr>
-                                <?php
-                            }
-                        } else {
-                            echo '<tr><td colspan="8">ไม่มีข้อมูล</td></tr>';
-                        }
+// ฟังก์ชันสำหรับลบข้อมูลหลังยืนยัน
+if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['subject_id'])) {
+    $subject_id = intval($_GET['subject_id']);
 
-                        $mysqli->close();
-                        ?>
-                    </tbody>
-                </table>
+    // ลบข้อมูล
+    $delete_subject_sql = "DELETE FROM tb_subject WHERE subject_id = $subject_id";
+
+    if ($mysqli->query($delete_subject_sql) === TRUE) {
+        echo "<script>
+                Swal.fire({
+                    title: 'ลบข้อมูลสำเร็จ!',
+                    text: 'รายวิชาและข้อมูลที่เกี่ยวข้องถูกลบเรียบร้อยแล้ว',
+                    icon: 'success',
+                    confirmButtonText: 'ตกลง'
+                }).then(() => {
+                    window.location.href = 'show_subjects.php';
+                });
+              </script>";
+    } else {
+        echo "<script>
+                Swal.fire({
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถลบข้อมูลได้: " . $mysqli->error . "',
+                    icon: 'error',
+                    confirmButtonText: 'ตกลง'
+                });
+              </script>";
+    }
+}
+
+?>
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แสดงข้อมูลรายวิชา</title>
+
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .btn-m {
+            color: white;
+            background-color: #FF00FF;
+            border-color: black;
+        }
+
+        .btn-d {
+            color: white;
+            background-color: #BA55D3;
+            border-color: black;
+        }
+
+        .btn-danger {
+            background-color: #ff4d4d;
+            border-color: black;
+            color: white;
+        }
+
+       
+    </style>
+</head>
+
+<body>
+    <div class="right_col" role="main">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                <div class="x_title">
+                    <h2>แสดงข้อมูลรายวิชา</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <p class="text-muted font-13 m-b-30">
+                    <div align="left">
+                        <a href="insert_subject.php">
+                            <button class="btn btn-m">เพิ่มรายวิชา</button>
+                        </a>
+                        <a href="add_student_to_subject.php">
+                            <button class="btn btn-d">เพิ่มนักเรียนในรายวิชา</button>
+                        </a>
+                    </div>
+                    <table id="datatable" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ลำดับ</th>
+                                <th>รหัสรายวิชา</th>
+                                <th>ชื่อรายวิชา</th>
+                                <th>รายละเอียด</th>
+                                <th>รูปปก</th>
+                                <th>ดูนักเรียน</th>
+                                <th>แก้ไข</th>
+                                <th>ลบ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $index = 1;
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                            ?>
+                                    <tr>
+                                        <td><?= $index++; ?></td>
+                                        <td><?= htmlspecialchars($row['subject_pass']); ?></td>
+                                        <td><?= htmlspecialchars($row['subject_name']); ?></td>
+                                        <td><?= htmlspecialchars($row['subject_detail']); ?></td>
+                                        <td>
+                                            <?php if (!empty($row['subject_cover'])): ?>
+                                                <img src="<?= htmlspecialchars($row['subject_cover']); ?>" alt="Cover Image" style="width: 100px; height: auto;">
+                                            <?php else: ?>
+                                                ไม่มีรูปภาพ
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <a href="view_students_in_subject.php?subject_id=<?= htmlspecialchars($row['subject_id']); ?>" class="btn btn-d">ดูนักเรียน</a>
+                                        </td>
+                                        <td>
+                                            <a href="update_subject.php?id=<?= htmlspecialchars($row['subject_id']); ?>&teacher_id=<?= htmlspecialchars($teacher_id); ?>" onclick="return confirm('คุณต้องการแก้ไขหรือไม่?')"><img src="../../images/edit.png" alt="Edit" /></a>
+                                        </td>
+                                        <td>
+                                            <a onclick="confirmDelete('<?= htmlspecialchars($row['subject_id']); ?>')"><img src="../../images/delete.png" alt="Delete" /></a>
+                                        </td>
+                                    </tr>
+                            <?php
+                                }
+                            } else {
+                                echo '<tr><td colspan="8">ไม่มีข้อมูล</td></tr>';
+                            }
+
+                            $mysqli->close();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<?php include('footer.php'); ?>
+
+    <script>
+        function confirmDelete(subjectId) {
+            Swal.fire({
+                title: 'คุณแน่ใจหรือไม่?',
+                text: "ข้อมูลที่อยู่ในรายวิชานี้จะถูกลบทั้งหมด!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'ตกลง',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "delete_subject.php?subject_id=" + subjectId + "&action=delete";
+                }
+            });
+        }
+    </script>
+
+    <?php include('footer.php'); ?>
+</body>
+
+</html>

@@ -41,8 +41,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $description = $_POST['description'];
 
     // แปลงวันที่จากรูปแบบไทยเป็นรูปแบบที่ฐานข้อมูลรองรับ (Y-m-d H:i:s)
-    $assigned_date = DateTime::createFromFormat('d/m/Y H:i', $_POST['assigned_date'])->format('Y-m-d H:i:s');
-    $deadline = DateTime::createFromFormat('d/m/Y H:i', $_POST['deadline'])->format('Y-m-d H:i:s');
+    $assigned_date_obj = DateTime::createFromFormat('d/m/Y H:i', $_POST['assigned_date']);
+    $deadline_obj = DateTime::createFromFormat('d/m/Y H:i', $_POST['deadline']);
+
+    if ($assigned_date_obj && $deadline_obj) {
+        $assigned_date = $assigned_date_obj->format('Y-m-d H:i:s');
+        $deadline = $deadline_obj->format('Y-m-d H:i:s');
+    } else {
+        die("รูปแบบวันที่ไม่ถูกต้อง กรุณาตรวจสอบรูปแบบวันที่ให้เป็น วัน/เดือน/ปี ชั่วโมง:นาที");
+    }
 
     // ตรวจสอบไฟล์และจัดการอัปโหลดหลายไฟล์
     $file_paths = [];
@@ -264,6 +271,17 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
                 time_24hr: true,
                 position: "above" // ตั้งค่าให้แสดง pop-up ด้านบน
             });
+        });
+
+        // ตรวจสอบฟอร์มก่อนส่ง
+        document.getElementById('add_homework_form').addEventListener('submit', function(event) {
+            var assignedDate = document.getElementById('assigned_date').value;
+            var deadline = document.getElementById('deadline').value;
+
+            if (assignedDate === "" || deadline === "") {
+                alert('กรุณากรอกวันที่สั่งและวันหมดเขตให้ครบถ้วน');
+                event.preventDefault(); // หยุดการส่งฟอร์ม
+            }
         });
     });
 </script>

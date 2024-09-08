@@ -220,7 +220,7 @@ ob_end_flush();
                     </div>
 
                     <h2 class="section-title" style="color: black;">การส่งงานของนักเรียน</h2>
-                   
+
                     <?php if ($students_result->num_rows > 0) {
                         while ($row = $students_result->fetch_assoc()) {
                             // ตรวจสอบการส่งงานและเวลาการส่ง
@@ -284,7 +284,7 @@ ob_end_flush();
 
                                 <!-- ปุ่มดูรายละเอียด -->
                                 <?php if (!empty($row['file_path'])) { ?>
-                                    <a href="submission_details.php?homework_id=<?= htmlspecialchars($homework_id); ?>&member_id=<?= htmlspecialchars($row['member_id']); ?>" class="btn btn-m">ดูรายละเอียด</a>
+                                    <a href="submission_details.php?homework_id=<?= htmlspecialchars($homework_id); ?>&member_id=<?= htmlspecialchars($row['member_id']); ?>" class="btn btn-m">ไฟล์งานของนักเรียน</a>
                                 <?php } ?>
 
                                 <!-- ปุ่มลบ -->
@@ -293,6 +293,10 @@ ob_end_flush();
                                     <input type="hidden" name="delete_submission" value="1">
                                     <button type="submit" class="btn btn-d" onclick="return confirm('คุณต้องการลบหรือไม่?')">ลบ</button>
                                 </form>
+
+                                <div class="x_title">
+                                    <div class="clearfix"></div>
+                                </div>
                         <?php }
                     } else {
                         echo '<p>ไม่มีนักเรียนในรายวิชานี้</p>';

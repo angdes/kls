@@ -128,7 +128,7 @@ $homework = $result->fetch_assoc();
                                         . htmlspecialchars($file_name) . "</a></li>";
                             }
                         } else {
-                            echo "<li>ไม่มีไฟล์แนบ หรือเกิดข้อผิดพลาดในการแปลง JSON</li>";
+                            echo "<li>ไม่มีไฟล์แนบ </li>";
                         }
                         ?>
                     </ul>

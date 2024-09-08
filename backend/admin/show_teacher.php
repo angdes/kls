@@ -1,11 +1,15 @@
 <?php include('header.php'); ?>
 <style>
-    .btn-hotpink {
+   .btn-hotpink {
         background-color: hotpink;
         border-color: hotpink;
-        color: black;
+        color: white;
+        transition: background-color 0.3s, color 0.3s;
     }
-
+    .btn-hotpink:hover {
+        background-color: deeppink;
+        color: white;
+    }
     .profile-pic {
         width: 50px;
         height: 50px;
@@ -31,7 +35,7 @@
                         <button class="btn btn-hotpink">เพิ่มข้อมูล</button>
                     </a>
                 </div>
-                <table id="datatable-buttons" class="table table-striped table-bordered">
+                <table id="datatable" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>รหัสครู</th>

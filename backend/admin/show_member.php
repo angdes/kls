@@ -3,7 +3,12 @@
     .btn-hotpink {
         background-color: hotpink;
         border-color: hotpink;
-        color: black;
+        color: white;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .btn-hotpink:hover {
+        background-color: deeppink;
+        color: white;
     }
 </style>
 <div class="right_col" role="main">
@@ -29,7 +34,7 @@
                         <button type="submit" name="delete_selected" class="btn btn-danger" onclick="return confirmDeleteSelected()">ลบที่เลือก</button>
                         <button type="submit" name="delete_all" class="btn btn-danger" onclick="return confirm('คุณต้องการลบสมาชิกทั้งหมดหรือไม่?')">ลบทั้งหมด</button>
                     </div>
-                    <table id="datatable-buttons" class="table table-striped table-bordered">
+                    <table id="datatable" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th><input type="checkbox" id="checkAll"></th> <!-- เช็คบ็อกซ์สำหรับเลือกทั้งหมด -->

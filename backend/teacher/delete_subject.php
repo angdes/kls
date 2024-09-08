@@ -1,4 +1,69 @@
-<?php include('header.php'); ?>
+<?php 
+include('header.php'); 
+
+// เชื่อมต่อฐานข้อมูล
+$mysqli = new mysqli("localhost", "root", "", "myproject");
+
+// ตรวจสอบการเชื่อมต่อ
+if ($mysqli->connect_error) {
+    die("การเชื่อมต่อล้มเหลว: " . $mysqli->connect_error);
+}
+
+if (isset($_GET['subject_id']) && isset($_GET['action']) && $_GET['action'] == 'delete') {
+    $subject_id = intval($_GET['subject_id']);
+    
+    // ลบข้อมูลที่เกี่ยวข้องใน tb_student_subject ก่อน
+    $delete_student_subject_sql = "DELETE FROM tb_student_subject WHERE subject_id = $subject_id";
+    
+    if ($mysqli->query($delete_student_subject_sql) === TRUE) {
+        // ลบข้อมูลจาก tb_subject เมื่อข้อมูลที่อ้างอิงถูกลบ
+        $delete_subject_sql = "DELETE FROM tb_subject WHERE subject_id = $subject_id";
+        
+        if ($mysqli->query($delete_subject_sql) === TRUE) {
+            echo "
+            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+            <script>
+                Swal.fire({
+                    title: 'ลบข้อมูลสำเร็จ!',
+                    text: 'รายวิชาและข้อมูลที่เกี่ยวข้องถูกลบเรียบร้อยแล้ว',
+                    icon: 'success',
+                    confirmButtonText: 'ตกลง'
+                }).then(() => {
+                    setTimeout(function(){
+                        window.history.back(); // กลับไปหน้าก่อนหน้า
+                    }, 1000); // 1000 milliseconds = 1 second
+                });
+            </script>";
+        } else {
+            echo "
+            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+            <script>
+                Swal.fire({
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถลบข้อมูลวิชาได้: " . $mysqli->error . "',
+                    icon: 'error',
+                    confirmButtonText: 'ตกลง'
+                });
+            </script>";
+        }
+    } else {
+        echo "
+        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+        <script>
+            Swal.fire({
+                title: 'เกิดข้อผิดพลาด',
+                text: 'ไม่สามารถลบข้อมูลนักเรียนที่เกี่ยวข้องได้: " . $mysqli->error . "',
+                icon: 'error',
+                confirmButtonText: 'ตกลง'
+            });
+        </script>";
+    }
+}
+
+// ปิดการเชื่อมต่อฐานข้อมูล
+$mysqli->close();
+?>
+
 <div class="right_col" role="main">
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -12,35 +77,11 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <br />
-
-                    <?php
-                    if (isset($_GET['id'])) {
-                        $id = $_GET['id'];
-                        
-                        // ตรวจสอบว่ามีการระบุ ID วิชาหรือไม่
-                        if (!empty($id)) {
-                            // เตรียมคำสั่ง SQL สำหรับการลบข้อมูล
-                            $sql = "DELETE FROM tb_subject WHERE subject_id = $id";
-                          
-                            if ($cls_conn->write_base($sql) == true) {
-                                echo $cls_conn->show_message('ลบข้อมูลสำเร็จ');
-                                echo $cls_conn->goto_page(1, 'show_subject.php');
-                            } else {
-                                echo $cls_conn->show_message('ลบข้อมูลไม่สำเร็จให้ลบข้อมูลรายวิชาในการบ้านก่อน');
-                                echo $sql;
-                            }
-                        } else {
-                            echo $cls_conn->show_message('ไม่พบข้อมูลวิชาที่จะลบ');
-                        }
-                    } else {
-                        echo $cls_conn->show_message('ไม่มีข้อมูลวิชาที่ระบุ');
-                    }
-                    ?>
-
+                    <p>กำลังลบข้อมูลวิชา...</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <?php include('footer.php'); ?>

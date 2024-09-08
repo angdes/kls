@@ -56,15 +56,30 @@ if ($result === false) {
         font-size: 12px;
         margin-right: 5px;
     }
-    
-    .btn-d {
+
+    .btn-m {
         color: white;
         background-color: #BA55D3;
         border-color: black;
-        padding: 9px 15px;
-        font-size: 12px;
-        margin-right: 5px;
     }
+
+    .btn-m:hover {
+        background-color: deeppink;
+        color: white;
+    }
+
+    .btn-d {
+        background-color: magenta;
+        border-color: magenta;
+        color: white;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .btn-d:hover {
+        background-color: deeppink;
+        color: white;
+    }
+
 
     .report-section {
         background-color: #f9f9f9;
@@ -152,12 +167,17 @@ if ($result === false) {
                             </div>
 
                             <div class="form-row">
-                                <a href="check_homework.php?homework_id=<?= $homework_id; ?>" class="btn btn-custom">ตรวจงานนักเรียนในรายวิชานี้</a>
+                                <a href="check_homework.php?homework_id=<?= $homework_id; ?>" class="btn btn-d">ตรวจงานนักเรียนในรายวิชานี้</a>
                                 <a href="summary.php?homework_id=<?= $homework_id; ?>" class="btn btn-d">สรุปงานที่มอบ</a>
-                                <a href="delete_homework.php?homework_id=<?= $homework_id; ?>&subject_pass=<?= $subject_pass; ?>" onclick="return confirm('คุณต้องการลบหรือไม่?')" class="btn btn-danger" style="padding: 9px 15px; font-size: 12px;">ลบ</a>
+                                <a href="edit_homework.php?homework_id=<?= $homework_id; ?>&subject_pass=<?= $subject_pass; ?>" class="btn btn-m" style="padding: 9px 15px; font-size: 12px;">
+                                    <i class="fas fa-edit"></i> แก้ไข
+                                </a>
+                                <a href="delete_homework.php?homework_id=<?= $homework_id; ?>&subject_pass=<?= $subject_pass; ?>" onclick="return confirm('คุณต้องการลบหรือไม่?')" class="btn btn-m" style="padding: 9px 15px; font-size: 12px;">ลบ</a>
                             </div>
                         </div>
-
+                        <div class="x_title">
+                            <div class="clearfix"></div>
+                        </div>
                 <?php
                     }
                 } else {
@@ -169,7 +189,7 @@ if ($result === false) {
             </div>
 
             <div align="right">
-                <a href="show_subjectandwork.php"><button class="btn btn-d">ย้อนกลับ</button></a>
+                <a href="show_subjectandwork.php"><button class="btn btn-m">ย้อนกลับ</button></a>
             </div>
         </div>
 
