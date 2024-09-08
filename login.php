@@ -1,11 +1,8 @@
 <?php include('header.php');?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
     <link rel="stylesheet" type="text/css" href="template_login/vendor/select2/select2.min.css">
     <link rel="stylesheet" type="text/css" href="template_login/css/util.css">
     <link rel="stylesheet" type="text/css" href="template_login/css/main.css">  
@@ -47,6 +44,11 @@
                 box-shadow: 0 0 20px rgba(255, 255, 255, 1);
             }
         }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -60,6 +62,81 @@
                 <span class="login100-form-title">
                     KP Login
                 </span>
+
+                <?php
+                // ตัวแปรเพื่อแสดงข้อความแจ้งเตือน
+                $login_error = '';
+
+                if (isset($_POST['submit'])) {
+                    $username = $_POST['username'];
+                    $password = $_POST['password'];
+
+                    // ตรวจสอบว่า username มีอยู่ใน tb_admin หรือไม่
+                    $sql_check_username = "SELECT * FROM tb_admin WHERE admin_username='$username'";
+                    $result_check_username = $cls_conn->select_base($sql_check_username);
+
+                    if (mysqli_num_rows($result_check_username) >= 1) {
+                        $sql = "SELECT * FROM tb_admin WHERE admin_username='$username' AND admin_password='$password'";
+                        $result = $cls_conn->select_base($sql);
+
+                        if (mysqli_num_rows($result) >= 1) {
+                            $row = mysqli_fetch_assoc($result);
+                            $_SESSION['user'] = $row;
+                            $_SESSION['role'] = 'admin';
+                            // echo $cls_conn->show_message('Login Success');
+                            echo $cls_conn->goto_page(1, 'backend/admin/index.php');
+                        } else {
+                            $login_error = 'รหัสผ่านไม่ถูกต้อง';
+                        }
+                    } else {
+                        // ตรวจสอบในตาราง tb_member
+                        $sql_check_username2 = "SELECT * FROM tb_member WHERE member_username='$username'";
+                        $result_check_username2 = $cls_conn->select_base($sql_check_username2);
+
+                        if (mysqli_num_rows($result_check_username2) >= 1) {
+                            $sql2 = "SELECT * FROM tb_member WHERE member_username='$username' AND member_password='$password'";
+                            $result2 = $cls_conn->select_base($sql2);
+
+                            if (mysqli_num_rows($result2) >= 1) {
+                                $row2 = mysqli_fetch_assoc($result2);
+                                $_SESSION['user'] = $row2;
+                                $_SESSION['role'] = 'member';
+                                // echo $cls_conn->show_message('Login Success');
+                                echo $cls_conn->goto_page(1, 'frontend/member/index.php');
+                            } else {
+                                $login_error = 'รหัสผ่านไม่ถูกต้อง';
+                            }
+                        } else {
+                            // ตรวจสอบในตาราง tb_teacher
+                            $sql_check_username3 = "SELECT * FROM tb_teacher WHERE teacher_username='$username'";
+                            $result_check_username3 = $cls_conn->select_base($sql_check_username3);
+
+                            if (mysqli_num_rows($result_check_username3) >= 1) {
+                                $sql3 = "SELECT * FROM tb_teacher WHERE teacher_username='$username' AND teacher_password='$password'";
+                                $result3 = $cls_conn->select_base($sql3);
+
+                                if (mysqli_num_rows($result3) >= 1) {
+                                    $row3 = mysqli_fetch_assoc($result3);
+                                    $_SESSION['user'] = $row3;
+                                    $_SESSION['role'] = 'teacher';
+                                    // echo $cls_conn->show_message('Login Success');
+                                    echo $cls_conn->goto_page(1, 'backend/teacher/index.php');
+                                } else {
+                                    $login_error = 'รหัสผ่านไม่ถูกต้อง';
+                                }
+                            } else {
+                                // ไม่มีชื่อผู้ใช้ในระบบ
+                                $login_error = 'ชื่อผู้ใช้ไม่ถูกต้อง';
+                            }
+                        }
+                    }
+                }
+                ?>
+
+                <!-- แสดงข้อความแจ้งเตือน -->
+                <?php if (!empty($login_error)) { ?>
+                    <p class="error-message"><?php echo $login_error; ?></p>
+                <?php } ?>
 
                 <div class="wrap-input100 validate-input">
                     <input class="input100" type="text" name="username" placeholder="Username" required>
@@ -89,57 +166,14 @@
                     </a>
                 </div>
             </form>
-
-                <?php
-                if (isset($_POST['submit'])) {
-                    $username = $_POST['username'];
-                    $password = $_POST['password'];
-                    
-                    $sql = "SELECT * FROM tb_admin WHERE admin_username='$username' AND admin_password='$password'";
-                    $result = $cls_conn->select_base($sql);
-
-                    if (mysqli_num_rows($result) >= 1) {
-                        $row = mysqli_fetch_assoc($result);
-                        $_SESSION['user'] = $row;
-                        $_SESSION['role'] = 'admin';
-                        echo $cls_conn->show_message('Login Success');
-                        echo $cls_conn->goto_page(1, 'backend/admin/index.php');
-                    } else {
-                        $sql2 = "SELECT * FROM tb_member WHERE member_username='$username' AND member_password='$password'";
-                        $result2 = $cls_conn->select_base($sql2);
-
-                        if (mysqli_num_rows($result2) >= 1) {
-                            $row2 = mysqli_fetch_assoc($result2);
-                            $_SESSION['user'] = $row2;
-                            $_SESSION['role'] = 'member';
-                            echo $cls_conn->show_message('Login Success');
-                            echo $cls_conn->goto_page(1, 'frontend/member/index.php');
-                        } else {
-                            $sql3 = "SELECT * FROM tb_teacher WHERE teacher_username='$username' AND teacher_password='$password'";
-                            $result3 = $cls_conn->select_base($sql3);
-
-                            if (mysqli_num_rows($result3) >= 1) {
-                                $row3 = mysqli_fetch_assoc($result3);
-                                $_SESSION['user'] = $row3;
-                                $_SESSION['role'] = 'teacher';
-                                echo $cls_conn->show_message('Login Success');
-                                echo $cls_conn->goto_page(1, 'backend/teacher/index.php');
-                            } else {
-                                echo $cls_conn->show_message('Login Fail');
-                            }
-                        }
-                    }
-                }
-                ?>
-            </div>
         </div>
     </div>
+
     <script src="template_login/vendor/jquery/jquery-3.2.1.min.js"></script>
     <script src="template_login/vendor/bootstrap/js/popper.js"></script>
     <script src="template_login/vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="template_login/vendor/select2/select2.min.js"></script>
     <script src="template_login/vendor/tilt/tilt.jquery.min.js"></script>
-    
     <script src="template_login/js/main.js"></script>
 
 <?php include('footer.php');?>

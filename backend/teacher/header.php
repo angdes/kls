@@ -34,6 +34,8 @@ if ($result && mysqli_num_rows($result) > 0) {
 }
 ?>
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,7 +110,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 
             <!-- top navigation -->
             <div class="top_nav">
-                <div class="nav_menu" style="background-color: #C44AFD;">
+                <div class="nav_menu" style="background-color: #EE82EE;">
                     <nav>
                         <div class="nav toggle">
                             <a id="menu_toggle"><i class="fa fa-bars"></i></a>
@@ -117,8 +119,8 @@ if ($result && mysqli_num_rows($result) > 0) {
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="color: white;">
                                     <img src="<?= htmlspecialchars($teacher_profile_pic, ENT_QUOTES, 'UTF-8'); ?>" alt="Profile Picture" style="width: 33px; height: 33px; border-radius: 50%;">
-                                    <?= htmlspecialchars($teacher_fullname, ENT_QUOTES, 'UTF-8'); ?>
-                                    <span class="fa fa-angle-down"></span>
+                                    <span style="color: white;"><?= htmlspecialchars($teacher_fullname, ENT_QUOTES, 'UTF-8'); ?>
+                                    <span class="fa fa-angle-down" style="color: white;"></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
                                     <li><a href="show_teacher.php">แก้ไขข้อมูลส่วนตัว</a></li>

@@ -32,130 +32,142 @@ if ($result === false) {
 ?>
 
 <style>
-    .btn-m {
-        color: white;
-        background-color: #FF00FF;
-        border-color: black;
+    .form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
     }
 
+    .form-row label {
+        flex: 0 0 150px;
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+    .form-row h4 {
+        margin: 0;
+    }
+
+    .btn-custom {
+        background-color: #FF00FF;
+        color: white;
+        border-color: black;
+        padding: 9px 15px;
+        font-size: 12px;
+        margin-right: 5px;
+    }
+    
     .btn-d {
         color: white;
         background-color: #BA55D3;
         border-color: black;
-    }
-    .btn-m1 {
-        color: white;
-        background-color: #FF00FF;
-        border-color: black;
-    }
-
-    .btn-d1 {
-        color: white;
-        background-color: #BA55D3;
-        border-color: black;
-    }
-   
-
-    th {
-        font-size: 13px;
-        /* กำหนดขนาดตัวอักษรที่ต้องการ */
-    }
-
-    td {
+        padding: 9px 15px;
         font-size: 12px;
+        margin-right: 5px;
+    }
+
+    .report-section {
+        background-color: #f9f9f9;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 </style>
+
 <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
             <div class="x_title">
-                <h2>รายการการบ้านสำหรับวิชา <?= htmlspecialchars($subject_pass); ?></h2>
-                <ul class="nav navbar-right panel_toolbox">
-                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-                    <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-                </ul>
+                <h2>รายงานการบ้านสำหรับวิชา <?= htmlspecialchars($subject_pass); ?></h2>
                 <div class="clearfix"></div>
             </div>
+
             <div class="x_content">
-                <a href="add_homework.php?subject_pass=<?= htmlspecialchars($subject_pass); ?>" class="btn btn-m">เพิ่มการบ้านใหม่</a>
-                <br>
-                <table id="datatable" class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>ลำดับ</th>
-                            <th>หัวข้อการบ้าน</th>
-                            <th>รายละเอียด</th>
-                            <th>วันที่สั่ง</th>
-                            <th>วันหมดเขต</th>
-                            <th>ตรวจแล้ว</th>
-                            <th>ยังไม่ตรวจ</th>
-                            <th>ยังไม่ส่ง</th>
-                            <th>ตรวจงาน</th>
-                            <th>สรุปงาน</th>
-                            <th>ลบ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $index = 1;
-                        if ($result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
-                                $homework_id = htmlspecialchars($row['homework_id']);
+                <a href="add_homework.php?subject_pass=<?= htmlspecialchars($subject_pass); ?>" class="btn btn-custom">เพิ่มการบ้านใหม่</a>
+                <br><br>
 
-                                // คำนวณ "ตรวจแล้ว" และ "ยังไม่ตรวจ" จากฐานข้อมูล
-                                $checked_sql = "SELECT COUNT(*) as checked_count FROM tb_student_homework WHERE homework_id = $homework_id AND checked = 1";
-                                $unchecked_sql = "SELECT COUNT(*) as unchecked_count FROM tb_student_homework WHERE homework_id = $homework_id AND (checked = 0 OR checked IS NULL)";
+                <?php
+                $index = 1;
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $homework_id = htmlspecialchars($row['homework_id']);
 
-                                $checked_result = $mysqli->query($checked_sql);
-                                $unchecked_result = $mysqli->query($unchecked_sql);
+                        // คำนวณ "ตรวจแล้ว" และ "ยังไม่ตรวจ" จากฐานข้อมูล
+                        $checked_sql = "SELECT COUNT(*) as checked_count FROM tb_student_homework WHERE homework_id = $homework_id AND checked = 1";
+                        $unchecked_sql = "SELECT COUNT(*) as unchecked_count FROM tb_student_homework WHERE homework_id = $homework_id AND (checked = 0 OR checked IS NULL)";
 
-                                $checked_count = $checked_result->fetch_assoc()['checked_count'] ?? 0;
-                                $unchecked_count = $unchecked_result->fetch_assoc()['unchecked_count'] ?? 0;
+                        $checked_result = $mysqli->query($checked_sql);
+                        $unchecked_result = $mysqli->query($unchecked_sql);
 
-                                // คำนวณ "ยังไม่ส่ง" โดยดึงข้อมูลนักเรียนทั้งหมดในวิชาและลบจำนวนที่ส่งงานแล้ว
-                                $students_sql = "SELECT COUNT(*) as total_students FROM tb_student_subject WHERE subject_id = (SELECT subject_id FROM tb_subject WHERE subject_pass = '$subject_pass' LIMIT 1)";
-                                $submitted_students_sql = "SELECT COUNT(DISTINCT member_id) as submitted_count FROM tb_student_homework WHERE homework_id = $homework_id";
+                        $checked_count = $checked_result->fetch_assoc()['checked_count'] ?? 0;
+                        $unchecked_count = $unchecked_result->fetch_assoc()['unchecked_count'] ?? 0;
 
-                                $students_result = $mysqli->query($students_sql);
-                                $submitted_result = $mysqli->query($submitted_students_sql);
+                        // คำนวณ "ยังไม่ส่ง" โดยดึงข้อมูลนักเรียนทั้งหมดในวิชาและลบจำนวนที่ส่งงานแล้ว
+                        $students_sql = "SELECT COUNT(*) as total_students FROM tb_student_subject WHERE subject_id = (SELECT subject_id FROM tb_subject WHERE subject_pass = '$subject_pass' LIMIT 1)";
+                        $submitted_students_sql = "SELECT COUNT(DISTINCT member_id) as submitted_count FROM tb_student_homework WHERE homework_id = $homework_id";
 
-                                $total_students = $students_result->fetch_assoc()['total_students'] ?? 0;
-                                $submitted_count = $submitted_result->fetch_assoc()['submitted_count'] ?? 0;
-                                $not_submitted_count = $total_students - $submitted_count;
-                        ?>
-                                <tr>
-                                    <td><?= $index++; ?></td>
-                                    <td><?= htmlspecialchars($row['title']); ?></td>
-                                    <td><?= htmlspecialchars($row['description']); ?></td>
-                                    <td><?= htmlspecialchars($row['assigned_date']); ?></td>
-                                    <td><?= htmlspecialchars($row['deadline']); ?></td>
-                                    <td style="color: green;"><?= $checked_count; ?></td>
-                                    <td style="color: black;"><?= $unchecked_count; ?></td>
-                                    <td style="color: red;"><?= $not_submitted_count; ?></td>
-                                    <td>
-                                        <a href="check_homework.php?homework_id=<?= $homework_id; ?>" class="btn btn-m1">ตรวจงาน</a>
-                                    </td>
-                                    <td>
-                                        <a href="summary.php?homework_id=<?= $homework_id; ?>" class="btn btn-d1">สรุปงาน</a>
-                                    </td>
-                                    <td>
-                                        <a href="delete_homework.php?homework_id=<?= $homework_id; ?>&subject_pass=<?= $subject_pass; ?>" onclick="return confirm('คุณต้องการลบหรือไม่?')"><img src="../../images/delete.png" /></a>
-                                    </td>
-                                </tr>
-                        <?php
-                            }
-                        } else {
-                            echo '<tr><td colspan="11">ไม่มีการบ้านที่จะแสดง</td></tr>';
-                        }
+                        $students_result = $mysqli->query($students_sql);
+                        $submitted_result = $mysqli->query($submitted_students_sql);
 
-                        $mysqli->close();
-                        ?>
-                    </tbody>
-                </table>
+                        $total_students = $students_result->fetch_assoc()['total_students'] ?? 0;
+                        $submitted_count = $submitted_result->fetch_assoc()['submitted_count'] ?? 0;
+                        $not_submitted_count = $total_students - $submitted_count;
+                ?>
+
+                        <div class="report-section">
+                            <div class="form-row">
+                                <label>หัวข้อการบ้าน:</label>
+                                <h4><?= htmlspecialchars($row['title']); ?></h4>
+                            </div>
+
+                            <div class="form-row">
+                                <label>รายละเอียด:</label>
+                                <h4><?= htmlspecialchars($row['description']); ?></h4>
+                            </div>
+
+                            <div class="form-row">
+                                <label>วันที่สั่ง:</label>
+                                <h4><?= htmlspecialchars($row['assigned_date']); ?></h4>
+                            </div>
+
+                            <div class="form-row">
+                                <label>วันหมดเขต:</label>
+                                <h4><?= htmlspecialchars($row['deadline']); ?></h4>
+                            </div>
+
+                            <div class="form-row">
+                                <label>ตรวจแล้ว:</label>
+                                <h4 style="color: green;"><?= $checked_count; ?></h4>
+                            </div>
+
+                            <div class="form-row">
+                                <label>ยังไม่ตรวจ:</label>
+                                <h4 style="color: black;"><?= $unchecked_count; ?></h4>
+                            </div>
+
+                            <div class="form-row">
+                                <label>ยังไม่ส่ง:</label>
+                                <h4 style="color: red;"><?= $not_submitted_count; ?></h4>
+                            </div>
+
+                            <div class="form-row">
+                                <a href="check_homework.php?homework_id=<?= $homework_id; ?>" class="btn btn-custom">ตรวจงานนักเรียนในรายวิชานี้</a>
+                                <a href="summary.php?homework_id=<?= $homework_id; ?>" class="btn btn-d">สรุปงานที่มอบ</a>
+                                <a href="delete_homework.php?homework_id=<?= $homework_id; ?>&subject_pass=<?= $subject_pass; ?>" onclick="return confirm('คุณต้องการลบหรือไม่?')" class="btn btn-danger" style="padding: 9px 15px; font-size: 12px;">ลบ</a>
+                            </div>
+                        </div>
+
+                <?php
+                    }
+                } else {
+                    echo '<p>ไม่มีการบ้านที่จะแสดง</p>';
+                }
+
+                $mysqli->close();
+                ?>
             </div>
-            <div class="x_title">
-                <div class="clearfix"></div>
-            </div>
+
             <div align="right">
                 <a href="show_subjectandwork.php"><button class="btn btn-d">ย้อนกลับ</button></a>
             </div>
@@ -163,5 +175,5 @@ if ($result === false) {
 
     </div>
 </div>
-</div>
+
 <?php include('footer.php'); ?>

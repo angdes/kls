@@ -142,20 +142,7 @@ $submission_stats = $submission_stats_result->fetch_assoc();
                     </div>
 
                     <!-- แสดงสถิติการบ้าน -->
-                    <div class="dashboard-grid">
-                        <div class="dashboard-card">
-                            <h3>การบ้านที่มอบหมาย</h3>
-                            <p>จำนวนทั้งหมด: <?= $homework_stats['total_homework']; ?></p>
-                            <p>การบ้านที่ยังไม่หมดเขต: <?= $homework_stats['pending_homework']; ?></p>
-                            <p>การบ้านที่หมดเขตแล้ว: <?= $homework_stats['overdue_homework']; ?></p>
-                        </div>
-                        <div class="dashboard-card">
-                            <h3>การตรวจการบ้าน</h3>
-                            <p>ส่งแล้วทั้งหมด: <?= $submission_stats['total_submissions']; ?></p>
-                            <p>ตรวจแล้ว: <?= $submission_stats['graded_submissions']; ?></p>
-                            <p>ยังไม่ได้ตรวจ: <?= $submission_stats['ungraded_submissions']; ?></p>
-                        </div>
-                    </div>
+                    
 
                     <!-- ลิงก์ด่วนการจัดการข้อมูล -->
                     <h3 style="color: black;">จัดการข้อมูล</h3>

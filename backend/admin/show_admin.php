@@ -12,12 +12,16 @@
         object-fit: cover;
         border-radius: 50%;
     }
+    .btn-m {
+        color: white;
+        background-color: #FF00FF;
+    }
 </style>
 <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
             <div class="x_title">
-                <h2>แสดงข้อมูลผู้ดูแลระบบ </h2>
+                <h2 style="color: black;">แสดงข้อมูลผู้ดูแลระบบ </h2>
                 <ul class="nav navbar-right panel_toolbox">
                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                     </li>
@@ -31,7 +35,7 @@
                 <p class="text-muted font-13 m-b-30">
                 <div align="left">
                     <a href="insert_admin.php">
-                        <button class="btn btn-hotpink">เพิ่มข้อมูล</button>
+                        <button class="btn btn-m">เพิ่มข้อมูล</button>
                     </a>
                 </div>
                 <table id="datatable-buttons" class="table table-striped table-bordered">

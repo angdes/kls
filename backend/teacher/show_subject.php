@@ -68,7 +68,7 @@ if ($result === false) {
                         <button class="btn btn-d">เพิ่มนักเรียนในรายวิชา</button>
                     </a>
                 </div>
-                <table id="datatable-buttons" class="table table-striped table-bordered">
+                <table id="datatable" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>ลำดับ</th>
@@ -100,7 +100,7 @@ if ($result === false) {
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <a href="view_students_in_subject.php?subject_id=<?= htmlspecialchars($row['subject_id']); ?>" class="btn btn-info">ดูนักเรียน</a>
+                                        <a href="view_students_in_subject.php?subject_id=<?= htmlspecialchars($row['subject_id']); ?>" class="btn btn-d">ดูนักเรียน</a>
                                     </td>
                                     <td>
                                         <a href="update_subject.php?id=<?= htmlspecialchars($row['subject_id']); ?>&teacher_id=<?= htmlspecialchars($teacher_id); ?>" onclick="return confirm('คุณต้องการแก้ไขหรือไม่?')"><img src="../../images/edit.png" alt="Edit" /></a>

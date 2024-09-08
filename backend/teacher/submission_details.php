@@ -7,7 +7,7 @@ if (!isset($_SESSION['user'])) {
     echo "คุณต้องล็อกอินก่อนเพื่อดูรายละเอียดการส่งงาน";
     exit();
 }
-
+$teacher_id = $_SESSION['user']['teacher_id'];
 // เชื่อมต่อฐานข้อมูล
 $mysqli = new mysqli("localhost", "root", "", "myproject");
 
@@ -63,12 +63,12 @@ $submission = $result->fetch_assoc();
         .form-row h4 {
             margin: 0;
         }
+
         .btn-d {
-        color: white;
-        background-color: #BA55D3;
-        border-color: black;
-    }
-        
+            color: white;
+            background-color: #BA55D3;
+            border-color: black;
+        }
     </style>
 </head>
 
@@ -77,12 +77,12 @@ $submission = $result->fetch_assoc();
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
                 <div class="x_title">
-                    <h2>สรุปการส่งงานของนักเรียน</h2>
+                    <h2 style="color: black;">สรุปการส่งงานของนักเรียน</h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
                     <div class="form-row">
-                        <label>ขื่อ:</label>
+                        <label>ชื่อ:</label>
                         <h4><?= htmlspecialchars($submission['member_fullname']); ?></h4>
                     </div>
                     <div class="form-row">
@@ -135,19 +135,20 @@ $submission = $result->fetch_assoc();
 
                     <div class="form-row">
                         <label>คะแนน:</label>
-                        <h4><?= htmlspecialchars($submission['grade']) ?? 'ยังไม่มีคะแนน'; ?></h4>
+                        <h4><?= htmlspecialchars($submission['grade'] ?? 'ยังไม่มีคะแนน') ?></h4>
                     </div>
                     <div class="form-row">
                         <label>ความคิดเห็น:</label>
-                        <h4><?= htmlspecialchars($submission['feedback']) ?? 'ไม่มีความคิดเห็น'; ?></h4>
+                        <h4><?= htmlspecialchars($submission['feedback'] ?? 'ไม่มีความคิดเห็น') ?></h4>
                     </div>
+
                 </div>
             </div>
             <div class="x_title">
                 <div class="clearfix"></div>
             </div>
             <div align="right">
-            <a href="check_homework.php?homework_id=<?= urlencode($homework_id) ?>"><button class="btn btn-d">ย้อนกลับ</button></a>
+                <a href="check_homework.php?homework_id=<?= urlencode($homework_id) ?>"><button class="btn btn-d">ย้อนกลับ</button></a>
             </div>
         </div>
     </div>

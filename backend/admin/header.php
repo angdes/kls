@@ -108,15 +108,15 @@ if ($result && mysqli_num_rows($result) > 0) {
             </div>
             <!-- top navigation -->
             <div class="top_nav">
-                <div class="nav_menu" style="background-color: #C44AFD;">
+                <div class="nav_menu" style="background-color: #DA70D6;">
                     <nav>
                         <div class="nav toggle"> <a id="menu_toggle"><i class="fa fa-bars"></i></a> </div>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="color: white;">
                                     <img src="<?= htmlspecialchars($admin_profile_pic, ENT_QUOTES, 'UTF-8'); ?>" alt="Profile Picture" style="width: 33px; height: 33px; border-radius: 50%;">
-                                    <?= htmlspecialchars($admin_fullname, ENT_QUOTES, 'UTF-8'); ?>
-                                    <span class="fa fa-angle-down"></span>
+                                    <span style="color: white;"><?= htmlspecialchars($admin_fullname, ENT_QUOTES, 'UTF-8'); ?>
+                                    <span class="fa fa-angle-down" style="color: white;"></span>
                                 </a>
 
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">

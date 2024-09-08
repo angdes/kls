@@ -175,8 +175,6 @@ if ($result === false) {
                         echo '<div class="card-description">' . $subject_detail . '</div>';
                         echo '<div class="card-stats text-work">การบ้านทั้งหมด: ' . $total_homework . ' งาน</div>';
                         echo '<div class="card-stats text-stus">นักเรียนทั้งหมด: ' . $total_students . ' คน</div>';
-                        echo '<div class="card-stats text-green">ส่งงานแล้ว: ' . $submitted . ' คน</div>';
-                        echo '<div class="card-stats text-red">ยังไม่ส่ง: ' . $not_submitted . ' คน</div>';
                         echo '<div class="card-stats text-black">ยังไม่ตรวจ: ' . $unchecked . ' งาน</div>';
                         echo '</div>';
                         echo '<div class="download-icon">';

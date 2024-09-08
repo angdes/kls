@@ -36,6 +36,7 @@ if (isset($_GET['subject_id'])) {
     $sql = "SELECT 
                 ss.member_id, 
                 m.member_fullname,
+                m.member_number,
                 h.title AS homework_title, 
                 sh.grade
             FROM tb_student_subject ss
@@ -56,37 +57,50 @@ if (isset($_GET['subject_id'])) {
     $sheet = $spreadsheet->getActiveSheet();
 
     // ตั้งชื่อหัวข้อของคอลัมน์
-    $sheet->setCellValue('A1', 'ชื่อสมาชิก');
-    $sheet->setCellValue('B1', 'ชื่อการบ้าน');
-    $sheet->setCellValue('C1', 'คะแนน');
-    $sheet->setCellValue('D1', 'คะแนนรวมทั้งหมด');
+    $sheet->setCellValue('A1', 'รหัสนักเรียน');
+    $sheet->setCellValue('B1', 'ชื่อสมาชิก');
+    $sheet->setCellValue('C1', 'ชื่อการบ้าน');
+    $sheet->setCellValue('D1', 'คะแนน');
+    $sheet->setCellValue('E1', 'คะแนนรวมทั้งหมด');
 
     // วน loop เพื่อใส่ข้อมูลและคำนวณคะแนนรวม
     $rowCount = 2;
     $currentMemberId = null;
     $totalScore = 0;
+    $previousMemberId = null; // เก็บค่า member_id ก่อนหน้าเพื่อเช็กชื่อซ้ำ
     while ($row = $result->fetch_assoc()) {
         if ($currentMemberId !== $row['member_id']) {
             if ($currentMemberId !== null) {
                 // แสดงคะแนนรวมของนักเรียนก่อนหน้า
-                $sheet->setCellValue('D' . ($rowCount - 1), $totalScore);
+                $sheet->setCellValue('E' . ($rowCount - 1), $totalScore);
             }
             $currentMemberId = $row['member_id'];
             $totalScore = 0;
         }
 
-        $sheet->setCellValue('A' . $rowCount, $row['member_fullname']);
-        $sheet->setCellValue('B' . $rowCount, $row['homework_title']);
-        $sheet->setCellValue('C' . $rowCount, $row['grade']);
+        // ตรวจสอบว่าชื่อซ้ำหรือไม่ ถ้าซ้ำให้แสดงค่าว่าง
+        if ($row['member_id'] !== $previousMemberId) {
+            $sheet->setCellValue('A' . $rowCount, $row['member_number']);
+            $sheet->setCellValue('B' . $rowCount, $row['member_fullname']);
+        } else {
+            $sheet->setCellValue('A' . $rowCount, '');
+            $sheet->setCellValue('B' . $rowCount, '');
+        }
+
+        $sheet->setCellValue('C' . $rowCount, $row['homework_title']);
+        $sheet->setCellValue('D' . $rowCount, $row['grade']);
 
         // เพิ่มคะแนนในคะแนนรวม
         $totalScore += $row['grade'];
         $rowCount++;
+
+        // เก็บค่า member_id ของแถวปัจจุบันเพื่อตรวจสอบกับแถวถัดไป
+        $previousMemberId = $row['member_id'];
     }
 
     // แสดงคะแนนรวมของนักเรียนคนสุดท้าย
     if ($currentMemberId !== null) {
-        $sheet->setCellValue('D' . ($rowCount - 1), $totalScore);
+        $sheet->setCellValue('E' . ($rowCount - 1), $totalScore);
     }
 
     // ล้างบัฟเฟอร์ก่อนใช้ header

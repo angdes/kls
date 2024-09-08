@@ -9,9 +9,10 @@ $alert_message = '';
 // ตรวจสอบว่ามีการล็อกอินและมีข้อมูลผู้ใช้ในเซสชันหรือไม่
 if (!isset($_SESSION['user'])) {
     $alert_message = '<div class="alert alert-danger">คุณต้องล็อกอินก่อนเพื่อดูการบ้าน</div>';
-    ob_end_flush(); // Flush output buffer
+    ob_end_flush();
     exit();
 }
+$teacher_id = $_SESSION['user']['teacher_id'];
 
 // เชื่อมต่อฐานข้อมูล
 $mysqli = new mysqli("localhost", "root", "", "myproject");
@@ -19,7 +20,7 @@ $mysqli = new mysqli("localhost", "root", "", "myproject");
 // ตรวจสอบการเชื่อมต่อ
 if ($mysqli->connect_error) {
     $alert_message = '<div class="alert alert-danger">การเชื่อมต่อล้มเหลว: ' . $mysqli->connect_error . '</div>';
-    ob_end_flush(); // Flush output buffer
+    ob_end_flush();
     exit();
 }
 
@@ -29,7 +30,7 @@ $homework_id = isset($_GET['homework_id']) ? intval($_GET['homework_id']) : 0;
 // ตรวจสอบว่า homework_id ถูกต้อง
 if ($homework_id <= 0) {
     $alert_message = '<div class="alert alert-danger">ข้อมูลไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง.</div>';
-    ob_end_flush(); // Flush output buffer
+    ob_end_flush();
     exit();
 }
 
@@ -39,7 +40,7 @@ $homework_result = $mysqli->query($homework_sql);
 
 if ($homework_result === false || $homework_result->num_rows === 0) {
     $alert_message = '<div class="alert alert-danger">ไม่พบข้อมูลการบ้านในระบบ.</div>';
-    ob_end_flush(); // Flush output buffer
+    ob_end_flush();
     exit();
 }
 
@@ -48,13 +49,13 @@ $subject_id = $homework['subject_id'];
 $assigned_date = $homework['assigned_date'];
 $deadline = $homework['deadline'];
 
-// ดึง subject_pass โดยใช้ subject_id
+// ดึงข้อมูล subject_pass
 $subject_sql = "SELECT subject_pass FROM tb_subject WHERE subject_id = $subject_id";
 $subject_result = $mysqli->query($subject_sql);
 
 if ($subject_result === false || $subject_result->num_rows === 0) {
     $alert_message = '<div class="alert alert-danger">ไม่พบข้อมูลวิชาในระบบ.</div>';
-    ob_end_flush(); // Flush output buffer
+    ob_end_flush();
     exit();
 }
 
@@ -71,7 +72,7 @@ $students_result = $mysqli->query($students_sql);
 
 if ($students_result === false) {
     $alert_message = '<div class="alert alert-danger">การดึงข้อมูลนักเรียนล้มเหลว: ' . $mysqli->error . '</div>';
-    ob_end_flush(); // Flush output buffer
+    ob_end_flush();
     exit();
 }
 
@@ -131,86 +132,67 @@ ob_end_flush();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ตรวจงานการบ้าน</title>
     <style>
-        .btn-success {
-            background-color: #28a745;
-            border-color: black;
-            color: white;
-            padding: 5px 10px;
-            font-size: 12px;
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
         }
 
-        .btn-info {
-            background-color: blue;
-            border-color: black;
-            color: white;
-            padding: 5px 10px;
-            font-size: 12px;
+        .form-row label {
+            flex: 0 0 150px;
+            margin-right: 10px;
+            font-weight: bold;
         }
 
-        .btn-danger {
-            background-color: hotpink;
-            border-color: black;
-            color: black;
-            padding: 5px 10px;
-            font-size: 12px;
+        .form-row h4 {
+            margin: 0;
         }
 
-        .alert {
-            margin: 20px;
-            padding: 20px;
-            border-radius: 5px;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border-color: black;
-        }
-
-        .late-submission {
-            color: red;
-        }
-
-        .on-time {
-            color: green;
-        }
-
-        .btn-green {
-            background-color: #28a745;
-            border-color: black;
-            color: white;
-        }
         .btn-d {
             color: white;
             background-color: #BA55D3;
             border-color: black;
         }
-        .btn-custom {
-            background-color: #28a745;
-            border-color: black;
-            color: white;
+
+        .x_panel {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
         }
 
-        .form-inline {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .x_title h2 {
+            color: black;
         }
 
-        .table td {
-            padding: 10px;
-            vertical-align: middle;
+        .form-section {
+            padding: 10px 0;
         }
 
-        /* ปรับขนาด input ให้เล็กลง */
         .grade-input {
             width: 60px;
         }
-        td {
-            font-size: 12px;
+
+        .report-section1 {
+            background-color: #fff;
+            /* พื้นหลังสีขาว */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* เงา */
+            padding: 20px;
+            /* เพิ่มระยะห่างภายใน */
+            border-radius: 8px;
+            /* เพิ่มความโค้งที่มุม */
         }
-        th {
-            font-size: 13px;
+
+        .btn-d {
+            color: white;
+            background-color: #BA55D3;
+            border-color: black;
+
+        }
+
+        .btn-m {
+            color: white;
+            background-color: #FF00FF;
+            border-color: black;
         }
     </style>
 </head>
@@ -218,122 +200,113 @@ ob_end_flush();
 <body>
     <div class="right_col" role="main">
         <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-                <?php if (!empty($alert_message)) { echo $alert_message; } ?>
+            <div class="x_panel">
+                <?php if (!empty($alert_message)) {
+                    echo $alert_message;
+                } ?>
                 <div class="x_title">
-                    <h2 style="color: magenta;">ตรวจงานสำหรับการบ้าน: <?= htmlspecialchars($homework['title']); ?></h2>
+                    <h2 class="section-title">ตรวจงานสำหรับการบ้าน: <?= htmlspecialchars($homework['title']); ?></h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <p class="small-font" style="color: black;">รายละเอียดการบ้าน: <?= htmlspecialchars($homework['description']); ?></p>
-                    <p class="small-font" style="color: #28a745;">วันที่สั่ง: <?= htmlspecialchars($assigned_date); ?></p>
-                    <p style="color: red;">วันหมดเขต: <?= htmlspecialchars($deadline); ?></p>
-
-                    <h3 style="color: black;">การส่งงานของนักเรียนในรายวิชา</h3>
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>รหัสนักเรียน</th>
-                                <th>ชื่อนักเรียน</th>
-                                <th>วันที่สั่ง / วันหมดเขต</th>
-                                <th>เวลาการส่ง</th>
-                                <th>สถานะการตรวจ</th>
-                                <th>คะแนน</th>
-                                <th>ความคิดเห็น</th>
-                                <th>ดำเนินการ</th>
-                                <th>ดูรายละเอียด</th>
-                                <th>ลบ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            if ($students_result->num_rows > 0) {
-                                while ($row = $students_result->fetch_assoc()) {
-                                    $submissionTime = strtotime($row['submission_time']);
-                                    $deadlineTime = strtotime($deadline);
-                                    $isLate = $submissionTime > $deadlineTime;
-                                    $submissionClass = $isLate ? 'late-submission' : 'on-time';
-                            ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($row['member_number']); ?></td>
-                                        <td><?= htmlspecialchars($row['member_fullname']); ?></td>
-                                        <td class="small-font"><?= htmlspecialchars($assigned_date); ?> / <?= htmlspecialchars($deadline); ?></td>
-                                        <td class="<?= $submissionClass; ?>">
-                                            <?php if (!empty($row['submission_time'])) { ?>
-                                                <?= htmlspecialchars($row['submission_time']); ?>
-                                                <?php if ($isLate) { ?>
-                                                    (ส่งช้า)
-                                                <?php } else { ?>
-                                                    (ส่งตามเวลา)
-                                                <?php } ?>
-                                            <?php } else { ?>
-                                                <p style="color: red">ยังไม่ได้ส่งงาน</p>
-                                            <?php } ?>
-                                        </td>
-                                        <td>
-                                            <?= $row['checked'] ? 'ตรวจแล้ว' : 'ยังไม่ตรวจ'; ?>
-                                        </td>
-                                        <form method="post" class="form-inline">
-                                            <input type="hidden" name="homework_id" value="<?= $homework_id; ?>">
-                                            <input type="hidden" name="member_id" value="<?= $row['member_id']; ?>">
-                                            <td>
-                                                <input type="text" class="grade-input" name="grade" value="<?= htmlspecialchars($row['grade']); ?>" placeholder="คะแนน">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="feedback" value="<?= htmlspecialchars($row['feedback']); ?>" placeholder="ความคิดเห็น">
-                                            </td>
-                                            <td>
-                                                <input type="checkbox" name="checked" <?= $row['checked'] ? 'checked' : ''; ?>> ตรวจ
-                                                <button type="submit" class="btn btn-success">บันทึก</button>
-                                            </td>
-                                        </form>
-                                        <td>
-                                            <?php if (!empty($row['submission_time'])) { ?>
-                                                <?php if (!empty($row['file_path'])) { ?>
-                                                    <a href="submission_details.php?homework_id=<?= htmlspecialchars($homework_id); ?>&member_id=<?= htmlspecialchars($row['member_id']); ?>"
-                                                        class="btn btn-custom">
-                                                        <i class="fa fa-eye"></i>
-                                                    </a>
-                                                <?php } else { ?>
-                                                    <span>ไม่มีไฟล์</span>
-                                                <?php } ?>
-                                            <?php } else { ?>
-                                                <p style="color: red">ยังไม่ได้ส่งงาน</p>
-                                            <?php } ?>
-                                        </td>
-                                        <td>
-                                            <form method="post" action="">
-                                                <input type="hidden" name="member_id" value="<?= $row['member_id']; ?>">
-                                                <input type="hidden" name="delete_submission" value="1">
-                                                <button type="submit" onclick="return confirm('คุณต้องการลบหรือไม่?')" ><img src="../../images/delete.png" /></button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                            <?php
-                                }
-                            } else {
-                                echo '<tr><td colspan="11">ไม่มีนักเรียนในรายวิชานี้</td></tr>';
-                            }
-
-                            $mysqli->close();
-                            ?>
-                        </tbody>
-                    </table>
+                    <div class="report-section1">
+                        <p><strong>รายละเอียดการบ้าน:</strong> <?= htmlspecialchars($homework['description']); ?></p>
+                        <p><strong>วันที่สั่ง:</strong> <?= htmlspecialchars($assigned_date); ?></p>
+                        <p><strong>วันหมดเขต:</strong> <?= htmlspecialchars($deadline); ?></p>
+                    </div>
+                    <br>
                     <div class="x_title">
                         <div class="clearfix"></div>
                     </div>
-                    <div align="right">
-                        <!-- ลิงก์ไปยังหน้า show_homework.php พร้อมพารามิเตอร์ subject_pass -->
-                        <a href="show_homework.php?subject_pass=<?= urlencode($subject_pass) ?>">
-                            <button class="btn btn-d">ย้อนกลับ</button>
-                        </a>
-                    </div>
+
+                    <h2 class="section-title" style="color: black;">การส่งงานของนักเรียน</h2>
+                   
+                    <?php if ($students_result->num_rows > 0) {
+                        while ($row = $students_result->fetch_assoc()) {
+                            // ตรวจสอบการส่งงานและเวลาการส่ง
+                            $submission_status_color = 'color: red;';
+                            $submission_status_text = 'ยังไม่ได้ส่งงาน';
+                            if (!empty($row['submission_time'])) {
+                                $submission_time = strtotime($row['submission_time']);
+                                $formatted_submission_time = date('d/m/Y H:i:s', $submission_time); // แปลงเวลาให้เป็นรูปแบบ วันที่/เดือน/ปี ชั่วโมง:นาที:วินาที
+                                $deadline_time = strtotime($deadline);
+
+                                if ($submission_time <= $deadline_time) {
+                                    $submission_status_color = 'color: green;';
+                                    $submission_status_text = 'ส่งงานตามเวลา (วันที่ ' . $formatted_submission_time . ')';
+                                } else {
+                                    $submission_status_text = 'ส่งล่าช้า (วันที่ ' . $formatted_submission_time . ')';
+                                }
+                            }
+
+                            // ตรวจสอบสถานะการตรวจงาน
+                            $checked_status_color = $row['checked'] ? 'color: green;' : 'color: red;';
+                            $checked_status_text = $row['checked'] ? 'ตรวจแล้ว' : 'ยังไม่ตรวจ';
+                    ?>
+                            <div class="report-section">
+                                <div class="form-row">
+                                    <label>รหัสนักเรียน:</label>
+                                    <h4><?= htmlspecialchars($row['member_number']); ?></h4>
+                                </div>
+                                <div class="form-row">
+                                    <label>ชื่อนักเรียน:</label>
+                                    <h4><?= htmlspecialchars($row['member_fullname']); ?></h4>
+                                </div>
+                                <div class="form-row">
+                                    <label>เวลาการส่ง:</label>
+                                    <h4 style="<?= $submission_status_color; ?>"><?= $submission_status_text; ?></h4>
+                                </div>
+                                <div class="form-row">
+                                    <label>สถานะการตรวจ:</label>
+                                    <h4 style="<?= $checked_status_color; ?>"><?= $checked_status_text; ?></h4>
+                                </div>
+
+                                <!-- แบบฟอร์มการตรวจ -->
+                                <form method="post" action="">
+                                    <div class="form-section">
+                                        <div class="form-row">
+                                            <label for="grade">คะแนน:</label>
+                                            <input type="text" name="grade" value="<?= htmlspecialchars($row['grade'] ?? ''); ?>" placeholder="ใส่คะแนน">
+                                        </div>
+
+                                        <div class="form-row">
+                                            <label for="feedback">ความคิดเห็น:</label>
+                                            <textarea name="feedback" rows="2" placeholder="ใส่ความคิดเห็น"><?= htmlspecialchars($row['feedback'] ?? ''); ?></textarea>
+                                        </div>
+
+                                        <div class="action-buttons">
+                                            <input type="checkbox" name="checked" <?= $row['checked'] ? 'checked' : ''; ?>> ตรวจแล้ว
+                                            <button type="submit" class="btn btn-m">บันทึก</button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="member_id" value="<?= $row['member_id']; ?>">
+                                </form>
+
+                                <!-- ปุ่มดูรายละเอียด -->
+                                <?php if (!empty($row['file_path'])) { ?>
+                                    <a href="submission_details.php?homework_id=<?= htmlspecialchars($homework_id); ?>&member_id=<?= htmlspecialchars($row['member_id']); ?>" class="btn btn-m">ดูรายละเอียด</a>
+                                <?php } ?>
+
+                                <!-- ปุ่มลบ -->
+                                <form method="post" action="" style="display:inline;">
+                                    <input type="hidden" name="member_id" value="<?= $row['member_id']; ?>">
+                                    <input type="hidden" name="delete_submission" value="1">
+                                    <button type="submit" class="btn btn-d" onclick="return confirm('คุณต้องการลบหรือไม่?')">ลบ</button>
+                                </form>
+                        <?php }
+                    } else {
+                        echo '<p>ไม่มีนักเรียนในรายวิชานี้</p>';
+                    } ?>
+
+                        <div align="right">
+                            <a href="show_homework.php?subject_pass=<?= urlencode($subject_pass) ?>"><button class="btn btn-d">ย้อนกลับ</button></a>
+                        </div>
+                            </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <?php include('footer.php'); ?>
+        <?php include('footer.php'); ?>
 </body>
 
 </html>
