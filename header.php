@@ -98,7 +98,7 @@
             </div>
             <!-- top navigation -->
             <div class="top_nav">
-                <div class="nav_menu" style="background-color: #EE82EE;">
+                <div class="nav_menu" style="background-color: #BA55D3;">
                     <nav>
                         <div class="nav toggle"> <a id="menu_toggle"><i class="fa fa-bars" style="margin: 1px 1px 2px -30px" style="color: white;"></i></a> </div>
                         

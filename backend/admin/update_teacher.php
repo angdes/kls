@@ -3,10 +3,37 @@
     .btn-m {
         color: white;
         background-color: #FF00FF;
+        border: 2px solid #E0E0E0;
+        /* ขอบสีเทาอ่อน */
+        border-radius: 5px;
+        /* ทำให้ขอบมนเล็กน้อย */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* เงาเบาบางใต้ปุ่ม */
+        transition: box-shadow 0.3s ease;
+        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
     }
+
+    .btn-m:hover {
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        /* เงาชัดเจนขึ้นเมื่อ hover */
+    }
+
     .btn-d {
         color: white;
-        background-color: #BA55D3;
+        background-color: #808080;
+        border: 2px solid #E0E0E0;
+        /* ขอบสีเทาอ่อน */
+        border-radius: 5px;
+        /* ทำให้ขอบมนเล็กน้อย */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* เงาเบาบางใต้ปุ่ม */
+        transition: box-shadow 0.3s ease;
+        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
+    }
+
+    .btn-d:hover {
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        /* เงาชัดเจนขึ้นเมื่อ hover */
     }
     .profile-pic {
         width: 100px;
@@ -81,7 +108,7 @@
                                 <?php if (!empty($teacher_profile_pic)): ?>
                                     <img src="<?= htmlspecialchars($teacher_profile_pic, ENT_QUOTES, 'UTF-8'); ?>" alt="Profile Picture" class="profile-pic">
                                 <?php else: ?>
-                                    <img src="profile_teacher/default_profile.png" alt="Default Profile Picture" class="profile-pic"> <!-- รูปโปรไฟล์เริ่มต้น -->
+                                    <img src="profile_admin/user.jpg" alt="Default Profile Picture" class="profile-pic"> <!-- รูปโปรไฟล์เริ่มต้น -->
                                 <?php endif; ?>
                             </div>
                         </div>

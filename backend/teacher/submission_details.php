@@ -105,7 +105,7 @@ $submission = $result->fetch_assoc();
                                             switch ($file_extension) {
                                                 case 'docx':
                                                 case 'doc':
-                                                    $icon = 'word-icon.jpg';
+                                                    $icon = 'word-icon.png';
                                                     break;
                                                 case 'pdf':
                                                     $icon = 'pdf-icon.png';

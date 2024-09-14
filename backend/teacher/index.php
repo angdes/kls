@@ -48,43 +48,98 @@ $subject_result = $mysqli->query($subject_sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=2.0">
-    <title>แดชบอร์ดครู</title>
+    <title>Dashboard</title>
     <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f3f4f6;
+            /* สีพื้นหลังโทนอ่อน */
+            color: #5a5c69;
+            /* สีข้อความโทนเข้มสบายตา */
+            margin: 0;
+
+        }
+
         .dashboard-card {
-            background-color: #f4f4f4;
-            border-radius: 5px;
+            background-color: #ffffff;
+            border-radius: 10px;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 10px 0;
+            box-shadow: 0 4px 20px rgba(149, 102, 255, 1);
+            /* เงาสีม่วงอ่อน */
+            transition: all 0.3s ease-in-out;
         }
 
-        .dashboard-card h3 {
-            margin-top: 0;
-            color: #333;
+        .dashboard-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 25px rgba(149, 102, 255, 0.35);
+            /* เงาสีม่วงอ่อนขึ้นเมื่อ hover */
         }
 
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            text-decoration: none;
-            border-radius: 5px;
-            display: inline-block;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
+       
 
         .dashboard-grid {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            /* จัดการ์ดให้เต็มและเท่ากัน */
             gap: 20px;
         }
 
-        .dashboard-grid > div {
-            flex: 1;
-            min-width: 200px;
+        .btn-primary {
+            background-color: #4e73df;
+            /* สีฟ้าเข้ม */
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            /* ปุ่มมนกว่าเดิม */
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            /* สีฟ้าที่เข้มกว่า */
+        }
+
+        .table {
+            width: 100%;
+            /* ตารางเต็มความกว้าง */
+            border-collapse: collapse;
+            /* ไม่มีช่องว่างระหว่างเซลล์ */
+
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(149, 102, 255, 0.15);
+            /* เงาสีม่วงอ่อน */
+            /* เงาใต้ตาราง */
+        }
+
+        .table th,
+        .table td {
+            text-align: left;
+            /* ข้อความชิดซ้าย */
+            padding: 12px;
+            /* ระยะห่างในเซลล์ */
+        }
+
+        .table th {
+            background-color: #f8f9fc;
+            /* สีหัวตารางอ่อนๆ */
+            color: #4e73df;
+            /* สีข้อความหัวตารางฟ้าเข้ม */
+        }
+
+        .table td {
+            border-top: 1px solid #e3e6f0;
+            /* เส้นขอบเซลล์บน */
+        }
+
+        h2 {
+            color: #8E44AD;
+            /* สีของหัวข้อใหญ่ */
+
+            font-size: 2rem;
         }
     </style>
 </head>
@@ -94,28 +149,29 @@ $subject_result = $mysqli->query($subject_sql);
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
                 <div class="x_title">
-                    <h2>แดชบอร์ดครู</h2>
+                    <h2>Dashboard</h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
                     <!-- แสดงสถิติการบ้าน -->
                     <div class="dashboard-grid">
                         <div class="dashboard-card">
-                            <h3>การบ้านที่มอบหมาย</h3>
+                            <h2>การบ้านที่มอบหมาย</h2>
                             <p>จำนวนทั้งหมด: <?= $homework_data['total_homework']; ?></p>
                             <p>การบ้านที่ยังไม่หมดเขต: <?= $homework_data['pending_homework']; ?></p>
                             <p>การบ้านที่หมดเขตแล้ว: <?= $homework_data['overdue_homework']; ?></p>
                         </div>
                         <div class="dashboard-card">
-                            <h3>การตรวจการบ้าน</h3>
-                            <p>ส่งแล้วทั้งหมด: <?= $submission_data['total_submissions']; ?></p>
+                            <h2>การตรวจการบ้าน</h2>
+                            
                             <p>ตรวจแล้ว: <?= $submission_data['graded_submissions']; ?></p>
                             <p>ยังไม่ได้ตรวจ: <?= $submission_data['ungraded_submissions']; ?></p>
+                            
                         </div>
                     </div>
 
                     <!-- แสดงรายวิชาที่สอน -->
-                    <h3>รายวิชาที่สอน</h3>
+                    <h2>รายวิชาที่สอน</h2>
                     <table class="table table-striped">
                         <thead>
                             <tr>

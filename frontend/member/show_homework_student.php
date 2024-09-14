@@ -1,4 +1,4 @@
-<?php
+<?php 
 include('header.php');
 
 // ตรวจสอบว่ามีการล็อกอินและมีข้อมูลผู้ใช้ในเซสชันหรือไม่
@@ -26,6 +26,7 @@ if (!$subject_id) {
     exit();
 }
 
+
 // ดึงข้อมูลการบ้านจากฐานข้อมูลตามรายวิชาที่เลือก รวมถึงไฟล์ที่อาจารย์อัปโหลด
 $sql = "SELECT h.homework_id, h.title, h.description, h.assigned_date, h.deadline, h.file_path AS teacher_file, 
                sh.submission_time, sh.checked, sh.grade 
@@ -37,7 +38,19 @@ $result = $mysqli->query($sql);
 // ตรวจสอบการดึงข้อมูล
 if ($result === false) {
     die("การดึงข้อมูลล้มเหลว: " . $mysqli->error);
+
 }
+$search = isset($_GET['search']) ? $mysqli->real_escape_string($_GET['search']) : '';
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; // จำนวนรายการต่อหน้า
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$start = ($page - 1) * $limit;
+
+$countResult = $mysqli->query("SELECT COUNT(homework_id) AS id FROM tb_homework WHERE subject_id = '$subject_id'");
+$homeworkCount = $countResult->fetch_assoc();
+$total = $homeworkCount['id'];
+$pages = ceil($total / $limit);
+$prev = max($page - 1, 1);
+$next = min($page + 1, $pages);
 ?>
 
 <!DOCTYPE html>
@@ -72,16 +85,94 @@ if ($result === false) {
             margin: 0;
         }
 
-        .btn-m {
+        /* ปุ่มดูไฟล์งาน - สีฟ้า */
+        .btn-blue {
+            background-color: #007bff;
             color: white;
-            background-color: #FF00FF;
-            border-color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        .btn-d {
+        .btn-blue:hover {
+            background-color: #0056b3;
+        }
+
+        /* ปุ่มยืนยันการส่ง - สีเขียว */
+        .btn-green {
+            background-color: #28a745;
             color: white;
-            background-color: #BA55D3;
-            border-color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-green:hover {
+            background-color: #218838;
+        }
+
+        /* ปุ่มยกเลิกการส่ง - สีส้ม */
+        .btn-orange {
+            background-color: #fd7e14;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-orange:hover {
+            background-color: #e66900;
+        }
+
+        /* ปุ่มส่งแล้ว - สีเทาอ่อน */
+        .btn-disabled {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            cursor: not-allowed;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ปุ่มสรุปการส่งงาน - สีม่วง */
+        .btn-purple {
+            background-color: #6f42c1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-purple:hover {
+            background-color: #5a30a0;
+        }
+
+        /* ขนาดไอคอน */
+        button i {
+            margin-right: 8px;
+            font-size: 18px;
         }
     </style>
 </head>
@@ -94,6 +185,7 @@ if ($result === false) {
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
+            
                 <?php
                 if ($result->num_rows > 0) {
                     $index = 1;
@@ -129,7 +221,9 @@ if ($result === false) {
                                 <label>ไฟล์งานที่อาจารย์แนบ:</label>
                                 <h4>
                                     <?php if (!empty($teacher_files)) { ?>
-                                        <a href="teacher_file_summary.php?homework_id=<?= htmlspecialchars($row['homework_id']); ?>" class="btn btn-m">ดูไฟล์งาน</a>
+                                        <a href="teacher_file_summary.php?homework_id=<?= htmlspecialchars($row['homework_id']); ?>" class="btn-blue">
+                                            <i class="fas fa-folder-open"></i> ดูไฟล์งาน
+                                        </a>
                                     <?php } else { ?>
                                         <span style="color: gray">ไม่มีไฟล์</span>
                                     <?php } ?>
@@ -156,11 +250,17 @@ if ($result === false) {
                                             
                                             <input type="file" name="homework_files[]" multiple required>
                                             <br>
-                                            <button type="button" class="btn btn-m" onclick="confirmSubmit(<?= $row['homework_id']; ?>)">ยืนยันการส่ง</button>
-                                            <button type="button" class="btn btn-d" onclick="cancelSubmit(<?= $row['homework_id']; ?>)">ยกเลิกการส่ง</button>
+                                            <button type="button" class="btn-green" onclick="confirmSubmit(<?= $row['homework_id']; ?>)">
+                                                <i class="fas fa-upload"></i> ยืนยันการส่ง
+                                            </button>
+                                            <button type="button" class="btn-orange" onclick="cancelSubmit(<?= $row['homework_id']; ?>)">
+                                                <i class="fas fa-times"></i> ยกเลิก
+                                            </button>
                                         </form>
                                     <?php } else { ?>
-                                        <button class="btn btn-m" disabled>ส่งแล้ว</button>
+                                        <button class="btn-disabled" disabled>
+                                            <i class="fas fa-check"></i> ส่งแล้ว
+                                        </button>
                                     <?php } ?>
                                 </h4>
                             </div>
@@ -168,7 +268,9 @@ if ($result === false) {
                                 <label>สรุปการส่งงาน:</label>
                                 <h4>
                                     <?php if ($row['submission_time']) { ?>
-                                        <a href="submission_details_member.php?homework_id=<?= htmlspecialchars($row['homework_id']); ?>&member_id=<?= $student_id; ?>" class="btn btn-d">ดูสรุปการส่งงาน</a>
+                                        <a href="submission_details_member.php?homework_id=<?= htmlspecialchars($row['homework_id']); ?>&member_id=<?= $student_id; ?>" class="btn-purple">
+                                            <i class="fas fa-file-alt"></i>สรุปการส่งงาน
+                                        </a>
                                     <?php } else { ?>
                                         <span style="color: red">ยังไม่ได้ส่ง</span>
                                     <?php } ?>
@@ -180,9 +282,11 @@ if ($result === false) {
                 } else {
                     echo '<p>ไม่มีการบ้านที่จะแสดง</p>';
                 }
+                
 
                 $mysqli->close();
                 ?>
+                
             </div>
         </div>
 
@@ -190,7 +294,7 @@ if ($result === false) {
             <div class="clearfix"></div>
         </div>
         <div align="right">
-            <a href="show_student_subjects.php"><button class="btn btn-d">ย้อนกลับ</button></a>
+            <a href="show_student_subjects.php"><button class="btn-purple">ย้อนกลับ</button></a>
         </div>
     </div>
 

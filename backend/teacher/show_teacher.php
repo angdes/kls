@@ -1,5 +1,5 @@
-<?php 
-include('header.php'); 
+<?php
+include('header.php');
 
 // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
 if (!isset($_SESSION['user'])) {
@@ -11,15 +11,40 @@ if (!isset($_SESSION['user'])) {
 $user = $_SESSION['user'];
 ?>
 <style>
-    .btn-m{
+    .btn-m {
         color: white;
         background-color: #FF00FF;
-        border-color: black;
+        border: 2px solid #E0E0E0;
+        /* ขอบสีเทาอ่อน */
+        border-radius: 5px;
+        /* ทำให้ขอบมนเล็กน้อย */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* เงาเบาบางใต้ปุ่ม */
+        transition: box-shadow 0.3s ease;
+        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
     }
-    .btn-d{
+
+    .btn-m:hover {
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        /* เงาชัดเจนขึ้นเมื่อ hover */
+    }
+
+    .btn-d {
         color: white;
-        background-color: #BA55D3;
-        border-color: black;
+        background-color: #CC99FF;
+        border: 2px solid #E0E0E0;
+        /* ขอบสีเทาอ่อน */
+        border-radius: 5px;
+        /* ทำให้ขอบมนเล็กน้อย */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* เงาเบาบางใต้ปุ่ม */
+        transition: box-shadow 0.3s ease;
+        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
+    }
+
+    .btn-d:hover {
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        /* เงาชัดเจนขึ้นเมื่อ hover */
     }
 </style>
 <div class="right_col" role="main">
@@ -59,4 +84,5 @@ $user = $_SESSION['user'];
 </div>
 <?php include('footer.php'); ?>
 </body>
+
 </html>

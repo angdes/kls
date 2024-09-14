@@ -60,7 +60,7 @@ if ($result === false) {
         .card {
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             margin: 10px;
             width: calc(50% - 20px);
             display: flex;
@@ -89,14 +89,18 @@ if ($result === false) {
             padding-left: 15px;
         }
         .card-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
-            margin-bottom: 10px;
-            color: #C44AFD;
+            margin-bottom: 5px;
+            color: #BA55D3;
         }
         .card-description {
+            font-size: 12px;
+            
+        }
+        .card-pass {
             font-size: 14px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         .card-stats {
             font-size: 12px;
@@ -172,8 +176,9 @@ if ($result === false) {
                         echo '</div>';
                         echo '<div class="card-content" onclick="window.location.href=\'show_homework.php?subject_pass=' . $subject_pass . '\'">'; // เพิ่ม onclick เพื่อไปยังหน้าแสดงการบ้าน
                         echo '<div class="card-title">' . $subject_name . '</div>';
-                        echo '<div class="card-description">' . $subject_detail . '</div>';
-                        echo '<div class="card-stats text-work">การบ้านทั้งหมด: ' . $total_homework . ' งาน</div>';
+                        echo '<div class="card-pass text-work">' . $subject_pass . '</div>';
+                        echo '<div class="card-description text-work">' . $subject_detail . '</div>';
+                        echo '<div class="card-stats ">การบ้านทั้งหมด: ' . $total_homework . ' งาน</div>';
                         echo '<div class="card-stats text-stus">นักเรียนทั้งหมด: ' . $total_students . ' คน</div>';
                         echo '<div class="card-stats text-black">ยังไม่ตรวจ: ' . $unchecked . ' งาน</div>';
                         echo '</div>';

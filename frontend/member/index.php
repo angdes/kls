@@ -1,9 +1,19 @@
 <?php include('header.php'); ?>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400&display=swap" rel="stylesheet">
 <style>
+    .text-detail {
+        font-family: 'Kanit', sans-serif;
+            color: #555555;
+            font-size: 14.44px;
+        /* เปลี่ยนฟอนต์ตามที่คุณเลือก */
+    }
+    
     .image-container {
         display: flex;
-        flex-wrap: wrap; /* Allows images to wrap into new rows if needed */
-        gap: 10px; /* Adds space between images */
+        flex-wrap: wrap;
+        /* Allows images to wrap into new rows if needed */
+        gap: 10px;
+        /* Adds space between images */
         padding-left: 50px;
     }
 
@@ -22,10 +32,13 @@
         content: '';
         position: absolute;
         top: 0;
-        left: -10px; /* Adjust this value to control the distance from the image */
+        left: -10px;
+        /* Adjust this value to control the distance from the image */
         height: 100%;
-        width: 5px; /* Width of the line */
-        background-color: #F97AB6; /* Color of the line */
+        width: 5px;
+        /* Width of the line */
+        background-color: #F97AB6;
+        /* Color of the line */
     }
 
     /* Modal styles */
@@ -81,35 +94,35 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                <?php
-                $sql = "SELECT * FROM tb_announcements";
-                $result = $cls_conn->select_base($sql);
+                    <?php
+                    $sql = "SELECT * FROM tb_announcements";
+                    $result = $cls_conn->select_base($sql);
 
-                if ($result && mysqli_num_rows($result) > 0) {
-                    while ($row = mysqli_fetch_array($result)) {
-                        // สมมติว่ารูปภาพถูกเก็บในรูปแบบคั่นด้วยจุลภาค
-                        $images = explode(',', $row['announcement_image']);
-                ?>
-                        <div class="announcement">
-                            <h2><?php echo htmlspecialchars($row['announcement_title']); ?></h2>
-                            <hr>
-                            <div class="image-container">
-                                <?php foreach ($images as $image): ?>
-                                    <img src="../../backend/uploads/<?php echo trim(htmlspecialchars($image)); ?>" onclick="openModal(this.src)" alt="Announcement Image">
-                                <?php endforeach; ?>
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        while ($row = mysqli_fetch_array($result)) {
+                            // สมมติว่ารูปภาพถูกเก็บในรูปแบบคั่นด้วยจุลภาค
+                            $images = explode(',', $row['announcement_image']);
+                    ?>
+                            <div class="announcement">
+                                <h2 style="color: #BA55D3;"><?php echo htmlspecialchars($row['announcement_title']); ?></h2>
+                                <hr>
+                                <div class="image-container">
+                                    <?php foreach ($images as $image): ?>
+                                        <img src="../../backend/uploads/<?php echo trim(htmlspecialchars($image)); ?>" onclick="openModal(this.src)" alt="Announcement Image">
+                                    <?php endforeach; ?>
+                                </div>
+                                <br>
+                                <p class="text-detail" style="padding-left: 50px;">
+                                    <?php echo htmlspecialchars($row['announcement_details']); ?>
+                                </p>
                             </div>
                             <br>
-                            <p style="font-size: 14px; padding-left: 50px;">
-                                <?php echo htmlspecialchars($row['announcement_details']); ?>
-                            </p>
-                        </div>
-                        <br>
-                <?php
+                    <?php
+                        }
+                    } else {
+                        echo "<p>ไม่พบประกาศ</p>";
                     }
-                } else {
-                    echo "<p>ไม่พบประกาศ</p>";
-                }
-                ?>
+                    ?>
                 </div>
             </div>
         </div>

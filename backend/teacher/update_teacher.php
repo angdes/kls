@@ -75,7 +75,7 @@ if (isset($_POST['submit'])) {
             echo $cls_conn->show_message('แก้ไขข้อมูลสำเร็จ');
 
             // เปลี่ยนเส้นทางไปยังหน้าแสดงข้อมูลครู
-            echo $cls_conn->goto_page(1, 'show_teacher1.php');
+            echo $cls_conn->goto_page(1, 'show_teacher.php');
         } else {
             echo $cls_conn->show_message('แก้ไขข้อมูลไม่สำเร็จ');
         }

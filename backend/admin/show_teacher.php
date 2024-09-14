@@ -38,7 +38,7 @@
                 <table id="datatable" class="table table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th>รหัสครู</th>
+                            <th>ลำดับ</th>
                             <th>ชื่อครู</th>
                             <th>ชื่อผู้ใช้งาน</th>
                             <th>รหัสผ่าน</th>

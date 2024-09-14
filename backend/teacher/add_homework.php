@@ -37,75 +37,90 @@ if ($subject_result->num_rows > 0) {
 // เพิ่มการบ้านใหม่เมื่อผู้ใช้ส่งฟอร์ม
 $alert_message = ''; // กำหนดตัวแปร $alert_message ให้เป็นค่าว่างเริ่มต้น
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $title = $_POST['title'];
-    $description = $_POST['description'];
+    // ดึงค่าจากฟอร์ม
+    $titles = is_array($_POST['title']) ? $_POST['title'] : [$_POST['title']]; // แปลงให้เป็น array หากเป็นรายการเดียว
+    $descriptions = is_array($_POST['description']) ? $_POST['description'] : [$_POST['description']];
+    $assigned_dates = is_array($_POST['assigned_date']) ? $_POST['assigned_date'] : [$_POST['assigned_date']];
+    $deadlines = is_array($_POST['deadline']) ? $_POST['deadline'] : [$_POST['deadline']];
+    
+    // ตรวจสอบว่ารูปแบบข้อมูลถูกต้อง
+    if (is_array($titles) && is_array($descriptions) && is_array($assigned_dates) && is_array($deadlines)) {
+        foreach ($titles as $index => $title) {
+            $description = $descriptions[$index];
+            $assigned_date_str = $assigned_dates[$index];
+            $deadline_str = $deadlines[$index];
 
-    // แปลงวันที่จากรูปแบบไทยเป็นรูปแบบที่ฐานข้อมูลรองรับ (Y-m-d H:i:s)
-    $assigned_date_obj = DateTime::createFromFormat('d/m/Y H:i', $_POST['assigned_date']);
-    $deadline_obj = DateTime::createFromFormat('d/m/Y H:i', $_POST['deadline']);
+            // แปลงวันที่จากรูปแบบไทยเป็นรูปแบบที่ฐานข้อมูลรองรับ (Y-m-d H:i:s)
+            $assigned_date_obj = DateTime::createFromFormat('d/m/Y H:i', $assigned_date_str);
+            $deadline_obj = DateTime::createFromFormat('d/m/Y H:i', $deadline_str);
 
-    if ($assigned_date_obj && $deadline_obj) {
-        $assigned_date = $assigned_date_obj->format('Y-m-d H:i:s');
-        $deadline = $deadline_obj->format('Y-m-d H:i:s');
-    } else {
-        die("รูปแบบวันที่ไม่ถูกต้อง กรุณาตรวจสอบรูปแบบวันที่ให้เป็น วัน/เดือน/ปี ชั่วโมง:นาที");
-    }
-
-    // ตรวจสอบไฟล์และจัดการอัปโหลดหลายไฟล์
-    $file_paths = [];
-    if (isset($_FILES['files']) && !empty($_FILES['files']['name'][0])) {
-        foreach ($_FILES['files']['name'] as $key => $file_name) {
-            $file_tmp = $_FILES['files']['tmp_name'][$key];
-
-            // แปลงชื่อไฟล์ให้เป็น UTF-8
-            $file_name_utf8 = iconv(mb_detect_encoding($file_name, mb_detect_order(), true), "UTF-8", $file_name);
-            $file_path = 'uploads/' . $file_name_utf8;
-
-            // ย้ายไฟล์ไปยังตำแหน่งที่ถูกต้อง
-            if (move_uploaded_file($file_tmp, $file_path)) {
-                $file_paths[] = $file_path; // เก็บเส้นทางไฟล์ที่อัปโหลดสำเร็จ
+            if ($assigned_date_obj && $deadline_obj) {
+                $assigned_date = $assigned_date_obj->format('Y-m-d H:i:s');
+                $deadline = $deadline_obj->format('Y-m-d H:i:s');
             } else {
-                echo "เกิดข้อผิดพลาดในการอัปโหลดไฟล์: $file_name";
+                die("รูปแบบวันที่ไม่ถูกต้อง กรุณาตรวจสอบรูปแบบวันที่ให้เป็น วัน/เดือน/ปี ชั่วโมง:นาที");
+            }
+
+            // ตรวจสอบไฟล์และจัดการอัปโหลดหลายไฟล์
+            $file_paths = [];
+            if (isset($_FILES['files']['name'][$index]) && !empty($_FILES['files']['name'][$index])) {
+                foreach ($_FILES['files']['name'][$index] as $key => $file_name) {
+                    $file_tmp = $_FILES['files']['tmp_name'][$index][$key];
+
+                    // แปลงชื่อไฟล์ให้เป็น UTF-8
+                    $file_name_utf8 = iconv(mb_detect_encoding($file_name, mb_detect_order(), true), "UTF-8", $file_name);
+                    $file_path = 'uploads/' . $file_name_utf8;
+
+                    // ย้ายไฟล์ไปยังตำแหน่งที่ถูกต้อง
+                    if (move_uploaded_file($file_tmp, $file_path)) {
+                        $file_paths[] = $file_path; // เก็บเส้นทางไฟล์ที่อัปโหลดสำเร็จ
+                    } else {
+                        echo "เกิดข้อผิดพลาดในการอัปโหลดไฟล์: $file_name";
+                    }
+                }
+            }
+
+            // แปลงเส้นทางไฟล์เป็น JSON เพื่อจัดเก็บในฐานข้อมูล
+            $file_paths_json = json_encode($file_paths, JSON_UNESCAPED_UNICODE);
+
+            // ตรวจสอบว่ามีหัวข้อและรายละเอียดการบ้านที่ซ้ำกันในฐานข้อมูลหรือไม่
+            $check_duplicate_sql = "SELECT * FROM tb_homework WHERE subject_id = '$subject_id' AND title = '$title' AND description = '$description' LIMIT 1";
+            $duplicate_result = $mysqli->query($check_duplicate_sql);
+
+            if ($duplicate_result->num_rows > 0) {
+                // ถ้ามีข้อมูลซ้ำให้แสดงข้อความแจ้งเตือน
+                $alert_message = '
+                    <div class="alert alert-danger" role="alert">
+                        มีการบ้านที่มีหัวข้อและรายละเอียดซ้ำกันอยู่แล้วในระบบ กรุณาตรวจสอบข้อมูลอีกครั้ง
+                    </div>
+                ';
+            } else {
+                // ถ้าไม่มีข้อมูลซ้ำ ให้ทำการเพิ่มการบ้านใหม่ในฐานข้อมูล
+                $insert_sql = "INSERT INTO tb_homework (subject_id, subject_pass, teacher_id, title, description, assigned_date, deadline, file_path) 
+                               VALUES ('$subject_id', '$subject_pass', '$teacher_id', '$title', '$description', '$assigned_date', '$deadline', '$file_paths_json')";
+
+                if ($mysqli->query($insert_sql) === TRUE) {
+                    // แสดงข้อความแจ้งเตือนเมื่อบันทึกสำเร็จ
+                    $alert_message = '
+                        <div class="alert alert-success" role="alert">
+                            บันทึกข้อมูลสำเร็จ
+                        </div>
+                        <script>
+                            setTimeout(function(){
+                                window.location.href = "show_homework.php?subject_pass=' . htmlspecialchars($subject_pass) . '";
+                            }, 1000); // 1000 milliseconds = 1 second
+                        </script>
+                    ';
+                } else {
+                    echo "เกิดข้อผิดพลาดในการเพิ่มการบ้าน: " . $mysqli->error;
+                }
             }
         }
-    }
-
-    // แปลงเส้นทางไฟล์เป็น JSON เพื่อจัดเก็บในฐานข้อมูล
-    $file_paths_json = json_encode($file_paths, JSON_UNESCAPED_UNICODE); // ใช้ JSON_UNESCAPED_UNICODE เพื่อไม่ให้เข้ารหัส Unicode
-
-    // ตรวจสอบว่ามีหัวข้อและรายละเอียดการบ้านที่ซ้ำกันในฐานข้อมูลหรือไม่
-    $check_duplicate_sql = "SELECT * FROM tb_homework WHERE subject_id = '$subject_id' AND title = '$title' AND description = '$description' LIMIT 1";
-    $duplicate_result = $mysqli->query($check_duplicate_sql);
-
-    if ($duplicate_result->num_rows > 0) {
-        // ถ้ามีข้อมูลซ้ำให้แสดงข้อความแจ้งเตือน
-        $alert_message = '
-            <div class="alert alert-danger" role="alert">
-                มีการบ้านที่มีหัวข้อและรายละเอียดซ้ำกันอยู่แล้วในระบบ กรุณาตรวจสอบข้อมูลอีกครั้ง
-            </div>
-        ';
     } else {
-        // ถ้าไม่มีข้อมูลซ้ำ ให้ทำการเพิ่มการบ้านใหม่ในฐานข้อมูล
-        $insert_sql = "INSERT INTO tb_homework (subject_id, subject_pass, teacher_id, title, description, assigned_date, deadline, file_path) 
-                       VALUES ('$subject_id', '$subject_pass', '$teacher_id', '$title', '$description', '$assigned_date', '$deadline', '$file_paths_json')";
-
-        if ($mysqli->query($insert_sql) === TRUE) {
-            // แสดงข้อความแจ้งเตือนเมื่อบันทึกสำเร็จและรีไดเรกต์ไปยังหน้าแสดงการบ้าน
-            $alert_message = '
-                <div class="alert alert-success" role="alert">
-                    บันทึกข้อมูลสำเร็จ
-                </div>
-                <script>
-                    setTimeout(function(){
-                        window.location.href = "show_homework.php?subject_pass=' . htmlspecialchars($subject_pass) . '";
-                    }, 1000); // 1000 milliseconds = 1 second
-                </script>
-            ';
-        } else {
-            echo "เกิดข้อผิดพลาดในการเพิ่มการบ้าน: " . $mysqli->error;
-        }
+        die("ข้อมูลที่ส่งมาไม่ถูกต้อง");
     }
 }
+
 ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเฟอร์
 ?>
 
@@ -129,45 +144,31 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
             background-color: #BA55D3;
         }
 
-        .btn-warning {
-            background-color: yellow;
-            border-color: black;
-            color: black;
-        }
-
-        .btn-info {
-            background-color: blue;
-            border-color: black;
-            color: white;
-        }
-
         /* ปรับขนาดฟิลด์วันที่ให้เท่ากัน */
         input[type="text"] {
             width: 100%;
-            max-width: 400px; /* กำหนดความกว้างสูงสุด */
+            max-width: 400px;
         }
 
         .form-group-file {
-            margin-bottom: 35px; /* เพิ่มระยะห่างระหว่างฟอร์มกรุ๊ปไฟล์กับปุ่ม */
+            margin-bottom: 35px;
         }
 
         /* ปรับขนาด Flatpickr */
         .flatpickr-calendar {
-            width: 300px !important; /* ปรับความกว้างของป๊อปอัพ */
-            font-size: 14px !important; /* ปรับขนาดตัวอักษร */
-        }
-
-        .flatpickr-time {
-            font-size: 12px !important; /* ปรับขนาดตัวอักษรของส่วนเวลา */
-        }
-
-        .flatpickr-time .flatpickr-time-separator {
-            font-size: 12px !important; /* ปรับขนาดตัวอักษรของตัวคั่นเวลา */
+            width: 300px !important;
         }
 
         .flatpickr-day {
-            height: 30px !important; /* ปรับความสูงของวันที่ */
-            width: 40px !important; /* ปรับความกว้างของวันที่ */
+            height: 30px !important;
+            width: 40px !important;
+        }
+
+        .homework-set {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
     </style>
 
@@ -186,24 +187,26 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
                 <div class="x_title">
                     <h2>เพิ่มการบ้านในวิชา <?= htmlspecialchars($subject_pass); ?></h2>
                     <div class="clearfix"></div>
+
                 </div>
+
                 <div class="x_content">
                     <form id="add_homework_form" action="add_homework.php?subject_pass=<?= htmlspecialchars($subject_pass); ?>" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="title">หัวข้อการบ้าน:</label>
-                            <input type="text" name="title" class="form-control" required>
+                            <input type="text" name="title[]" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="description">รายละเอียดการบ้าน:</label>
-                            <textarea name="description" class="form-control" required></textarea>
+                            <textarea name="description[]" class="form-control" required></textarea>
                         </div>
                         <div class="form-group">
                             <label for="assigned_date">วันที่สั่ง:</label>
-                            <input type="text" name="assigned_date" id="assigned_date" class="form-control datetimepicker" required placeholder="วัน/เดือน/ปี ชั่วโมง:นาที">
+                            <input type="text" name="assigned_date[]" id="assigned_date" class="form-control datetimepicker" required placeholder="วัน/เดือน/ปี ชั่วโมง:นาที">
                         </div>
                         <div class="form-group">
                             <label for="deadline">วันหมดเขต:</label>
-                            <input type="text" name="deadline" id="deadline" class="form-control datetimepicker" required placeholder="วัน/เดือน/ปี ชั่วโมง:นาที">
+                            <input type="text" name="deadline[]" id="deadline" class="form-control datetimepicker" required placeholder="วัน/เดือน/ปี ชั่วโมง:นาที">
                         </div>
                         <div class="form-group form-group-file">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="files">ไฟล์การบ้าน:</label>
@@ -211,7 +214,9 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
                                 <input type="file" name="files[]" multiple class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
-                        <br>
+                        <div class="x_title">
+                            <div class="clearfix"></div>
+                        </div>
                         <div id="additional_homeworks"></div> <!-- สำหรับเพิ่มการบ้านหลายรายการ -->
                         <div class="form-group">
                             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
@@ -220,6 +225,7 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
                                 <button type="button" class="btn btn-m" onclick="window.location.href='show_homework.php?subject_pass=<?= htmlspecialchars($subject_pass); ?>';">ยกเลิก</button>
                             </div>
                         </div>
+                        <br>
                     </form>
                 </div>
             </div>
@@ -235,52 +241,53 @@ ob_end_flush(); // ส่งเนื้อหาออกจากบัฟเ�
             enableTime: true,
             dateFormat: "d/m/Y H:i",
             time_24hr: true,
-            position: "above" // ตั้งค่าให้แสดง pop-up ด้านบน
+            position: "above"
         });
 
         document.getElementById('add_more_homework').addEventListener('click', function() {
             var additionalHomeworkHTML = `
-            <div class="form-group">
-                <label for="title">หัวข้อการบ้าน:</label>
-                <input type="text" name="title[]" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="description">รายละเอียดการบ้าน:</label>
-                <textarea name="description[]" class="form-control" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="assigned_date">วันที่สั่ง:</label>
-                <input type="text" name="assigned_date[]" class="form-control datetimepicker" required placeholder="วัน/เดือน/ปี ชั่วโมง:นาที">
-            </div>
-            <div class="form-group">
-                <label for="deadline">วันหมดเขต:</label>
-                <input type="text" name="deadline[]" class="form-control datetimepicker" required placeholder="วัน/เดือน/ปี ชั่วโมง:นาที">
-            </div>
-            <div class="form-group form-group-file">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="files">ไฟล์การบ้าน:</label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input type="file" name="files[]" multiple class="form-control col-md-7 col-xs-12">
+            <div class="homework-set">
+                <hr style="border-top: 2px dashed #BA55D3;">
+                <div class="form-group">
+                    <label for="title">หัวข้อการบ้าน:</label>
+                    <input type="text" name="title[]" class="form-control" required style="margin-bottom: 10px;">
+                </div>
+                <div class="form-group">
+                    <label for="description">รายละเอียดการบ้าน:</label>
+                    <textarea name="description[]" class="form-control" required style="margin-bottom: 10px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="assigned_date">วันที่สั่ง:</label>
+                    <input type="text" name="assigned_date[]" class="form-control datetimepicker" required placeholder="วัน/เดือน/ปี ชั่วโมง:นาที" style="margin-bottom: 10px;">
+                </div>
+                <div class="form-group">
+                    <label for="deadline">วันหมดเขต:</label>
+                    <input type="text" name="deadline[]" class="form-control datetimepicker" required placeholder="วัน/เดือน/ปี ชั่วโมง:นาที" style="margin-bottom: 10px;">
+                </div>
+                <div class="form-group form-group-file">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="files">ไฟล์การบ้าน:</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="file" name="files[]" multiple class="form-control col-md-7 col-xs-12" style="margin-bottom: 20px;">
+                    </div>
                 </div>
             </div>`;
             document.getElementById('additional_homeworks').insertAdjacentHTML('beforeend', additionalHomeworkHTML);
 
-            // ใช้ Flatpickr กับฟิลด์ใหม่ที่ถูกเพิ่มเข้ามา
             flatpickr('.datetimepicker', {
                 enableTime: true,
                 dateFormat: "d/m/Y H:i",
                 time_24hr: true,
-                position: "above" // ตั้งค่าให้แสดง pop-up ด้านบน
+                position: "above"
             });
         });
 
-        // ตรวจสอบฟอร์มก่อนส่ง
         document.getElementById('add_homework_form').addEventListener('submit', function(event) {
             var assignedDate = document.getElementById('assigned_date').value;
             var deadline = document.getElementById('deadline').value;
 
             if (assignedDate === "" || deadline === "") {
                 alert('กรุณากรอกวันที่สั่งและวันหมดเขตให้ครบถ้วน');
-                event.preventDefault(); // หยุดการส่งฟอร์ม
+                event.preventDefault();
             }
         });
     });

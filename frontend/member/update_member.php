@@ -98,7 +98,43 @@ if (isset($_POST['submit'])) {
     }
 }
 ?>
+<style>
+    .btn-m {
+        color: white;
+        background-color: #FF00FF;
+        border: 2px solid #E0E0E0;
+        /* ขอบสีเทาอ่อน */
+        border-radius: 5px;
+        /* ทำให้ขอบมนเล็กน้อย */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* เงาเบาบางใต้ปุ่ม */
+        transition: box-shadow 0.3s ease;
+        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
+    }
 
+    .btn-m:hover {
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        /* เงาชัดเจนขึ้นเมื่อ hover */
+    }
+
+    .btn-d {
+        color: white;
+        background-color: #808080;
+        border: 2px solid #E0E0E0;
+        /* ขอบสีเทาอ่อน */
+        border-radius: 5px;
+        /* ทำให้ขอบมนเล็กน้อย */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* เงาเบาบางใต้ปุ่ม */
+        transition: box-shadow 0.3s ease;
+        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
+    }
+
+    .btn-d:hover {
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        /* เงาชัดเจนขึ้นเมื่อ hover */
+    }
+</style>
 <div class="right_col" role="main">
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -164,8 +200,8 @@ if (isset($_POST['submit'])) {
                         <div class="ln_solid"></div>
                         <div class="form-group">
                             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                <button type="submit" name="submit" class="btn btn-success">บันทึก</button>
-                                <a href="show_member.php" class="btn btn-danger">ยกเลิก</a>
+                                <button type="submit" name="submit" class="btn btn-m">บันทึก</button>
+                                <a href="show_member.php" class="btn btn-d">ยกเลิก</a>
                             </div>
                         </div>
                     </form>

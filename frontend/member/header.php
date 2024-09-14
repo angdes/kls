@@ -96,13 +96,13 @@ if ($result && mysqli_num_rows($result) > 0) {
                             <ul class="nav side-menu">
                                 <li><a href="index.php" style="color: black;"><i class="fa fa-house"></i> หน้าแรก</a></li>
                                 <li style="color: black;"><a style="color: black;"><i class="fa fa-user" style="color: black;"></i>ข้อมูลส่วนตัว<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
+                                    <ul class="nav child_menu" style="background-color:  White Bubble ;">
                                         <li><a href="show_member.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลส่วนตัว</a></li>
                                     </ul>
                                 </li>
                                 <li><a style="color: black;"><i class="fa fa-file-pen"></i>การบ้าน<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
-                                        <li><a href="show_student_subjects.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลการบ้าน</a></li>
+                                    <ul class="nav child_menu" style="background-color:  White Bubble ;">
+                                        <li><a href="show_student_subjects.php" style="color: black;"><i class="fa fa-list"></i>รายวิชาที่ลงเรียน</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="logout.php" style="color: black;"><i class="fa fa-sign-out"></i>ออกจากระบบ</a></li>
@@ -115,7 +115,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 
             <!-- top navigation -->
             <div class="top_nav">
-                <div class="nav_menu" style="background-color: #EE82EE;">
+                <div class="nav_menu" style="background-color: #BA55D3;">
                     <nav>
                         <div class="nav toggle">
                             <a id="menu_toggle"><i class="fa fa-bars"></i></a>

@@ -76,8 +76,9 @@ if ($result && mysqli_num_rows($result) > 0) {
                             <span class="site_title_text" style="color: magenta; font-size: 30px; margin-left: 15px; margin: 8px 0 15 0; font-weight: bold;">K.P.</span>
                         </a>
                     </div>
+                   
                     <div class="clearfix"></div>
-
+<br>
                     <!-- sidebar menu -->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu" style="background-color: white;">
                         <div class="menu_section">
@@ -85,19 +86,19 @@ if ($result && mysqli_num_rows($result) > 0) {
                             <ul class="nav side-menu">
                                 <li><a href="index.php" style="color: black;"><i class="fa fa-house"></i> หน้าแรก</a></li>
                                 <li style="color: black;"><a style="color: black;"><i class="fa fa-user" style="color: black;"></i>ข้อมูลส่วนตัว<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
+                                    <ul class="nav child_menu" style="background-color:  White Bubble ;">
                                         <li><a href="show_teacher.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลส่วนตัว</a></li>
                                     </ul>
                                 </li>
                                 <li><a style="color: black;"><i class="fa fa-chalkboard-user"></i>จัดการรายวิชา<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
+                                    <ul class="nav child_menu" style="background-color:  White Bubble ;">
                                         <li><a href="insert_subject.php" style="color: black;"><i class="fa fa-plus-square" style="color: black;"></i>เพิ่มข้อมูลรายวิชา</a></li>
                                         <li><a href="show_subject.php" style="color: black;"><i class="fa fa-list" style="color: black;"></i>แสดงข้อมูลรายวิชา</a></li>
                                     </ul>
                                 </li>
-                                <li><a style="color: black;"><i class="fa fa-file-pen"></i>มอบการบ้าน<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  #FFC0CB;">
-                                        <li><a href="show_subjectandwork.php" style="color: black;"><i class="fa fa-list"></i>แสดงรายวิชาที่สอน</a></li>
+                                <li><a style="color: black;"><i class="fa fa-file-pen"></i>สร้างการบ้าน<span class="fa fa-chevron-down" style="color: black;"></span></a>
+                                    <ul class="nav child_menu" style="background-color:  White Bubble ;">
+                                        <li><a href="show_subjectandwork.php" style="color: black;"><i class="fa fa-list"></i>รายวิชาที่เปิดสอน</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="logout.php" style="color: black;"><i class="fa fa-sign-out"></i>ออกจากระบบ</a></li>

@@ -1,5 +1,11 @@
 <?php include('header.php'); ?>
 <style>
+    .text-detail {
+        font-family: 'Kanit', sans-serif;
+            color: #555555;
+            font-size: 14.44px;
+        /* เปลี่ยนฟอนต์ตามที่คุณเลือก */
+    }
     .image-container {
         display: flex;
         flex-wrap: wrap; /* Allows images to wrap into new rows if needed */
@@ -91,7 +97,7 @@
                         $images = explode(',', $row['announcement_image']);
                 ?>
                         <div class="announcement">
-                            <h2><?php echo htmlspecialchars($row['announcement_title']); ?></h2>
+                            <h2 style="color: #BA55D3;"><?php echo htmlspecialchars($row['announcement_title']); ?></h2>
                             <hr>
                             <div class="image-container">
                                 <?php foreach ($images as $image): ?>
@@ -99,7 +105,7 @@
                                 <?php endforeach; ?>
                             </div>
                             <br>
-                            <p style="font-size: 14px; padding-left: 50px;">
+                            <p class="text-detail" style="padding-left: 50px;">
                                 <?php echo htmlspecialchars($row['announcement_details']); ?>
                             </p>
                         </div>

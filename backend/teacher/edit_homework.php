@@ -60,26 +60,40 @@ $mysqli->close();
 ?>
 
 <style>
-    .btn-m {
+   .btn-m {
         color: white;
-        background-color: #BA55D3;
-        border-color: #BA55D3;
-        
-        transition: background-color 0.3s, color 0.3s;
+        background-color: #FF00FF;
+        border: 2px solid #E0E0E0;
+        /* ขอบสีเทาอ่อน */
+        border-radius: 5px;
+        /* ทำให้ขอบมนเล็กน้อย */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* เงาเบาบางใต้ปุ่ม */
+        transition: box-shadow 0.3s ease;
+        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
     }
+
     .btn-m:hover {
-        background-color: deeppink;
-        color: white;
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        /* เงาชัดเจนขึ้นเมื่อ hover */
     }
+
     .btn-d {
-        background-color: hotpink;
-        border-color: hotpink;
         color: white;
-        transition: background-color 0.3s, color 0.3s;
+        background-color: #808080;
+        border: 2px solid #E0E0E0;
+        /* ขอบสีเทาอ่อน */
+        border-radius: 5px;
+        /* ทำให้ขอบมนเล็กน้อย */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* เงาเบาบางใต้ปุ่ม */
+        transition: box-shadow 0.3s ease;
+        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
     }
+
     .btn-d:hover {
-        background-color: deeppink;
-        color: white;
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        /* เงาชัดเจนขึ้นเมื่อ hover */
     }
 </style>
 <!DOCTYPE html>

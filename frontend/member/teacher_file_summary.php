@@ -42,10 +42,19 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>สรุปไฟล์ที่อาจารย์ส่ง</title>
     <style>
+        /* ปุ่มเขียว */
         .btn-green {
             background-color: #28a745;
             border-color: #28a745;
             color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-green:hover {
+            background-color: #218838;
         }
 
         .icon-img {
@@ -64,6 +73,45 @@ if (json_last_error() !== JSON_ERROR_NONE) {
         .file-name {
             margin-left: 10px; /* เพิ่มระยะห่างระหว่างไอคอนและชื่อไฟล์ */
         }
+
+        /* จัดระเบียบการแสดงผลการบ้าน */
+        .homework-details h2 {
+            color: #333;
+            font-size: 20px;
+        }
+
+        .homework-details p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .file-list li a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .file-list li a:hover {
+            text-decoration: underline;
+        }
+
+        /* จัดการรายละเอียดการบ้านให้เรียงตรงกัน */
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .detail-row strong {
+            width: 150px; /* กำหนดความกว้างให้คงที่เพื่อให้จัดเรียงตรงกัน */
+        }
+
+        .detail-row span {
+            flex-grow: 1; /* ให้ส่วนของข้อความยืดออกเพื่อให้ตรงกับบรรทัด */
+        }
     </style>
 </head>
 
@@ -75,12 +123,24 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                     <h2>ข้อมูลการบ้านและไฟล์ที่อาจารย์ส่ง</h2>
                     <div class="clearfix"></div>
                 </div>
-                <div class="x_content">
+                <div class="x_content homework-details">
                     <!-- แสดงข้อมูลการบ้าน -->
-                    <h2 style="color: black;">หัวข้อการบ้าน: <?php echo htmlspecialchars($homework['title'], ENT_QUOTES, 'UTF-8'); ?></h2>
-                    <p><strong>รายละเอียด:</strong> <?php echo nl2br(htmlspecialchars($homework['description'], ENT_QUOTES, 'UTF-8')); ?></p>
-                    <p><strong>วันที่สั่ง:</strong> <?php echo date('d/m/Y', strtotime($homework['assigned_date'])); ?></p>
-                    <p><strong>วันหมดเขต:</strong> <?php echo date('d/m/Y', strtotime($homework['deadline'])); ?></p>
+                    <h2>หัวข้อการบ้าน: <?php echo htmlspecialchars($homework['title'], ENT_QUOTES, 'UTF-8'); ?></h2>
+                    
+                    <div class="detail-row">
+                        <strong>รายละเอียด:</strong>
+                        <span><?php echo nl2br(htmlspecialchars($homework['description'], ENT_QUOTES, 'UTF-8')); ?></span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <strong>วันที่สั่ง:</strong>
+                        <span><?php echo date('d/m/Y', strtotime($homework['assigned_date'])); ?></span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <strong>วันหมดเขต:</strong>
+                        <span><?php echo date('d/m/Y', strtotime($homework['deadline'])); ?></span>
+                    </div>
 
                     <!-- แสดงรายการไฟล์ที่อาจารย์ส่ง -->
                     <ul class="file-list">
@@ -93,7 +153,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                                 switch ($file_extension) {
                                     case 'docx':
                                     case 'doc':
-                                        $icon = 'word-icon.jpg';
+                                        $icon = 'word-icon.png';
                                         break;
                                     case 'pdf':
                                         $icon = 'pdf-icon.png';
@@ -107,7 +167,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                                 }
 
                                 echo "<li>
-                                        <a href='../../backend/teacher/uploads/" . rawurlencode($file_name) . "' style='color: black;' download='$file_name'>
+                                        <a href='../../backend/teacher/uploads/" . rawurlencode($file_name) . "' download='$file_name'>
                                             <img src='icons/$icon' alt='$file_extension icon' class='icon-img'>
                                             <span class='file-name'>" . htmlspecialchars($file_name) . "</span>
                                         </a>

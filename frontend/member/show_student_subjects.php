@@ -50,6 +50,33 @@ if ($result === false) {
             text-align: center;
             font-size: 24px;
         }
+        .search-container {
+    position: relative; /* ต้องใช้ position: relative ใน container */
+    margin-bottom: 20px;
+    width: 30%; /* กำหนดขนาดความกว้างของช่องค้นหา */
+}
+        #search-input {
+            width: 100%;
+            /* กำหนดความกว้างเป็น 30% */
+            padding: 8px 30px 8px 15px;
+            /* ลด padding เพื่อให้ช่องค้นหาเล็กลง */
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            /* ลดขนาด border-radius */
+            font-size: 14px;
+            /* ลดขนาด font ของข้อความในช่องค้นหา */
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 8px;
+            /* ลดระยะห่างจากขอบด้านขวา */
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            /* ลดขนาดไอคอน */
+            color: #888;
+        }
 
         .card-container {
             display: flex;
@@ -58,54 +85,64 @@ if ($result === false) {
             margin: 0px;
             width: 100%;
             padding: 30px;
-            max-width: 1000px; /* กำหนดขนาดสูงสุดของคอนเทนเนอร์ */
+            max-width: 1000px;
         }
+
         .card {
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             margin: 10px;
-            width: calc(50% - 20px); /* กำหนดให้การ์ดมีขนาดครึ่งหนึ่งของความกว้างทั้งหมดลบด้วยระยะขอบ */
+            width: calc(50% - 20px);
             display: flex;
             flex-direction: row;
             padding: 10px;
             cursor: pointer;
             transition: transform 0.2s;
         }
+
         .card:nth-child(odd) {
-            justify-content: flex-start; /* การ์ดที่เป็นเลขคี่จะแสดงด้านซ้าย */
+            justify-content: flex-start;
         }
+
         .card:nth-child(even) {
-            justify-content: flex-end; /* การ์ดที่เป็นเลขคู่จะแสดงด้านขวา */
+            justify-content: flex-end;
         }
+
         .card:hover {
             transform: scale(1.05);
         }
+
         .card-image {
             flex: 1;
             background-color: #eaeaea;
             border-radius: 8px;
             overflow: hidden;
         }
+
         .card-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         .card-content {
             flex: 2;
             padding-left: 15px;
         }
+
         .card-title {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 10px;
-            color: #C44AFD; /* สีหัวข้อการ์ด */
+            color: #C44AFD;
         }
+
         .card-description {
             font-size: 14px;
             margin-bottom: 10px;
         }
+
         .card-stats {
             font-size: 12px;
             margin-bottom: 5px;
@@ -143,6 +180,12 @@ if ($result === false) {
                 <div class="x_title">
                     <h2>รายวิชาของนักเรียน</h2>
                     <div class="clearfix"></div>
+                </div>
+
+                <!-- เพิ่มช่องค้นหา -->
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="ค้นหาวิชา..." onkeyup="searchCards()">
+                    <span class="search-icon">&#128269;</span>
                 </div>
 
                 <div class="card-container">
@@ -187,7 +230,7 @@ if ($result === false) {
                             echo '<div class="stats">';
                             echo '<p class="total">การบ้านทั้งหมด: ' . $total . '</p>';
                             echo '<p class="submitted">ส่งแล้ว: ' . $submitted . '</p>';
-                            echo '<p class="not-submitted">ยังไม่ส่ง: ' . ($total - $submitted) . '</p>'; // ปรับเพื่อแสดงจำนวนการบ้านที่ยังไม่ส่งอย่างถูกต้อง
+                            echo '<p class="not-submitted">ยังไม่ส่ง: ' . ($total - $submitted) . '</p>';
                             echo '<p class="checked">ครูตรวจแล้ว: ' . $checked . '</p>';
                             echo '</div>';
                             echo '</div>';
@@ -206,6 +249,32 @@ if ($result === false) {
     </div>
 
     <?php include('footer.php'); ?>
+
+    <script>
+    function searchCards() {
+        var input, filter, cards, i, txtValue, title, pass, teacher;
+
+        input = document.getElementById('search-input');
+        filter = input.value.toLowerCase();
+        cards = document.getElementsByClassName('card');
+
+        for (i = 0; i < cards.length; i++) {
+            title = cards[i].getElementsByClassName("card-title")[0];
+            pass = cards[i].getElementsByClassName("card-pass")[0];
+            teacher = cards[i].getElementsByClassName("teacher-fullname")[0];
+
+            txtValue = title.textContent || title.innerText;
+            txtValue += pass.textContent || pass.innerText;
+            txtValue += teacher.textContent || teacher.innerText;
+
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                cards[i].style.display = "";
+            } else {
+                cards[i].style.display = "none";
+            }
+        }
+    }
+</script>
 
 </body>
 

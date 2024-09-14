@@ -45,7 +45,7 @@
                 <table id="datatable" class="table table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th>รหัสผู้ดูแล</th>
+                            <th>ลำดับ</th>
                             <th>ชื่อผู้ดูแลระบบ</th>
                             <th>อีเมลผู้ดูแลระบบ</th>
                             <th>เบอร์โทรศัพท์ผู้ดูแลระบบ</th>
