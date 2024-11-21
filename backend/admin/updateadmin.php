@@ -159,7 +159,7 @@ if (isset($_POST['submit'])) {
                                 <?php if (!empty($admin['admin_profile_pic'])) : ?>
                                     <img src="<?php echo htmlspecialchars($admin['admin_profile_pic'], ENT_QUOTES, 'UTF-8'); ?>" alt="Profile Picture" class="profile-pic">
                                 <?php else : ?>
-                                    <img src="default_profile.png" alt="Default Profile Picture" class="profile-pic">
+                                    <img src="profile_admin/user.jpg" alt="Default Profile Picture" class="profile-pic">
                                 <?php endif; ?>
                                 <input type="file" id="admin_profile_pic" name="admin_profile_pic" class="form-control col-md-7 col-xs-12">
                             </div>

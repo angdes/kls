@@ -4,36 +4,26 @@
         color: white;
         background-color: #FF00FF;
         border: 2px solid #E0E0E0;
-        /* ขอบสีเทาอ่อน */
         border-radius: 5px;
-        /* ทำให้ขอบมนเล็กน้อย */
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        /* เงาเบาบางใต้ปุ่ม */
         transition: box-shadow 0.3s ease;
-        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
     }
 
     .btn-m:hover {
         box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-        /* เงาชัดเจนขึ้นเมื่อ hover */
     }
 
     .btn-d {
         color: white;
         background-color: #808080;
         border: 2px solid #E0E0E0;
-        /* ขอบสีเทาอ่อน */
         border-radius: 5px;
-        /* ทำให้ขอบมนเล็กน้อย */
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        /* เงาเบาบางใต้ปุ่ม */
         transition: box-shadow 0.3s ease;
-        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
     }
 
     .btn-d:hover {
         box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-        /* เงาชัดเจนขึ้นเมื่อ hover */
     }
 </style>
 
@@ -76,9 +66,21 @@
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="teacher_tel">เบอร์โทรศัพท์<span class="required">:</span></label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="tel" id="teacher_tel" name="teacher_tel" required="required" class="form-control col-md-7 col-xs-12">
+                                <input type="tel" id="teacher_tel" name="teacher_tel" required="required" class="form-control col-md-7 col-xs-12" pattern="[0-9]{10}" maxlength="10" placeholder="กรอกเบอร์โทรศัพท์ 10 หลัก" oninput="validateTeacherPhoneNumber()">
+                                <small class="text-muted">กรอกเฉพาะตัวเลข 10 หลัก เช่น 0812345678</small>
                             </div>
                         </div>
+
+                        <script>
+                            function validateTeacherPhoneNumber() {
+                                var teacherTel = document.getElementById('teacher_tel').value;
+                                if (isNaN(teacherTel) || teacherTel.includes(' ') || teacherTel.length > 10) {
+                                    alert("กรุณากรอกเฉพาะตัวเลข และไม่เกิน 10 หลัก");
+                                    document.getElementById('teacher_tel').value = teacherTel.slice(0, 10).replace(/[^0-9]/g, ''); // ลบตัวอักษรที่ไม่ใช่ตัวเลข
+                                }
+                            }
+                        </script>
+
 
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="teacher_profile_pic">รูปโปรไฟล์<span class="required">:</span></label>
@@ -95,6 +97,10 @@
                             </div>
                         </div>
                     </form>
+
+                    <!-- เพิ่มปุ่มสำหรับสร้างไฟล์ Excel และอัปโหลดจากไฟล์ Excel -->
+                    
+
                     <?php
                     if (isset($_POST['submit'])) {
                         $teacher_fullname = $_POST['teacher_fullname'];
@@ -112,11 +118,9 @@
                             // ตรวจสอบว่าเป็นไฟล์ภาพหรือไม่
                             $check = getimagesize($_FILES['teacher_profile_pic']['tmp_name']);
                             if ($check !== false) {
-                                // ตรวจสอบว่ารูปภาพมีนามสกุลที่ถูกต้องหรือไม่
                                 if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
-                                    // ย้ายไฟล์อัปโหลดไปยังโฟลเดอร์ที่ระบุ
                                     if (move_uploaded_file($_FILES['teacher_profile_pic']['tmp_name'], $upload_file)) {
-                                        $teacher_profile_pic = $upload_file; // เก็บที่อยู่ไฟล์ไว้ในตัวแปร
+                                        $teacher_profile_pic = $upload_file;
                                     } else {
                                         echo $cls_conn->show_message('เกิดข้อผิดพลาดในการอัปโหลดไฟล์รูปภาพ');
                                     }
@@ -128,6 +132,7 @@
                             }
                         }
 
+                        // บันทึกข้อมูลครู
                         $sql = "INSERT INTO tb_teacher (teacher_fullname, teacher_username, teacher_password, teacher_tel, teacher_profile_pic) 
                                 VALUES ('$teacher_fullname', '$teacher_username', '$teacher_password', '$teacher_tel', '$teacher_profile_pic')";
 

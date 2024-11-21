@@ -147,22 +147,22 @@ $subject_result = $mysqli->query($subject_sql);
 <body>
     <div class="right_col" role="main">
         <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+            <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);">
                 <div class="x_title">
-                    <h2>Dashboard</h2>
+                    <h2 style="color: black;"><b>Dashboard</b></h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
                     <!-- แสดงสถิติการบ้าน -->
                     <div class="dashboard-grid">
                         <div class="dashboard-card">
-                            <h2>การบ้านที่มอบหมาย</h2>
+                            <h2>งานมอบหมาย</h2>
                             <p>จำนวนทั้งหมด: <?= $homework_data['total_homework']; ?></p>
-                            <p>การบ้านที่ยังไม่หมดเขต: <?= $homework_data['pending_homework']; ?></p>
-                            <p>การบ้านที่หมดเขตแล้ว: <?= $homework_data['overdue_homework']; ?></p>
+                            <p>งานที่ยังไม่หมดเขต: <?= $homework_data['pending_homework']; ?></p>
+                            <p>งานที่หมดเขตแล้ว: <?= $homework_data['overdue_homework']; ?></p>
                         </div>
                         <div class="dashboard-card">
-                            <h2>การตรวจการบ้าน</h2>
+                            <h2>การตรวจงาน</h2>
                             
                             <p>ตรวจแล้ว: <?= $submission_data['graded_submissions']; ?></p>
                             <p>ยังไม่ได้ตรวจ: <?= $submission_data['ungraded_submissions']; ?></p>
@@ -171,7 +171,7 @@ $subject_result = $mysqli->query($subject_sql);
                     </div>
 
                     <!-- แสดงรายวิชาที่สอน -->
-                    <h2>รายวิชาที่สอน</h2>
+                    <h2 style="color: black;">รายวิชาที่สอน</h2>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -186,7 +186,7 @@ $subject_result = $mysqli->query($subject_sql);
                                     <td><?= htmlspecialchars($subject['subject_pass']); ?></td>
                                     <td><?= htmlspecialchars($subject['subject_name']); ?></td>
                                     <td>
-                                        <a href="show_homework.php?subject_pass=<?= urlencode($subject['subject_pass']); ?>" class="btn-primary">ดูการบ้าน</a>
+                                        <a href="show_homework.php?subject_pass=<?= urlencode($subject['subject_pass']); ?>" class="btn-primary">ดูงาน</a>
                                     </td>
                                 </tr>
                             <?php } ?>

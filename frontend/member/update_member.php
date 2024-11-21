@@ -14,9 +14,9 @@ $member = $_SESSION['user'];
 if (isset($_POST['submit'])) {
     // รับค่าจากฟอร์ม
     $member_fullname = $_POST['member_fullname'];
-    $member_address = $_POST['member_address'];
+    $member_year = $_POST['member_year'];
     $member_tel = $_POST['member_tel'];
-    $member_email = $_POST['member_email'];
+
     $member_username = $_POST['member_username'];
     $member_password = $_POST['member_password'];
     $confirm_password = $_POST['confirm_password'];
@@ -52,11 +52,11 @@ if (isset($_POST['submit'])) {
         // สร้างคำสั่ง SQL สำหรับการอัปเดตข้อมูล
         $sql = "UPDATE tb_member SET 
                 member_fullname='$member_fullname', 
-                member_address='$member_address',
+                member_year='$member_year',
                 member_tel='$member_tel',
-                member_email='$member_email',
+                
                 member_username='$member_username'";
-        
+
         // ตรวจสอบว่ามีการเปลี่ยนแปลงรหัสผ่านหรือไม่
         if (!empty($member_password)) {
             $sql .= ", member_password='$member_password'";
@@ -74,9 +74,9 @@ if (isset($_POST['submit'])) {
         if ($cls_conn->write_base($sql) == true) {
             // อัปเดตข้อมูลใน session ด้วย
             $_SESSION['user']['member_fullname'] = $member_fullname;
-            $_SESSION['user']['member_address'] = $member_address;
+            $_SESSION['user']['member_year'] = $member_year;
             $_SESSION['user']['member_tel'] = $member_tel;
-            $_SESSION['user']['member_email'] = $member_email;
+
             $_SESSION['user']['member_username'] = $member_username;
 
             // อัปเดตรหัสผ่านใน session ด้วย หากมีการเปลี่ยนแปลง
@@ -152,9 +152,9 @@ if (isset($_POST['submit'])) {
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_address">ที่อยู่</label>
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_year">ปีการศึกษา</label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="member_address" name="member_address" value="<?php echo htmlspecialchars($member['member_address'], ENT_QUOTES, 'UTF-8'); ?>" required="required" class="form-control col-md-7 col-xs-12">
+                                <input type="text" id="member_year" name="member_year" value="<?php echo htmlspecialchars($member['member_year'], ENT_QUOTES, 'UTF-8'); ?>" class="form-control col-md-7 col-xs-12" readonly>
                             </div>
                         </div>
                         <div class="form-group">
@@ -163,16 +163,11 @@ if (isset($_POST['submit'])) {
                                 <input type="text" id="member_tel" name="member_tel" value="<?php echo htmlspecialchars($member['member_tel'], ENT_QUOTES, 'UTF-8'); ?>" required="required" class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_email">อีเมล</label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="member_email" name="member_email" value="<?php echo htmlspecialchars($member['member_email'], ENT_QUOTES, 'UTF-8'); ?>" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
+
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_username">ชื่อผู้ใช้งาน</label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="member_username" name="member_username" value="<?php echo htmlspecialchars($member['member_username'], ENT_QUOTES, 'UTF-8'); ?>" required="required" class="form-control col-md-7 col-xs-12">
+                                <input type="text" id="member_username" name="member_username" value="<?php echo htmlspecialchars($member['member_username'], ENT_QUOTES, 'UTF-8'); ?>" class="form-control col-md-7 col-xs-12" readonly>
                             </div>
                         </div>
                         <div class="form-group">

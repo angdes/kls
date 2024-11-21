@@ -103,67 +103,80 @@ if ($display == 'teachers' || $display == 'both') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แดชบอร์ดผู้ดูแลระบบ</title>
     <style>
-        body {
+         body {
             font-family: 'Roboto', sans-serif;
             background: #f4f4f8;
-            /* สีพื้นหลังที่อ่อนกว่า */
             color: #4A235A;
-            /* สีข้อความที่เข้มขึ้นเล็กน้อย */
             margin: 0;
             padding: 0;
         }
 
         .dashboard-card {
             background: #FFFFFF;
-            /* สีพื้นหลังของการ์ดเป็นขาว */
-            border-radius: 15px;
+            border-radius: 10px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(102, 51, 153, 0.2);
-            /* เงาของการ์ดที่มีโทนสีม่วง */
+            color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .dashboard-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 24px rgba(102, 51, 153, 0.4);
-            /* เพิ่มความเข้มของเงาเมื่อ hover */
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
         }
 
         .dashboard-card h3 {
             margin-top: 0;
-            color: #2980B9;
-            /* สีน้ำเงินเข้ม */
-            /* สีหัวข้อในการ์ด */
-            font-size: 1.5rem;
-        }
-
-        .btn-primary {
-            background-color: #2ECC71;
-            /* สีปุ่มใหม่เป็นสีฟ้า */
-            color: white;
-            padding: 10px 15px;
-            text-decoration: none;
-            border-radius: 50px;
-            display: inline-block;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background-color: #27AE60;
-            /* ทำให้สีปุ่มเข้มขึ้นเมื่อ hover */
-            box-shadow: 0 4px 8px rgba(41, 128, 185, 0.3);
+            font-size: 2.5rem;
         }
 
         .dashboard-card p {
-            color: #424949;
-            /* สีเทาชาร์โคล */
+            margin: 0;
             font-size: 1.2rem;
+        }
+
+        .dashboard-card i {
+            font-size: 2.5rem;
         }
 
         .dashboard-grid {
             display: flex;
-            flex-wrap: wrap;
             gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card-blue {
+            background-color: #3498db;
+        }
+
+        .card-green {
+            background-color: #2ecc71;
+        }
+
+        .card-yellow {
+            background-color: #f39c12;
+        }
+
+        .card-orange {
+            background-color: #e67e22;
+        }
+
+        .btn-primary {
+            background-color: #b856d6;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 20px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #79099c;
+            box-shadow: 0 4px 8px rgba(41, 128, 185, 0.3);
         }
 
         .dashboard-grid>div {
@@ -179,9 +192,9 @@ if ($display == 'teachers' || $display == 'both') {
         }
 
         h2 {
-            color: #8E44AD;
+            color: black;
             /* สีของหัวข้อใหญ่ */
-            text-align: center;
+            
             font-size: 2rem;
         }
 
@@ -217,14 +230,16 @@ if ($display == 'teachers' || $display == 'both') {
             margin: 0;
             padding: 0;
         }
-
+        .fa-user-shield{
+            color: black;
+        }
         .btn1 {
             padding: 8px 12px;
             /* Smaller padding for more refined buttons */
             margin: 5px;
-            background-image: linear-gradient(to right, #77c593, #a8d8b9);
+            background-image: linear-gradient(to right, #79099c, #b856d6);
             /* Light green gradient */
-            color: #333;
+            color: #fff;
             /* Dark grey for text to ensure good contrast */
             text-decoration: none;
             border: none;
@@ -242,7 +257,8 @@ if ($display == 'teachers' || $display == 'both') {
         }
 
         .btn1:hover {
-            background-image: linear-gradient(to right, #66a482, #99c7a2);
+            background-image: linear-gradient(to right, #b856d6, #b856d6);
+            color: #fff;
             /* Darker green gradient on hover */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
             /* Slightly larger shadow on hover for a "lifting" effect */
@@ -260,6 +276,7 @@ if ($display == 'teachers' || $display == 'both') {
             border: 1px solid #dddddd;
             text-align: left;
             padding: 8px;
+            color: black;
         }
 
         tr:nth-child(even) {
@@ -273,26 +290,37 @@ if ($display == 'teachers' || $display == 'both') {
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>แดชบอร์ดผู้ดูแลระบบ</h2>
+                    <h2 style="color: black;">แดชบอร์ดผู้ดูแลระบบ</h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
                     <!-- แสดงสถิติผู้ใช้ -->
                     <div class="dashboard-grid">
-                        <div class="dashboard-card">
-                            <h3>สถิติผู้ใช้</h3>
-                            <p>ครู: <?= $user_stats['total_teachers']; ?></p>
-                            <p>นักเรียน: <?= $user_stats['total_students']; ?></p>
-                            <p>ผู้ดูแลระบบ: <?= $user_stats['total_admins']; ?></p>
+                        <div class="dashboard-card card-blue">
+                            <div>
+                                <h3 style="color: white;"><?= $user_stats['total_teachers']; ?></h3>
+                                <p style="color: white;" >จำนวนครู</p>
+                            </div>
+                            <i class="fa fa-user"></i>
                         </div>
-                        <div class="dashboard-card">
-                            <h3>สถิติวิชา</h3>
-                            <p>จำนวนวิชาทั้งหมด: <?= $subject_stats['total_subjects']; ?></p>
+                        <div class="dashboard-card card-green">
+                            <div>
+                                <h3 style="color: white;"><?= $user_stats['total_students']; ?></h3>
+                                <p style="color: white;">จำนวนนักเรียน</p>
+                            </div>
+                            <i class="fa fa-user-graduate"></i>
+                        </div>
+                        <div class="dashboard-card card-yellow">
+                            <div>
+                                <h3 style="color: black;"><?= $user_stats['total_admins']; ?></h3>
+                                <p style="color: black;">จำนวนผู้ดูแลระบบ</p>
+                            </div>
+                            <i class="fa fa-user-shield"></i>
                         </div>
                     </div>
 
                     <!-- ลิงก์ด่วนการจัดการข้อมูล -->
-                    <h3>จัดการข้อมูล</h3>
+                    <h2>จัดการข้อมูล</h2>
                     <div class="dashboard-grid">
                         <div class="dashboard-card">
                             <a href="show_announcements.php" class="btn-primary">จัดการข้อมูลประกาศ</a>
@@ -305,6 +333,7 @@ if ($display == 'teachers' || $display == 'both') {
                         </div>
                     </div>
 
+                    <!-- แสดงข้อมูลนักเรียนและครู -->
                     <div class="x_content">
                         <div>
                             <a href="?display=students" class="btn1">ข้อมูลครู</a>
@@ -312,26 +341,30 @@ if ($display == 'teachers' || $display == 'both') {
                             <a href="?display=both" class="btn1">ข้อมูลนักเรียน/ครู</a>
                         </div>
                         <table>
-                            <tr>
-                                <th>ชื่อนักเรียน/ครู</th>
-                                <th>โทรศัพท์</th>
-                            </tr>
-                            <?php if ($display == 'students' || $display == 'both'): ?>
-                                <?php foreach ($members as $member): ?>
-                                    <tr>
-                                        <td><?= $member['member_fullname']; ?></td>
-                                        <td><?= $member['member_tel']; ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                            <?php if ($display == 'teachers' || $display == 'both'): ?>
-                                <?php foreach ($teachers as $teacher): ?>
-                                    <tr>
-                                        <td><?= $teacher['teacher_fullname']; ?></td>
-                                        <td><?= $teacher['teacher_tel']; ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                            <thead>
+                                <tr>
+                                    <th>ชื่อ</th>
+                                    <th>โทรศัพท์</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if ($display == 'students' || $display == 'both'): ?>
+                                    <?php foreach ($members as $member): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($member['member_fullname']); ?></td>
+                                            <td><?= htmlspecialchars($member['member_tel']); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                                <?php if ($display == 'teachers' || $display == 'both'): ?>
+                                    <?php foreach ($teachers as $teacher): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($teacher['teacher_fullname']); ?></td>
+                                            <td><?= htmlspecialchars($teacher['teacher_tel']); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -340,6 +373,7 @@ if ($display == 'teachers' || $display == 'both') {
     </div>
     <?php include('footer.php'); ?>
 </body>
+
 
 </html>
 

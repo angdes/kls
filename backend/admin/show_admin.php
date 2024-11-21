@@ -69,12 +69,12 @@
                                 <td><?= $row['admin_email']; ?></td>
                                 <td><?= $row['admin_tel']; ?></td>
                                 <td><?= $row['admin_username']; ?></td>
-                                <td><?= $row['admin_password']; ?></td>
+                                <td><?= str_repeat('*', strlen($row['admin_password'])); ?></td>
                                 <td>
                                     <?php if (!empty($row['admin_profile_pic'])): ?>
                                         <img src="<?= htmlspecialchars($row['admin_profile_pic']); ?>" alt="Profile Picture" class="profile-pic">
                                     <?php else: ?>
-                                        <img src="default_profile.png" alt="Default Profile Picture" class="profile-pic"> <!-- แสดงรูปโปรไฟล์เริ่มต้นหากไม่มีรูปที่อัปโหลด -->
+                                        <img src="profile_admin/user.jpg" alt="Default Profile Picture" class="profile-pic"> <!-- แสดงรูปโปรไฟล์เริ่มต้นหากไม่มีรูปที่อัปโหลด -->
                                     <?php endif; ?>
                                 </td>
                                 <td>

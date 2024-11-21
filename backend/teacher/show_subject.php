@@ -86,7 +86,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['subjec
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
         }
 
-        .btn-d {
+        .btn-a {
             background-color: #9966CC;
             color: #FFFFFF;
             border: 2px solid #E0E0E0;
@@ -95,8 +95,26 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['subjec
             transition: box-shadow 0.3s ease;
         }
 
+        .btn-a:hover {
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-d {
+            color: white;
+            background-color: #808080;
+            border: 2px solid #E0E0E0;
+            /* ขอบสีเทาอ่อน */
+            border-radius: 5px;
+            /* ทำให้ขอบมนเล็กน้อย */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* เงาเบาบางใต้ปุ่ม */
+            transition: box-shadow 0.3s ease;
+            /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
+        }
+
         .btn-d:hover {
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+            /* เงาชัดเจนขึ้นเมื่อ hover */
         }
 
         .btn-view {
@@ -144,7 +162,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['subjec
                                 <th>ชื่อรายวิชา</th>
                                 <th>รายละเอียด</th>
                                 <th>รูปปก</th>
-                                <th>ดูนักเรียน</th>
+                                <th>ข้อมูลนักเรียนในรายวิชา</th>
                                 <th>แก้ไข</th>
                                 <th>ลบ</th>
                             </tr>
@@ -168,7 +186,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['subjec
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <a href="view_students_in_subject.php?subject_id=<?= htmlspecialchars($row['subject_id']); ?>" class="btn btn-view">ดูนักเรียน</a>
+                                            <a href="view_students_in_subject.php?subject_id=<?= htmlspecialchars($row['subject_id']); ?>" class="btn btn-a">ข้อมูลนักเรียน</a>
                                         </td>
                                         <td>
                                             <a href="update_subject.php?id=<?= htmlspecialchars($row['subject_id']); ?>&teacher_id=<?= htmlspecialchars($teacher_id); ?>" onclick="return confirm('คุณต้องการแก้ไขหรือไม่?')"><img src="../../images/edit.png" alt="Edit" /></a>

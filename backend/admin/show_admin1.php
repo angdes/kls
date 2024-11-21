@@ -1,5 +1,5 @@
-<?php 
-include('header.php'); 
+<?php
+include('header.php');
 
 // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
 if (!isset($_SESSION['user'])) {
@@ -12,8 +12,6 @@ $user = $_SESSION['user'];
 ?>
 
 <style>
-    
-   
     .btn-m {
         color: white;
         background-color: #FF00FF;
@@ -54,7 +52,7 @@ $user = $_SESSION['user'];
 <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-            <div class="x_title" >
+            <div class="x_title">
                 <h2 style="color: black;">แสดงข้อมูลส่วนตัว</h2>
                 <div class="clearfix"></div>
             </div>
@@ -64,10 +62,16 @@ $user = $_SESSION['user'];
                         <th>ชื่อแอดมิน</th>
                         <td><?php echo htmlspecialchars($user['admin_fullname'], ENT_QUOTES, 'UTF-8'); ?></td>
                     </tr>
+                    <?php
+                    // แสดงเฉพาะ 3 ตัวแรกและ 3 ตัวหลังของเบอร์โทรศัพท์ ที่เหลือแสดงเป็น xxx
+                    $tel = $user['admin_tel'];
+                    $masked_tel = substr($tel, 0, 3) . 'xxx' . substr($tel, -3);
+                    ?>
                     <tr>
                         <th>เบอร์โทรศัพท์</th>
-                        <td><?php echo htmlspecialchars($user['admin_tel'], ENT_QUOTES, 'UTF-8'); ?></td>
+                        <td><?php echo htmlspecialchars($masked_tel, ENT_QUOTES, 'UTF-8'); ?></td>
                     </tr>
+
                     <tr>
                         <th>อีเมล</th>
                         <td><?php echo htmlspecialchars($user['admin_email'], ENT_QUOTES, 'UTF-8'); ?></td>
@@ -91,4 +95,5 @@ $user = $_SESSION['user'];
 </div>
 <?php include('footer.php'); ?>
 </body>
+
 </html>

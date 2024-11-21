@@ -50,7 +50,6 @@ if ($result_members === false) {
 $alert_message = '';
 
 if (isset($_POST['submit'])) {
-    // ตรวจสอบว่ามีนักเรียนที่เลือกอยู่ใน tb_student_subject แล้วหรือไม่
     ob_start();
     // ดึงข้อมูลจากฟอร์ม
     $subject_id = $_POST['subject_id'];
@@ -63,10 +62,8 @@ if (isset($_POST['submit'])) {
     $result_mem = $mysqli->query($check_mem);
 
     if ($result_mem && $result_mem->num_rows > 0) {
-        // Some members already have subjects assigned, handle this case
         $alert_message = '<div class="alert alert-danger" role="alert">นักเรียนบางคนที่คุณเลือกมีข้อมูลอยู่แล้วในระบบ</div>';
     } else {
-        // No data found, proceed with the insert
         foreach ($selected_member as $student_id) {
             $sql_insert = "INSERT INTO tb_student_subject (subject_id, member_id) VALUES ('$subject_id', '$student_id')";
             if ($mysqli->query($sql_insert) === false) {
@@ -80,27 +77,29 @@ if (isset($_POST['submit'])) {
     <script>
         setTimeout(function(){
             window.location.href = "show_subject.php";
-        }, 1000); // 1000 milliseconds = 1 second
+        }, 1000);
     </script>
 ';
     }
     ob_end_clean();
 }
 ?>
+<style>
+    #member option:checked {
+        background-color: #007bff;
+        color: #ffffff;
+    }
+</style>
 
 <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <!-- แสดงข้อความแจ้งเตือนเฉพาะเมื่อมีข้อความแจ้งเตือน -->
-
-
         <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
             <div class="x_title">
-                
                 <h2>เพิ่มนักเรียนให้กับรายวิชา</h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-            <?php if (!empty($alert_message)) {
+                <?php if (!empty($alert_message)) {
                     echo $alert_message;
                 } ?>
                 <form id="add_member_form" class="form-horizontal form-label-left" method="post" action="">
@@ -119,16 +118,53 @@ if (isset($_POST['submit'])) {
                             </select>
                         </div>
                     </div>
-                    <br>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="year">เลือกปีการศึกษา<span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select id="year" class="form-control col-md-7 col-xs-12" required>
+                                <option value="">เลือกปีการศึกษา</option>
+                                <?php
+                                $sql_years = "SELECT DISTINCT member_year FROM tb_member";
+                                $result_years = $mysqli->query($sql_years);
+                                while ($row_year = $result_years->fetch_assoc()) { ?>
+                                    <option value="<?= htmlspecialchars($row_year['member_year']); ?>">
+                                        <?= htmlspecialchars($row_year['member_year']); ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="status">เลือกสถานะนักเรียน<span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select id="status" class="form-control col-md-7 col-xs-12" required>
+                                <option value="">เลือกสถานะ</option>
+                                <option value="1">ภาคปกติ</option>
+                                <option value="0">ภาคย้ายเข้า</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="gender">เลือกเพศ<span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select id="gender" class="form-control col-md-7 col-xs-12">
+                                <option value="">แสดงทั้งชาย/หญิง</option>
+                                <option value="male,ชาย">ชาย</option>
+                                <option value="female,หญิง">หญิง</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member">เลือกนักเรียน<span class="required">*</span></label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <!-- ช่องค้นหา -->
                             <input type="text" id="search_member" class="form-control" placeholder="ค้นหานักเรียน...">
                             <select id="member" name="member[]" class="form-control col-md-7 col-xs-12" multiple required>
                                 <?php while ($row_member = $result_members->fetch_assoc()) { ?>
-                                    <option value="<?= htmlspecialchars($row_member['member_id']); ?>">
-                                        <?= "(" . htmlspecialchars($row_member['member_number']) . ")" . " " . htmlspecialchars($row_member['member_fullname']) . ""; ?>
+                                    <option value="<?= htmlspecialchars($row_member['member_id']); ?>"
+                                        data-year="<?= htmlspecialchars($row_member['member_year']); ?>"
+                                        data-status="<?= htmlspecialchars($row_member['member_status']); ?>"
+                                        data-gender="<?= htmlspecialchars($row_member['member_gender']); ?>">
+                                        <?= "(" . htmlspecialchars($row_member['member_number']) . ")" . " " . htmlspecialchars($row_member['member_fullname']); ?>
                                     </option>
                                 <?php } ?>
                             </select>
@@ -151,7 +187,6 @@ if (isset($_POST['submit'])) {
 </div>
 
 <script>
-    // ฟังก์ชันค้นหาใน dropdown
     document.getElementById('search_member').addEventListener('input', function() {
         var filter = this.value.toUpperCase();
         var select = document.getElementById('member');
@@ -162,7 +197,6 @@ if (isset($_POST['submit'])) {
         }
     });
 
-    // ฟังก์ชันเลือกทั้งหมด
     document.getElementById('select_all').addEventListener('click', function() {
         var select = document.getElementById('member');
         for (var i = 0; i < select.options.length; i++) {
@@ -170,11 +204,49 @@ if (isset($_POST['submit'])) {
         }
     });
 
-    // ฟังก์ชันยกเลิกการเลือกทั้งหมด
     document.getElementById('deselect_all').addEventListener('click', function() {
         var select = document.getElementById('member');
         for (var i = 0; i < select.options.length; i++) {
             select.options[i].selected = false;
+        }
+    });
+
+    document.getElementById('year').addEventListener('change', filterStudents);
+    document.getElementById('status').addEventListener('change', filterStudents);
+    document.getElementById('gender').addEventListener('change', filterStudents);
+
+    function filterStudents() {
+        var selectedYear = document.getElementById('year').value;
+        var selectedStatus = document.getElementById('status').value;
+        var selectedGender = document.getElementById('gender').value;
+        var select = document.getElementById('member');
+        var options = select.options;
+
+        for (var i = 0; i < options.length; i++) {
+            var studentYear = options[i].getAttribute('data-year');
+            var studentStatus = options[i].getAttribute('data-status');
+            var studentGender = options[i].getAttribute('data-gender');
+
+            var genderMatch = false;
+
+            if (selectedGender === "" || selectedGender.includes("ชาย")) {
+                genderMatch = (studentGender === 'male' || studentGender === 'ชาย');
+            } else if (selectedGender.includes("หญิง")) {
+                genderMatch = (studentGender === 'female' || studentGender === 'หญิง');
+            }
+
+            options[i].style.display = (selectedYear === "" || studentYear === selectedYear) &&
+                (selectedStatus === "" || studentStatus === selectedStatus) &&
+                (selectedGender === "" || genderMatch) ? '' : 'none';
+        }
+    }
+
+
+    document.getElementById('member').addEventListener('mousedown', function(event) {
+        event.preventDefault();
+        var option = event.target;
+        if (option.tagName === 'OPTION') {
+            option.selected = !option.selected;
         }
     });
 </script>

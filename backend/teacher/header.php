@@ -25,7 +25,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 
     // ตรวจสอบว่ารูปภาพมีอยู่ในโฟลเดอร์ที่ระบุหรือไม่
     if (!file_exists($teacher_profile_pic)) {
-        $teacher_profile_pic = 'uploads/default_teacher.jpg'; // ถ้ารูปภาพไม่พบ ให้ใช้รูปภาพเริ่มต้น
+        $teacher_profile_pic = 'profile_teacher/user.jpg'; // ถ้ารูปภาพไม่พบ ให้ใช้รูปภาพเริ่มต้น
     }
 } else {
     // หากไม่พบข้อมูลในฐานข้อมูล ให้กลับไปหน้าเข้าสู่ระบบ
@@ -93,10 +93,11 @@ if ($result && mysqli_num_rows($result) > 0) {
                                 <li><a style="color: black;"><i class="fa fa-chalkboard-user"></i>จัดการรายวิชา<span class="fa fa-chevron-down" style="color: black;"></span></a>
                                     <ul class="nav child_menu" style="background-color:  White Bubble ;">
                                         <li><a href="insert_subject.php" style="color: black;"><i class="fa fa-plus-square" style="color: black;"></i>เพิ่มข้อมูลรายวิชา</a></li>
+                                        <li><a href="add_student_to_subject.php" style="color: black;"><i class="fa fa-plus-square" style="color: black;"></i>เพิ่มข้อมูลนักเรียนในรายวิชา</a></li>
                                         <li><a href="show_subject.php" style="color: black;"><i class="fa fa-list" style="color: black;"></i>แสดงข้อมูลรายวิชา</a></li>
                                     </ul>
                                 </li>
-                                <li><a style="color: black;"><i class="fa fa-file-pen"></i>สร้างการบ้าน<span class="fa fa-chevron-down" style="color: black;"></span></a>
+                                <li><a style="color: black;"><i class="fa fa-file-pen"></i>สร้างงาน<span class="fa fa-chevron-down" style="color: black;"></span></a>
                                     <ul class="nav child_menu" style="background-color:  White Bubble ;">
                                         <li><a href="show_subjectandwork.php" style="color: black;"><i class="fa fa-list"></i>รายวิชาที่เปิดสอน</a></li>
                                     </ul>

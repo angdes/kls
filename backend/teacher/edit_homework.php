@@ -19,12 +19,13 @@ if ($mysqli->connect_error) {
 }
 
 // รับข้อมูลการบ้านที่ต้องการแก้ไขจากฐานข้อมูล
-$homework_sql = "SELECT title, description, assigned_date, deadline FROM tb_homework WHERE homework_id = $homework_id";
+$homework_sql = "SELECT title, description, assigned_date, deadline, file_path FROM tb_homework WHERE homework_id = $homework_id";
 $homework_result = $mysqli->query($homework_sql);
 
 // ตรวจสอบว่ามีการบ้านหรือไม่
 if ($homework_result->num_rows > 0) {
     $homework = $homework_result->fetch_assoc();
+    $existing_files = json_decode($homework['file_path'], true) ?? [];
 } else {
     die("ไม่พบการบ้านที่ต้องการแก้ไข.");
 }
@@ -39,10 +40,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $assigned_date = DateTime::createFromFormat('d/m/Y H:i', $_POST['assigned_date'])->format('Y-m-d H:i:s');
     $deadline = DateTime::createFromFormat('d/m/Y H:i', $_POST['deadline'])->format('Y-m-d H:i:s');
 
+    // จัดการไฟล์ใหม่ที่อัปโหลด
+    $file_paths = $existing_files; // ไฟล์เก่าที่คงอยู่
+    if (isset($_FILES['files']['name']) && !empty($_FILES['files']['name'][0])) {
+        foreach ($_FILES['files']['name'] as $key => $file_name) {
+            $file_tmp = $_FILES['files']['tmp_name'][$key];
+            $file_path = 'uploads/' . basename($file_name);
+            if (move_uploaded_file($file_tmp, $file_path)) {
+                $file_paths[] = $file_path; // เพิ่มไฟล์ใหม่ในรายการ
+            } else {
+                echo "เกิดข้อผิดพลาดในการอัปโหลดไฟล์: $file_name";
+            }
+        }
+    }
+
+    // แปลงเส้นทางไฟล์เป็น JSON เพื่อจัดเก็บในฐานข้อมูล
+    $file_paths_json = json_encode($file_paths, JSON_UNESCAPED_UNICODE);
+
     // อัปเดตข้อมูลการบ้านในฐานข้อมูล
-    $update_sql = "UPDATE tb_homework SET title = ?, description = ?, assigned_date = ?, deadline = ? WHERE homework_id = ?";
+    $update_sql = "UPDATE tb_homework SET title = ?, description = ?, assigned_date = ?, deadline = ?, file_path = ? WHERE homework_id = ?";
     $stmt = $mysqli->prepare($update_sql);
-    $stmt->bind_param("ssssi", $title, $description, $assigned_date, $deadline, $homework_id);
+    $stmt->bind_param("sssssi", $title, $description, $assigned_date, $deadline, $file_paths_json, $homework_id);
 
     if ($stmt->execute()) {
         // ข้อความแจ้งเตือนเมื่อแก้ไขสำเร็จ
@@ -58,7 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $mysqli->close();
 ?>
-
 <style>
    .btn-m {
         color: white;
@@ -124,7 +141,7 @@ $mysqli->close();
                         echo $alert_message;
                     } ?>
 
-                    <form action="edit_homework.php?homework_id=<?= $homework_id ?>&subject_pass=<?= htmlspecialchars($_GET['subject_pass']); ?>" method="post">
+                    <form action="edit_homework.php?homework_id=<?= $homework_id ?>&subject_pass=<?= htmlspecialchars($_GET['subject_pass']); ?>" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="title">หัวข้อการบ้าน:</label>
                             <input type="text" name="title" class="form-control" value="<?= htmlspecialchars($homework['title']); ?>" required>
@@ -140,6 +157,18 @@ $mysqli->close();
                         <div class="form-group">
                             <label for="deadline">วันหมดเขต:</label>
                             <input type="text" name="deadline" id="deadline" class="form-control datetimepicker" value="<?= htmlspecialchars(date('d/m/Y H:i', strtotime($homework['deadline']))); ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="files">ไฟล์การบ้านปัจจุบัน:</label>
+                            <ul>
+                                <?php foreach ($existing_files as $file) { ?>
+                                    <li><a href="<?= htmlspecialchars($file); ?>" target="_blank" style="color: black;"><?= basename($file); ?></a></li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                        <div class="form-group">
+                            <label for="files">อัปโหลดไฟล์ใหม่ (ถ้ามี):</label>
+                            <input type="file" name="files[]" multiple class="form-control">
                         </div>
                         <button type="submit" class="btn btn-d">บันทึกการเปลี่ยนแปลง</button>
                         <button type="button" class="btn btn-m" onclick="window.location.href='show_homework.php?subject_pass=<?= htmlspecialchars($_GET['subject_pass']); ?>';">ยกเลิก</button>

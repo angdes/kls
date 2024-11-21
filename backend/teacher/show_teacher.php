@@ -31,7 +31,7 @@ $user = $_SESSION['user'];
 
     .btn-d {
         color: white;
-        background-color: #CC99FF;
+        background-color: #808080;
         border: 2px solid #E0E0E0;
         /* ขอบสีเทาอ่อน */
         border-radius: 5px;

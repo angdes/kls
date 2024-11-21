@@ -63,17 +63,20 @@ $member = $_SESSION['user'];
                             <td><?php echo htmlspecialchars($member['member_fullname'], ENT_QUOTES, 'UTF-8'); ?></td>
                         </tr>
                         <tr>
-                            <th>ที่อยู่</th>
-                            <td><?php echo htmlspecialchars($member['member_address'], ENT_QUOTES, 'UTF-8'); ?></td>
+                            <th>ปีการศึกษา</th>
+                            <td><?php echo htmlspecialchars($member['member_year'], ENT_QUOTES, 'UTF-8'); ?></td>
                         </tr>
+                        <?php
+                        // แสดงเฉพาะ 3 ตัวแรกและ 3 ตัวหลังของเบอร์โทรศัพท์ ที่เหลือแสดงเป็น xxx
+                        $tel = $member['member_tel'];
+                        $masked_tel = substr($tel, 0, 3) . 'xxx' . substr($tel, -3);
+                        ?>
                         <tr>
                             <th>เบอร์โทรศัพท์</th>
-                            <td><?php echo htmlspecialchars($member['member_tel'], ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($masked_tel, ENT_QUOTES, 'UTF-8'); ?></td>
                         </tr>
-                        <tr>
-                            <th>อีเมล</th>
-                            <td><?php echo htmlspecialchars($member['member_email'], ENT_QUOTES, 'UTF-8'); ?></td>
-                        </tr>
+
+
                         <tr>
                             <th>ชื่อผู้ใช้งาน</th>
                             <td><?php echo htmlspecialchars($member['member_username'], ENT_QUOTES, 'UTF-8'); ?></td>

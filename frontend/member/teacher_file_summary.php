@@ -129,7 +129,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
                     
                     <div class="detail-row">
                         <strong>รายละเอียด:</strong>
-                        <span><?php echo nl2br(htmlspecialchars($homework['description'], ENT_QUOTES, 'UTF-8')); ?></span>
+                        <span style="font-size: 16px;"><?php echo nl2br(htmlspecialchars($homework['description'], ENT_QUOTES, 'UTF-8')); ?></span>
                     </div>
                     
                     <div class="detail-row">

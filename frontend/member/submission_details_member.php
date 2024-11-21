@@ -124,11 +124,11 @@ $submission = $result->fetch_assoc();
 
                     <div class="form-row">
                         <label>คะแนน:</label>
-                        <h4><?= htmlspecialchars($submission['grade']) ?? 'ยังไม่มีคะแนน'; ?></h4>
+                        <h4><?= htmlspecialchars($submission['grade'] ?? 'ยังไม่มีคะแนน'); ?></h4>
                     </div>
                     <div class="form-row">
                         <label>ความคิดเห็น:</label>
-                        <h4><?= htmlspecialchars($submission['feedback']) ?? 'ไม่มีความคิดเห็น'; ?></h4>
+                        <h4><?= htmlspecialchars($submission['feedback'] ?? 'ไม่มีความคิดเห็น'); ?></h4>
                     </div>
                 </div>
             </div>

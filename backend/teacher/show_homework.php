@@ -29,182 +29,183 @@ $result = $mysqli->query($sql);
 if ($result === false) {
     die("การดึงข้อมูลล้มเหลว: " . $mysqli->error);
 }
+// ดึงข้อมูลจำนวนนักเรียนทั้งหมดในรายวิชา
+$sql_total_students = "SELECT COUNT(*) as total_students FROM tb_student_subject WHERE subject_id = (SELECT subject_id FROM tb_subject WHERE subject_pass = '$subject_pass' LIMIT 1)";
+$result_total_students = $mysqli->query($sql_total_students);
+$total_students = $result_total_students->fetch_assoc()['total_students'] ?? 0;
+
 ?>
 
 <style>
+    /* การตั้งค่าพื้นฐาน */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* การตั้งค่าการ์ด */
     .form-row {
         display: flex;
         align-items: center;
         margin-bottom: 10px;
+        flex-wrap: wrap;
+        /* อนุญาตให้รายการหักขึ้นบรรทัดใหม่เมื่อไม่พอดี */
     }
 
     .form-row label {
         flex: 0 0 150px;
+        /* ตายตัว */
         margin-right: 10px;
         font-weight: bold;
+        white-space: nowrap;
+        /* ป้องกันข้อความถูกหักบรรทัด */
     }
 
     .form-row h4 {
         margin: 0;
+        flex-grow: 1;
+        /* ให้ h4 ขยายเต็มพื้นที่ที่เหลือ */
     }
 
-    /* ปุ่ม เพิ่มการบ้านใหม่ */
-    .btn-custom {
-        background-color: #FF33CC;
-        /* สีชมพูสด */
-        color: white;
-        border: 5px #FF33CC;
+    /* สไตล์ปุ่มทั่วไป */
+    .btn-custom,
+    .btn-check,
+    .btn-summary,
+    .btn-edit,
+    .btn-delete {
         padding: 9px 15px;
         font-size: 12px;
         margin-right: 5px;
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        transition: background-color 0.3s, color 0.3s;
-        transition: box-shadow 0.3s ease;
+        transition: background-color 0.3s, color 0.3s, box-shadow 0.3s ease;
+        border-radius: 5px;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* สไตล์ปุ่มตามสีที่เฉพาะเจาะจง */
+    .btn-custom {
+        background-color: #ea689e;
+        color: white;
     }
 
     .btn-custom:hover {
         background-color: #CC0099;
-        border-color: #CC0099;
         color: white;
         box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
     }
 
-    /* ปุ่ม ตรวจงานนักเรียนในรายวิชานี้ */
     .btn-check {
         background-color: #66B2FF;
-        color: white;
-        border-color: #66B2FF;
-        padding: 9px 15px;
-        font-size: 12px;
-        margin-right: 5px;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
     }
 
     .btn-check:hover {
         background-color: #3399FF;
     }
 
-    /* ปุ่ม สรุปงานที่มอบ */
     .btn-summary {
         background-color: #66FF99;
-        color: white;
-        border-color: #66FF99;
-        padding: 9px 15px;
-        font-size: 12px;
-        margin-right: 5px;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
     }
 
     .btn-summary:hover {
         background-color: #33CC66;
     }
 
-    /* ปุ่ม แก้ไข */
     .btn-edit {
         background-color: #FFA500;
-        color: white;
-        border-color: #FFA500;
-        padding: 9px 15px;
-        font-size: 12px;
-        margin-right: 5px;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
     }
 
     .btn-edit:hover {
         background-color: #FF8C00;
     }
 
-    /* ปุ่ม ลบ */
     .btn-delete {
         background-color: #FF6666;
-        color: white;
-        border-color: #FF6666;
-        padding: 9px 15px;
-        font-size: 12px;
-        margin-right: 5px;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
     }
 
     .btn-delete:hover {
         background-color: #FF3333;
     }
 
+    .btn-check,
+    .btn-summary,
+    .btn-edit,
+    .btn-delete {
+        padding: 6px 15px;
+        /* ลด padding ของปุ่ม */
+        font-size: 11px;
+        /* ลดขนาดตัวอักษรของปุ่ม */
+    }
+
     /* อื่นๆ */
     .report-section {
         background-color: #f9f9f9;
-        padding: 20px;
-        margin-bottom: 20px;
+        padding: 15px;
+        margin-bottom: 10px;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        width: 80%;
+        height: 210px;
     }
 
-
-    /* จัดวางช่องค้นหาและตัวเลือก Entries ให้อยู่ในแถวเดียวกัน */
     .d-flex {
         display: flex;
-        justify-content: between;
+        justify-content: space-between;
         align-items: center;
+
+    }
+
+    h4,
+    label {
+        font-size: 14px;
+        /* ลดขนาดข้อความ */
+    }
+
+    h2 {
+        font-size: 18px;
+        /* ลดขนาดหัวข้อ */
     }
 
     .input-group {
         position: relative;
-        width: 30%;
-        /* ตั้งความกว้างของช่องค้นหาตามที่ต้องการ */
-        margin-right: 20px; 
-    }
 
-    .input-group-prepend {
-        margin-right: -1px;
+        /* ให้เต็มความกว้างเมื่ออยู่บนมือถือ */
+        margin: 10px 0;
+        margin-right: 20px;
     }
 
     .input-group-text {
-        border: none;
-        background-color: transparent;
-        color: #495057;
-    }
-
-    .search-icon {
         position: absolute;
         left: 10px;
         top: 50%;
         transform: translateY(-50%);
         z-index: 5;
+        color: #495057;
+        background-color: transparent;
     }
 
     .custom-search-input {
         width: 100%;
         padding-left: 40px;
-        /* ปรับ padding ซ้ายเพื่อทำพื้นที่สำหรับไอคอน */
         padding-right: 10px;
-        /* ปรับ padding ขวา */
         border-radius: 20px;
-        /* ปรับรูปทรงของช่องค้นหา */
         border: 1px solid #ced4da;
         height: 40px;
-        /* กำหนดความสูงของช่องค้นหา */
         font-size: 16px;
-        /* กำหนดขนาดตัวอักษร */
     }
 
     .custom-search-input:focus {
         border-color: #80bdff;
         box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
     }
-
-    .input-group {
-        position: relative;
-    }
-
 
     .pagination-container {
         margin-top: 20px;
@@ -213,20 +214,18 @@ if ($result === false) {
 
     .pagination-container button {
         padding: 5px 10px;
-        margin: 0 5px;
-        background-color: #ddd;
+        color: #fff;
+        background-color: #b856d6;
         border: none;
-        cursor: pointer;
     }
 
     .pagination-container button.active {
-        background-color: #FF33CC;
-        color: white;
+        background-color: #ddd;
+        color: black;
     }
 
     .pagination-container button:hover {
-        background-color: #BA55D3;
-        color: white;
+        background-color: #79099c;
     }
 
     .custom-select-wrapper {
@@ -235,7 +234,6 @@ if ($result === false) {
         width: auto;
     }
 
-    /* ปรับสไตล์ของ select ให้ดูทันสมัย */
     .custom-select-modern {
         border-radius: 20px;
         padding: 10px 15px;
@@ -243,7 +241,6 @@ if ($result === false) {
         font-size: 14px;
         background-color: #f8f9fa;
         transition: all 0.3s ease;
-        outline: none;
     }
 
     .custom-select-modern:hover {
@@ -255,6 +252,57 @@ if ($result === false) {
         border-color: #007bff;
         box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     }
+    @media screen and (max-width: 768px) {
+    .form-row label {
+        flex: 0 0 100px; /* ลดขนาดพื้นที่ของ label บนมือถือ */
+        margin-right: 5px; /* ลดระยะห่างระหว่าง label และข้อความ */
+    }
+    .form-row {
+        flex-wrap: wrap; /* อนุญาตให้ขึ้นบรรทัดใหม่ */
+    }
+
+    .form-row h4, .form-row label {
+        flex: 100%; /* ให้แต่ละองค์ประกอบใช้พื้นที่เต็มในแต่ละบรรทัด */
+        flex-wrap: wrap;
+        margin-right: 0; /* เอาค่า margin ด้านขวาออกในมือถือ */
+    }
+
+    /* ปรับรูปแบบสีสำหรับ "ยังไม่ส่ง" */
+    .form-row h4:last-of-type, .form-row label:last-of-type {
+        margin-top: 10px; /* เพิ่มระยะห่างระหว่างบรรทัด */
+    }
+
+    .btn-custom,
+    .btn-check,
+    .btn-summary,
+    .btn-edit,
+    .btn-delete {
+        padding: 5px 10px; /* ลด padding ของปุ่มบนมือถือ */
+        font-size: 10px; /* ลดขนาดตัวอักษรของปุ่ม */
+    }
+
+    .report-section {
+        width: 95%; /* ปรับให้ความกว้างครอบคลุมพื้นที่หน้าจอมือถือ */
+        height: auto; /* ให้การ์ดปรับขนาดตามเนื้อหา */
+        padding: 10px; /* ลด padding ให้เหมาะกับมือถือ */
+    }
+
+    h2, h4 {
+        font-size: 14px; /* ลดขนาดตัวอักษร */
+    }
+
+    .custom-search-input {
+        font-size: 14px; /* ลดขนาด input box สำหรับมือถือ */
+        height: 35px;
+    }
+
+    .pagination-container button {
+        padding: 3px 7px; /* ลดขนาดของปุ่ม pagination */
+    }
+}
+
+    
+   
 </style>
 
 
@@ -263,7 +311,7 @@ if ($result === false) {
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
             <div class="x_title">
-                <h2>รายงานการบ้านสำหรับวิชา <?= htmlspecialchars($subject_pass); ?></h2>
+                <h2 style="color: black;"><b>รายการงานของรหัสวิชา <?= htmlspecialchars($subject_pass); ?></b></h2>
                 <div class="clearfix"></div>
             </div>
 
@@ -279,7 +327,7 @@ if ($result === false) {
 
                     <!-- ตัวเลือก Entries -->
                     <div class="d-flex align-items-center">
-                        <label class="me-2 mb-0">Show</label>
+                        <label class="me-2 mb-0">แสดง </label>
                         <div class="custom-select-wrapper">
                             <select id="entriesSelect" onchange="showEntries()" class="form-select custom-select-modern">
                                 <option value="5">5</option>
@@ -287,13 +335,13 @@ if ($result === false) {
                                 <option value="20">20</option>
                             </select>
                         </div>
-                        <label class="mb-0">Entries</label>
+                        <label class="mb-0"> รายการ</label>
                     </div>
                 </div>
             </div>
 
             <a href="add_homework.php?subject_pass=<?= htmlspecialchars($subject_pass); ?>" class="btn btn-custom">
-                <i class="fas fa-plus"></i> เพิ่มการบ้าน
+                <i class="fas fa-plus"></i> เพิ่มงาน
             </a>
             <br><br>
 
@@ -319,41 +367,46 @@ if ($result === false) {
 
                     <div class="report-section">
                         <div class="form-row">
-                            <label style="font-size: 16px; color:#333333;">หัวข้อการบ้าน:</label>
+                            <label style="font-size: 16px; color:#333333;">หัวข้องาน:</label>
                             <h2 style="color:#333333;"><?= htmlspecialchars($row['title']); ?></h2>
                         </div>
 
                         <div class="form-row">
-                            <label style="color:#333333;">รายละเอียด:</label>
-                            <h4><?= htmlspecialchars($row['description']); ?></h4>
+                            <label style="color:#333333;">รายละเอียดงาน:</label>
+                            <h4>
+                                <?= htmlspecialchars(substr($row['description'], 0, 180)); ?>
+                                <?php if (strlen($row['description']) > 150) : ?>
+                                    .. <!-- เพิ่มจุดไข่ปลาหากข้อความเกิน 100 ตัวอักษร -->
+                                <?php endif; ?>
+                            </h4>
                         </div>
+                        <div class="form-row" style="display: flex; align-items: center;">
+                            <label style="color:#333333; margin-right: 10px;">วันที่สั่ง:</label>
+                            <h4 style="margin-right: 30px;"><?= htmlspecialchars($row['assigned_date']); ?></h4>
 
-                        <div class="form-row">
-                            <label style="color:#333333;">วันที่สั่ง:</label>
-                            <h4><?= htmlspecialchars($row['assigned_date']); ?></h4>
-                        </div>
-
-                        <div class="form-row">
-                            <label style="color:#333333;">วันหมดเขต:</label>
+                            <label style="color:#333333; margin-right: 10px;">วันหมดเขต:</label>
                             <h4><?= htmlspecialchars($row['deadline']); ?></h4>
                         </div>
 
-                        <div class="form-row">
-                            <label style="color:#333333;">ตรวจแล้ว:</label>
-                            <h4 style="color: green;"><?= $checked_count; ?></h4>
+                        <div class="form-row" style="display: flex; align-items: center; flex-wrap: nowrap;">
+                            <label style="color:#333333; margin-right: 3px;">ตรวจแล้ว:</label>
+                            <h4 style="color: green; margin-right: 30px;">
+                                <?= $checked_count; ?>/<?= $total_students; ?> <!-- แสดงจำนวนนักเรียนที่ตรวจแล้ว/จำนวนนักเรียนทั้งหมด -->
+                            </h4>
+
+                            <label style="color:#333333; margin-right: 3px;">ยังไม่ตรวจ:</label>
+                            <h4 style="color: black; margin-right: 30px;">
+                                <?= $unchecked_count; ?>/<?= $total_students; ?> <!-- แสดงจำนวนนักเรียนที่ยังไม่ตรวจ/จำนวนนักเรียนทั้งหมด -->
+                            </h4>
+
+                            <label style="color:#333333; margin-right: 2px;">ยังไม่ส่ง:</label>
+                            <h4 style="color: red;">
+                                <?= $not_submitted_count; ?>/<?= $total_students; ?> <!-- แสดงจำนวนนักเรียนที่ยังไม่ส่ง/จำนวนนักเรียนทั้งหมด -->
+                            </h4>
                         </div>
 
-                        <div class="form-row">
-                            <label style="color:#333333;">ยังไม่ตรวจ:</label>
-                            <h4 style="color: black;"><?= $unchecked_count; ?></h4>
-                        </div>
 
-                        <div class="form-row">
-                            <label style="color:#333333;">ยังไม่ส่ง:</label>
-                            <h4 style="color: red;"><?= $not_submitted_count; ?></h4>
-                        </div>
-
-                        <div class="form-row">
+                        <div class="form-row" style="justify-content: flex-end;">
                             <a href="check_homework.php?homework_id=<?= $homework_id; ?>" class="btn btn-check">
                                 <i class="fas fa-search"></i> ตรวจ
                             </a>
@@ -381,14 +434,14 @@ if ($result === false) {
         </div>
         <center>
             <div class="pagination-container">
-                <button onclick="prevPage()">หน้าก่อนหน้า</button>
+                <button onclick="prevPage()" class="btn btn-custom">หน้าก่อนหน้า</button>
                 <span id="paginationButtons"></span>
-                <button onclick="nextPage()">หน้าถัดไป</button>
+                <button onclick="nextPage()" class="btn btn-custom">หน้าถัดไป</button>
             </div>
         </center>
 
         <div align="right">
-            <a href="show_subjectandwork.php"><button class="btn btn-edit">ย้อนกลับ</button></a>
+            <a href="show_subjectandwork.php"><button class="btn btn-success">ย้อนกลับ</button></a>
         </div>
     </div>
 </div>
@@ -414,63 +467,69 @@ if ($result === false) {
         }
     });
 
+    // กำหนดค่าเริ่มต้นของหน้าและจำนวนรายการต่อหน้า
     var currentPage = 1;
     var entriesPerPage = 5;
 
-
-
+    // ฟังก์ชันสำหรับเปลี่ยนแปลงจำนวนรายการที่จะแสดงต่อหน้า
     function showEntries() {
         var selectElement = document.getElementById("entriesSelect");
-        entriesPerPage = parseInt(selectElement.value);
-        currentPage = 1;
-        updatePagination();
+        entriesPerPage = parseInt(selectElement.value); // อัปเดตจำนวนรายการต่อหน้า
+        currentPage = 1; // กลับไปหน้าแรก
+        updatePagination(); // อัปเดตการแบ่งหน้า
     }
 
+    // ฟังก์ชันสำหรับอัปเดตการแบ่งหน้า
     function updatePagination() {
         var reports = document.getElementsByClassName("report-section");
         var totalReports = reports.length;
-        var totalPages = Math.ceil(totalReports / entriesPerPage);
+        var totalPages = Math.ceil(totalReports / entriesPerPage); // คำนวณจำนวนหน้าทั้งหมด
 
+        // ซ่อนหรือแสดงการ์ดตามจำนวน Entries ต่อหน้าและหน้าปัจจุบัน
         for (var i = 0; i < totalReports; i++) {
             reports[i].style.display = (i >= (currentPage - 1) * entriesPerPage && i < currentPage * entriesPerPage) ? "" : "none";
         }
 
+        // สร้างปุ่ม pagination ตามจำนวนหน้า
         var paginationButtons = document.getElementById("paginationButtons");
         paginationButtons.innerHTML = "";
 
         for (var i = 1; i <= totalPages; i++) {
             var btn = document.createElement("button");
             btn.innerHTML = i;
-            btn.className = (i === currentPage) ? "active" : "";
+            btn.className = (i === currentPage) ? "active" : ""; // ไฮไลต์ปุ่มของหน้าปัจจุบัน
             btn.onclick = (function(i) {
                 return function() {
-                    currentPage = i;
-                    updatePagination();
+                    currentPage = i; // เปลี่ยนหน้าปัจจุบัน
+                    updatePagination(); // อัปเดตการแสดงผลการ์ด
                 };
             })(i);
-            paginationButtons.appendChild(btn);
+            paginationButtons.appendChild(btn); // เพิ่มปุ่มใน DOM
         }
     }
 
+    // ฟังก์ชันสำหรับเลื่อนไปหน้าถัดไป
     function nextPage() {
         var reports = document.getElementsByClassName("report-section");
         var totalReports = reports.length;
-        var totalPages = Math.ceil(totalReports / entriesPerPage);
+        var totalPages = Math.ceil(totalReports / entriesPerPage); // คำนวณจำนวนหน้าทั้งหมด
 
-        if (currentPage < totalPages) {
-            currentPage++;
-            updatePagination();
+        if (currentPage < totalPages) { // ตรวจสอบว่าไม่เกินจำนวนหน้าสุดท้าย
+            currentPage++; // เพิ่มหน้าปัจจุบัน
+            updatePagination(); // อัปเดตการแสดงผล
         }
     }
 
+    // ฟังก์ชันสำหรับเลื่อนไปหน้าก่อนหน้า
     function prevPage() {
-        if (currentPage > 1) {
-            currentPage--;
-            updatePagination();
+        if (currentPage > 1) { // ตรวจสอบว่าหน้าไม่ต่ำกว่า 1
+            currentPage--; // ลดค่าหน้าปัจจุบัน
+            updatePagination(); // อัปเดตการแสดงผล
         }
     }
 
+    // ฟังก์ชันสำหรับเริ่มต้นการแบ่งหน้า
     window.onload = function() {
-        updatePagination();
+        updatePagination(); // อัปเดตการแสดงผลเมื่อหน้าโหลดเสร็จ
     };
 </script>

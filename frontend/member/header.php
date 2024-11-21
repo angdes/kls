@@ -25,7 +25,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 
     // ตรวจสอบว่ารูปภาพมีอยู่ในโฟลเดอร์ที่ระบุหรือไม่
     if (!file_exists($member_profile_pic)) {
-        $member_profile_pic = 'default_member.jpg'; // ถ้ารูปภาพไม่พบ ให้ใช้รูปภาพเริ่มต้น
+        $member_profile_pic = 'profile_member/user.jpg'; // ถ้ารูปภาพไม่พบ ให้ใช้รูปภาพเริ่มต้น
     }
 } else {
     // หากไม่พบข้อมูลในฐานข้อมูล ให้กลับไปหน้าเข้าสู่ระบบ
@@ -100,7 +100,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                                         <li><a href="show_member.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลส่วนตัว</a></li>
                                     </ul>
                                 </li>
-                                <li><a style="color: black;"><i class="fa fa-file-pen"></i>การบ้าน<span class="fa fa-chevron-down" style="color: black;"></span></a>
+                                <li><a style="color: black;"><i class="fa fa-file-pen"></i>งาน<span class="fa fa-chevron-down" style="color: black;"></span></a>
                                     <ul class="nav child_menu" style="background-color:  White Bubble ;">
                                         <li><a href="show_student_subjects.php" style="color: black;"><i class="fa fa-list"></i>รายวิชาที่ลงเรียน</a></li>
                                     </ul>

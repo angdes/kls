@@ -7,7 +7,7 @@ if (!isset($_GET['subject_id'])) {
 }
 
 // ดึง subject_id จาก URL
-$subject_id = $_GET['subject_id'];
+$subject_id = intval($_GET['subject_id']);
 
 // เชื่อมต่อฐานข้อมูล
 $mysqli = new mysqli("localhost", "root", "", "myproject");
@@ -15,6 +15,17 @@ $mysqli = new mysqli("localhost", "root", "", "myproject");
 // ตรวจสอบการเชื่อมต่อ
 if ($mysqli->connect_error) {
     die("การเชื่อมต่อล้มเหลว: " . $mysqli->connect_error);
+}
+
+// ตรวจสอบว่ามีการลบสมาชิกที่ระบุหรือไม่
+if (isset($_GET['delete_member_id'])) {
+    $delete_member_id = intval($_GET['delete_member_id']);
+    $delete_sql = "DELETE FROM tb_student_subject WHERE subject_id = $subject_id AND member_id = $delete_member_id";
+    if ($mysqli->query($delete_sql) === TRUE) {
+        $alert_message = '<div class="alert alert-success" role="alert">ลบนักเรียนสำเร็จ</div>';
+    } else {
+        $alert_message = '<div class="alert alert-danger" role="alert">ลบนักเรียนไม่สำเร็จ: ' . $mysqli->error . '</div>';
+    }
 }
 
 // ตรวจสอบว่ามีการลบข้อมูลนักเรียนที่เลือกทั้งหมดหรือไม่
@@ -26,9 +37,9 @@ if (isset($_POST['delete_selected'])) {
         // ลบข้อมูลนักเรียนที่เลือก
         $delete_sql = "DELETE FROM tb_student_subject WHERE subject_id = $subject_id AND member_id IN ($ids_to_delete)";
         if ($mysqli->query($delete_sql) === TRUE) {
-            echo '<div class="alert alert-success" role="alert">ลบนักเรียนที่เลือกสำเร็จ</div>';
+            $alert_message = '<div class="alert alert-success" role="alert">ลบนักเรียนที่เลือกสำเร็จ</div>';
         } else {
-            echo '<div class="alert alert-danger" role="alert">ลบนักเรียนไม่สำเร็จ: ' . $mysqli->error . '</div>';
+            $alert_message = '<div class="alert alert-danger" role="alert">ลบนักเรียนไม่สำเร็จ: ' . $mysqli->error . '</div>';
         }
     }
 }
@@ -38,9 +49,9 @@ if (isset($_POST['delete_all'])) {
     // ลบนักเรียนทั้งหมดจากรายวิชานั้น ๆ
     $delete_sql = "DELETE FROM tb_student_subject WHERE subject_id = $subject_id";
     if ($mysqli->query($delete_sql) === TRUE) {
-        echo '<div class="alert alert-success" role="alert">ลบนักเรียนทั้งหมดสำเร็จ</div>';
+        $alert_message = '<div class="alert alert-success" role="alert">ลบนักเรียนทั้งหมดสำเร็จ</div>';
     } else {
-        echo '<div class="alert alert-danger" role="alert">ลบนักเรียนไม่สำเร็จ: ' . $mysqli->error . '</div>';
+        $alert_message = '<div class="alert alert-danger" role="alert">ลบนักเรียนไม่สำเร็จ: ' . $mysqli->error . '</div>';
     }
 }
 
@@ -51,7 +62,7 @@ $sql = "
         tb_member.member_number,
         tb_member.member_fullname,
         tb_member.member_tel,
-        tb_member.member_email
+        tb_member.member_year
     FROM 
         tb_student_subject
     INNER JOIN 
@@ -65,7 +76,6 @@ $result = $mysqli->query($sql);
 if ($result === false) {
     die("การดึงข้อมูลล้มเหลว: " . $mysqli->error);
 }
-
 ?>
 
 <div class="right_col" role="main">
@@ -73,18 +83,20 @@ if ($result === false) {
         <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
             <div class="x_title">
                 <h2>รายชื่อนักเรียนในรายวิชา</h2>
+
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
+                <?php if (isset($alert_message)) echo $alert_message; ?>
                 <form method="post" action="">
                     <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th><input type="checkbox" id="select_all" /></th>
+                                <th>ปีการศึกษา</th>
                                 <th>รหัสนักเรียน</th>
                                 <th>ชื่อเต็ม</th>
                                 <th>เบอร์โทรศัพท์</th>
-                                <th>อีเมล</th>
                                 <th>ลบนักเรียนในรายวิชา</th>
                             </tr>
                         </thead>
@@ -94,10 +106,10 @@ if ($result === false) {
                                 while ($row = $result->fetch_assoc()) {
                                     echo "<tr>
                                             <td><input type='checkbox' name='selected_members[]' value='" . htmlspecialchars($row['member_id']) . "' /></td>
+                                            <td>" . htmlspecialchars($row['member_year']) . "</td>
                                             <td>" . htmlspecialchars($row['member_number']) . "</td>
                                             <td>" . htmlspecialchars($row['member_fullname']) . "</td>
                                             <td>" . htmlspecialchars($row['member_tel']) . "</td>
-                                            <td>" . htmlspecialchars($row['member_email']) . "</td>
                                             <td>
                                                 <a href='view_students_in_subject.php?subject_id=$subject_id&delete_member_id=" . htmlspecialchars($row['member_id']) . "' onclick=\"return confirm('คุณต้องการลบหรือไม่?')\">
                                                     <img src='../../images/delete.png' alt='Delete' />

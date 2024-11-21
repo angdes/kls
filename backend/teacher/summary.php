@@ -90,12 +90,12 @@ $homework = $result->fetch_assoc();
                 </div>
 
                 <div class="form-row">
-                    <label>หัวข้อการบ้าน</label>
+                    <label>หัวข้องาน:</label>
                     <h4><?= htmlspecialchars($homework['title']); ?></h4>
                 </div>
 
                 <div class="form-row">
-                    <label>รายละเอียดการบ้าน:</label>
+                    <label>รายละเอียดงาน:</label>
                     <h4><?= htmlspecialchars($homework['description']); ?></h4>
                 </div>
 

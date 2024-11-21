@@ -4,45 +4,27 @@
     .btn-m {
         color: white;
         background-color: #FF00FF;
-    }
-
-    .btn-d {
-        color: white;
-        background-color: #BA55D3;
-    }.btn-m {
-        color: white;
-        background-color: #FF00FF;
         border: 2px solid #E0E0E0;
-        /* ขอบสีเทาอ่อน */
         border-radius: 5px;
-        /* ทำให้ขอบมนเล็กน้อย */
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        /* เงาเบาบางใต้ปุ่ม */
         transition: box-shadow 0.3s ease;
-        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
     }
 
     .btn-m:hover {
         box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-        /* เงาชัดเจนขึ้นเมื่อ hover */
     }
 
     .btn-d {
         color: white;
         background-color: #808080;
         border: 2px solid #E0E0E0;
-        /* ขอบสีเทาอ่อน */
         border-radius: 5px;
-        /* ทำให้ขอบมนเล็กน้อย */
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        /* เงาเบาบางใต้ปุ่ม */
         transition: box-shadow 0.3s ease;
-        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
     }
 
     .btn-d:hover {
         box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-        /* เงาชัดเจนขึ้นเมื่อ hover */
     }
 </style>
 
@@ -51,7 +33,7 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
                 <div class="x_title">
-                    <h2>ข้อมูลสมาชิก</h2>
+                    <h2>ข้อมูลนักเรียน</h2>
                     <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                         <li><a class="close-link"><i class="fa fa-close"></i></a></li>
@@ -59,65 +41,52 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                    <br />
                     <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_number">รหัสประจำตัว<span class="required">:</span> </label>
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_year">ปีการศึกษา(เช่น00)<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="member_number" name="member_number" required="required" class="form-control col-md-7 col-xs-12">
+                                <input type="text" id="member_year" name="member_year" required="required" class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_fullname">ชื่อสมาชิก<span class="required">:</span> </label>
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_number">รหัสประจำตัวนักเรียน<span class="required">:</span> </label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" id="member_number" name="member_number" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_gender">เลือกเพศ<span class="required">:</span></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select id="member_gender" name="member_gender" required="required" class="form-control col-md-7 col-xs-12">
+                                    <option value="" disabled selected>เลือกเพศ</option>
+                                    <option value="male">ชาย</option>
+                                    <option value="female">หญิง</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_fullname">ชื่อ-สกุลนักเรียน<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input type="text" id="member_fullname" name="member_fullname" required="required" class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_address">ที่อยู่<span class="required">:</span> </label>
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_tel">เบอร์โทรศัพท์<span class="required">:</span></label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="member_address" name="member_address" required="required" class="form-control col-md-7 col-xs-12">
+                                <input type="tel" id="member_tel" name="member_tel" required="required" class="form-control col-md-7 col-xs-12" pattern="[0-9]{10}" maxlength="10" placeholder="กรอกเบอร์โทรศัพท์ 10 หลัก">
+                                <small class="text-muted">กรอกเฉพาะตัวเลข 10 หลัก เช่น 0812345678</small>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_tel">เบอร์โทรศัพท์<span class="required">:</span> </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="tel" id="member_tel" name="member_tel" required="required" class="form-control col-md-7 col-xs-12">
-                                <script>
-                                    function number() {
-                                        if (isNaN(member_tel.value)) {
-                                            alert("Please Insert Numbers Only");
-                                            return false;
-                                        }
-                                    }
-                                </script>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_email">อีเมล<span class="required">:</span> </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="email" id="member_email" name="member_email" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_username">username<span class="required">:</span> </label>
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_username">บัญชีผู้ใช้<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input type="text" id="member_username" name="member_username" required="required" class="form-control col-md-7 col-xs-12">
-                                <script>
-                                    function checkText() {
-                                        var text = document.getElementById('member_username').value;
-                                        if (text.search(/[^a-zA-Z0-9\_@]/) !== -1) {
-                                            alert('Can Only Be Specified A-Z,a-z,0-9 and _ @');
-                                            document.getElementById('member_username').value = "";
-                                            return false;
-                                        }
-                                    }
-                                </script>
                             </div>
                         </div>
 
@@ -125,37 +94,19 @@
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_password">รหัสผ่าน<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input type="password" id="member_password" name="member_password" required="required" class="form-control col-md-7 col-xs-12">
-                                <script>
-                                    function checkPass() {
-                                        var text = document.getElementById('member_password').value;
-                                        if (text.search(/[^a-zA-Z0-9\_@]/) !== -1) {
-                                            alert('Can Only Be Specified A-Z,a-z,0-9 and _ @');
-                                            document.getElementById('member_password').value = "";
-                                            return false;
-                                        }
-                                    }
-                                </script>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_status">สถานะสมาชิก<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <select id="member_status" name="member_status" value="<?= $member_status; ?>" required="required" class="form-control col-md-7 col-xs-12">
-                                    <option value="1">Active</option>
-                                    <option value="0">Inactive</option>
+                                <select id="member_status" name="member_status" required="required" class="form-control col-md-7 col-xs-12">
+                                    <option value="1">นักเรียนภาคปกติ</option>
+                                    <option value="0">นักเรียนย้ายเข้า</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_datetime">วันเกิด<span class="required">:</span> </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="datetime-local" id="member_datetime" name="member_datetime" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-
-                        <!-- เพิ่มฟิลด์อัปโหลดรูปภาพ -->
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_profile_pic">รูปโปรไฟล์<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -176,74 +127,77 @@
                     if (isset($_POST['submit'])) {
                         $member_number = $_POST['member_number'];
                         $member_fullname = $_POST['member_fullname'];
-                        $member_address = $_POST['member_address'];
+                        $member_year = $_POST['member_year'];
                         $member_tel = $_POST['member_tel'];
-                        $member_email = $_POST['member_email'];
                         $member_username = $_POST['member_username'];
                         $member_password = $_POST['member_password'];
                         $member_status = $_POST['member_status'];
-                        $member_datetime = $_POST['member_datetime'];
-                        
-                        // การอัปโหลดรูปภาพ
-                        $target_dir = "../../frontend/member/profile_member/"; // ระบุตำแหน่งโฟลเดอร์เก็บรูปภาพ
-                        $target_file = $target_dir . basename($_FILES["member_profile_pic"]["name"]);
-                        $uploadOk = 1;
-                        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                        $member_gender = $_POST['member_gender'];
+                        var_dump($member_gender);
 
-                        // ตรวจสอบว่าเป็นไฟล์รูปภาพหรือไม่
-                        if (isset($_FILES['member_profile_pic']) && $_FILES['member_profile_pic']['size'] > 0) {
-                            $check = getimagesize($_FILES["member_profile_pic"]["tmp_name"]);
-                            if ($check !== false) {
+                        $default_profile_pic = '../../frontend/member/profile_member/user.jpg';
+
+                        if (isset($_POST['submit'])) {
+                            $member_gender = $_POST['member_gender'];
+                            var_dump($member_gender); // ตรวจสอบค่าที่ส่งเข้ามา
+
+                            // กำหนดข้อมูลสำหรับการอัปโหลดรูปภาพ
+                            $default_profile_pic = '../../frontend/member/profile_member/user.jpg';
+                            $profile_pic = $default_profile_pic;
+
+                            if (isset($_FILES['member_profile_pic']) && $_FILES['member_profile_pic']['size'] > 0) {
+                                $target_dir = "../../frontend/member/profile_member/";
+                                $target_file = $target_dir . basename($_FILES["member_profile_pic"]["name"]);
                                 $uploadOk = 1;
-                            } else {
-                                echo $cls_conn->show_message('ไฟล์นี้ไม่ใช่รูปภาพ');
-                                $uploadOk = 0;
-                            }
-                        }
+                                $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-                        
-
-                        // ตรวจสอบชนิดไฟล์
-                        if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-                            && $imageFileType != "gif") {
-                            echo $cls_conn->show_message('อนุญาตเฉพาะไฟล์ JPG, JPEG, PNG และ GIF เท่านั้น');
-                            $uploadOk = 0;
-                        }
-
-                        // ตรวจสอบว่า uploadOk เป็น 0 หรือไม่
-                        if ($uploadOk == 0) {
-                            echo $cls_conn->show_message('ไม่สามารถอัปโหลดไฟล์ได้');
-                        } else {
-                            if (move_uploaded_file($_FILES["member_profile_pic"]["tmp_name"], $target_file)) {
-                                // บันทึกข้อมูลสมาชิกและชื่อไฟล์รูปภาพลงฐานข้อมูล
-                                $sql = "INSERT INTO tb_member (member_number, member_fullname, member_address, member_tel, member_email, member_username, member_password, member_status, member_datetime, member_profile_pic)";
-                                $sql .= " VALUES ('$member_number', '$member_fullname', '$member_address', '$member_tel', '$member_email', '$member_username', '$member_password', '$member_status', '$member_datetime', '$target_file')";
-                                
-                                if ($cls_conn->write_base($sql) == true) {
-                                    echo $cls_conn->show_message('บันทึกข้อมูลสำเร็จ');
-                                    echo $cls_conn->goto_page(1, 'show_member.php');
+                                // ตรวจสอบว่าเป็นไฟล์รูปภาพหรือไม่
+                                $check = getimagesize($_FILES["member_profile_pic"]["tmp_name"]);
+                                if ($check !== false) {
+                                    $uploadOk = 1;
                                 } else {
-                                    echo $cls_conn->show_message('บันทึกข้อมูลไม่สำเร็จ');
-                                    echo $sql;
+                                    echo "ไฟล์นี้ไม่ใช่รูปภาพ";
+                                    $uploadOk = 0;
                                 }
+
+                                // ตรวจสอบชนิดไฟล์ที่อนุญาต
+                                if (!in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+                                    echo "อนุญาตเฉพาะไฟล์ JPG, JPEG, PNG และ GIF เท่านั้น";
+                                    $uploadOk = 0;
+                                }
+
+                                if ($uploadOk == 0) {
+                                    echo "ไม่สามารถอัปโหลดไฟล์ได้";
+                                } else {
+                                    if (move_uploaded_file($_FILES["member_profile_pic"]["tmp_name"], $target_file)) {
+                                        $profile_pic = $target_file;
+                                    } else {
+                                        echo "เกิดข้อผิดพลาดในการอัปโหลดไฟล์";
+                                    }
+                                }
+                            }
+
+                            // เตรียมคำสั่ง SQL เพื่อบันทึกข้อมูลลงฐานข้อมูล
+                            $sql = "INSERT INTO tb_member (member_number, member_fullname, member_year, member_tel, member_username, member_password, member_status, member_gender, member_profile_pic)";
+                            $sql .= " VALUES ('$member_number', '$member_fullname', '$member_year', '$member_tel', '$member_username', '$member_password', '$member_status', '$member_gender', '$profile_pic')";
+
+                            // บันทึกข้อมูลลงฐานข้อมูล
+                            if ($cls_conn->write_base($sql)) {
+                                echo $cls_conn->show_message('บันทึกข้อมูลสำเร็จ');
+                                echo $cls_conn->goto_page(1, 'show_member.php');
                             } else {
-                                echo $cls_conn->show_message('เกิดข้อผิดพลาดในการอัปโหลดไฟล์');
+                                echo $cls_conn->show_message('บันทึกข้อมูลไม่สำเร็จ');
                             }
                         }
                     }
                     ?>
-
-                <!-- ปุ่มเพิ่มข้อมูลจากไฟล์ Excel -->
-                    <div class="ln_solid"></div>
-                    <div class="form-group">
-                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                            <button onclick="window.location.href='upload_excel.php'" class="btn btn-d">เพิ่มข้อมูลจากไฟล์ Excel</button>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 
 <?php include('footer.php'); ?>

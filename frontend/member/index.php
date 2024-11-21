@@ -3,23 +3,20 @@
 <style>
     .text-detail {
         font-family: 'Kanit', sans-serif;
-            color: #555555;
-            font-size: 14.44px;
-        /* เปลี่ยนฟอนต์ตามที่คุณเลือก */
+        color: #555555;
+        font-size: 14.44px;
     }
-    
+
     .image-container {
         display: flex;
         flex-wrap: wrap;
-        /* Allows images to wrap into new rows if needed */
         gap: 10px;
-        /* Adds space between images */
         padding-left: 50px;
     }
 
     .image-container img {
-        max-width: 200px;
-        max-height: 200px;
+        max-width: 400px;
+        max-height: 400px;
         cursor: pointer;
         transition: transform 0.3s;
     }
@@ -33,15 +30,11 @@
         position: absolute;
         top: 0;
         left: -10px;
-        /* Adjust this value to control the distance from the image */
         height: 100%;
         width: 5px;
-        /* Width of the line */
         background-color: #F97AB6;
-        /* Color of the line */
     }
 
-    /* Modal styles */
     .modal {
         display: none;
         position: fixed;
@@ -90,12 +83,16 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2 style="color: black;">รายการประกาศ</h2>
+                    <h2 style="color: black;">ข่าวประกาศ</h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
                     <?php
-                    $sql = "SELECT * FROM tb_announcements";
+                    // ดึงข้อมูลประกาศพร้อมชื่อผู้ดูแลระบบที่ประกาศ
+                    $sql = "SELECT a.*, ad.admin_fullname 
+                            FROM tb_announcements a
+                            JOIN tb_admin ad ON a.admin_id = ad.admin_id
+                            ORDER BY a.announcement_date DESC";
                     $result = $cls_conn->select_base($sql);
 
                     if ($result && mysqli_num_rows($result) > 0) {
@@ -104,7 +101,10 @@
                             $images = explode(',', $row['announcement_image']);
                     ?>
                             <div class="announcement">
-                                <h2 style="color: #BA55D3;"><?php echo htmlspecialchars($row['announcement_title']); ?></h2>
+                                <h2 style="color: #BA55D3;"> ⁂ <?php echo htmlspecialchars($row['announcement_title']); ?></h2>
+                                <p style="text-align: right; color: #666;">
+                                    ประกาศโดย: <?php echo htmlspecialchars($row['admin_fullname']); ?> | วันที่: <?php echo htmlspecialchars($row['announcement_date']); ?>
+                                </p>
                                 <hr>
                                 <div class="image-container">
                                     <?php foreach ($images as $image): ?>

@@ -1,11 +1,14 @@
-<?php include('header.php');?>
+<?php include('header.php'); ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link rel="stylesheet" type="text/css" href="template_login/vendor/select2/select2.min.css">
     <link rel="stylesheet" type="text/css" href="template_login/css/util.css">
-    <link rel="stylesheet" type="text/css" href="template_login/css/main.css">  
+    <link rel="stylesheet" type="text/css" href="template_login/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
     <style>
         .limiter {
@@ -15,20 +18,43 @@
             height: 100vh;
             background-color: #f2f2f2;
         }
+
+        .wrap-input100 {
+            position: relative;
+        }
+
+        .field-icon {
+            position: absolute;
+            right: 10px;
+            top: 40%;
+            
+            cursor: pointer;
+            color: #666;
+        }
+
+
+        .input100 {
+            padding-right: 30px;
+            /* Add padding to prevent text from overlaying the icon */
+        }
+
+
         .wrap-login100 {
             width: 100%;
             max-width: 350px;
             padding: 40px;
             background: #fff;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
+
         .logo-container {
             text-align: center;
             margin-bottom: 20px;
             position: relative;
             animation: glow 1.5s infinite alternate;
         }
+
         .logo-container img {
             max-width: 100px;
             border: 2px solid #fff;
@@ -36,14 +62,17 @@
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
             transition: transform 0.1s;
         }
+
         @keyframes glow {
             from {
                 box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
             }
+
             to {
                 box-shadow: 0 0 20px rgba(255, 255, 255, 1);
             }
         }
+
         .error-message {
             color: red;
             text-align: center;
@@ -51,6 +80,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="limiter">
         <div class="wrap-login100">
@@ -58,7 +88,7 @@
                 <div class="logo-container">
                     <img src="images/123.jpg" alt="IMG" id="logo">
                 </div>
-                <div class="text-center">ยินดีต้อนรับเข้าสู่</div>
+                <div class="text-center" style="font-size: 16px;">ยินดีต้อนรับเข้าสู่ <br>ระบบมอบหมายงานออนไลน์</div>
                 <span class="login100-form-title">
                     KP Login
                 </span>
@@ -147,13 +177,15 @@
                 </div>
 
                 <div class="wrap-input100 validate-input" data-validate="Password is required">
-                    <input class="input100" type="password" name="password" placeholder="Password" required>
+                    <input class="input100" type="password" name="password" placeholder="Password" required id="password-field">
                     <span class="focus-input100"></span>
                     <span class="symbol-input100">
                         <i class="fa fa-lock" aria-hidden="true"></i>
                     </span>
+                    <span toggle="#password-field" class="fa fa-fw fa-eye-slash field-icon toggle-password"></span>
                 </div>
-                
+
+
                 <div class="container-login100-form-btn">
                     <button class="login100-form-btn" name="submit">
                         เข้าสู่ระบบ
@@ -161,7 +193,7 @@
                 </div>
 
                 <div class="container-login100-form-btn">
-                    <a href="index.php" class="login50-form-btn" name="backhome">
+                    <a href="index.php" class="w3-container w3-center" name="backhome">
                         กลับไปยังหน้าหลัก
                     </a>
                 </div>
@@ -175,8 +207,20 @@
     <script src="template_login/vendor/select2/select2.min.js"></script>
     <script src="template_login/vendor/tilt/tilt.jquery.min.js"></script>
     <script src="template_login/js/main.js"></script>
+    <script>
+        $('.toggle-password').on('click', function() {
+            $(this).toggleClass('fa-eye fa-eye-slash');
+            var input = $($(this).attr('toggle'));
+            if (input.attr('type') === 'password') {
+                input.attr('type', 'text');
+            } else {
+                input.attr('type', 'password');
+            }
+        });
+    </script>
 
-<?php include('footer.php');?>
+    <?php include('footer.php'); ?>
 
 </body>
+
 </html>

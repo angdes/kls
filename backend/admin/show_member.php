@@ -6,6 +6,7 @@
         color: white;
         transition: background-color 0.3s, color 0.3s;
     }
+
     .btn-hotpink:hover {
         background-color: deeppink;
         color: white;
@@ -38,14 +39,15 @@
                         <thead>
                             <tr>
                                 <th><input type="checkbox" id="checkAll"></th> <!-- เช็คบ็อกซ์สำหรับเลือกทั้งหมด -->
+                                <th>ปีการศึกษา</th>
                                 <th>รหัสสมาชิก</th>
                                 <th>ชื่อสมาชิก</th>
-                                <th>ที่อยู่</th>
+
                                 <th>เบอร์โทรศัพท์</th>
-                                <th>อีเมล</th>
+
                                 <th>username</th>
                                 <th>สถานะสมาชิก</th>
-                                <th>วันเกิด</th>
+                                <th>เพศ</th>
                                 <th>รูปโปรไฟล์</th>
                                 <th>แก้ไข</th>
                                 <th>ลบ</th>
@@ -58,33 +60,41 @@
                             while ($row = mysqli_fetch_array($result)) {
                             ?>
                                 <tr>
-                                    <td><input type="checkbox" name="selected_members[]" value="<?=$row['member_id'];?>"></td> <!-- เช็คบ็อกซ์สำหรับเลือกแต่ละรายการ -->
-                                    <td><?=$row['member_number'];?></td>
-                                    <td><?=$row['member_fullname'];?></td>
-                                    <td><?=$row['member_address'];?></td>
-                                    <td><?=$row['member_tel'];?></td>
-                                    <td><?=$row['member_email'];?></td>
-                                    <td><?=$row['member_username'];?></td>
+                                    <td><input type="checkbox" name="selected_members[]" value="<?= $row['member_id']; ?>"></td> <!-- เช็คบ็อกซ์สำหรับเลือกแต่ละรายการ -->
+                                    <td><?= $row['member_year']; ?></td>
+                                    <td><?= $row['member_number']; ?></td>
+                                    <td><?= $row['member_fullname']; ?></td>
+
+                                    <td><?= $row['member_tel']; ?></td>
+
+                                    <td><?= $row['member_username']; ?></td>
                                     <td>
                                         <?php
-                                        echo $row['member_status'] == '1' ? '<span style="color:green;">Active</span>' : '<span style="color:red;">Inactive</span>';
+                                        echo $row['member_status'] == '1' ? '<span style="color:green;">นักเรียนภาคปกติ</span>' : '<span style="color:blue;">นักเรียนย้ายเข้า</span>';
                                         ?>
                                     </td>
-                                    <td><?=$row['member_datetime'];?></td>
+                                    <td>
+                                        <?php
+                                        // ตรวจสอบค่าของ member_gender และแสดงผลเป็นภาษาไทย
+                                        echo $row['member_gender'] === 'male' ? 'ชาย' : 'หญิง';
+                                        ?>
+                                    </td>
+
+
                                     <td>
                                         <?php if (!empty($row['member_profile_pic'])): ?>
                                             <img src="<?= htmlspecialchars($row['member_profile_pic'], ENT_QUOTES, 'UTF-8'); ?>" alt="Profile Picture" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
                                         <?php else: ?>
-                                            <img src="uploads/default_profile.png" alt="Default Profile Picture" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                                            <img src="profile_admin/user.jpg" alt="Default Profile Picture" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <a href="update_member.php?id=<?=$row['member_id'];?>" onclick="return confirm('คุณต้องการแก้ไขหรือไม่?')">
+                                        <a href="update_member.php?id=<?= $row['member_id']; ?>" onclick="return confirm('คุณต้องการแก้ไขหรือไม่?')">
                                             <img src="../../images/edit.png" />
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="delete_member.php?id=<?=$row['member_id'];?>" onclick="return confirm('คุณต้องการลบหรือไม่?')">
+                                        <a href="delete_member.php?id=<?= $row['member_id']; ?>" onclick="return confirm('คุณต้องการลบหรือไม่?')">
                                             <img src="../../images/delete.png" />
                                         </a>
                                     </td>

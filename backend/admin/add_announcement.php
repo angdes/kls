@@ -1,40 +1,52 @@
-<?php include('header.php'); ?>
+<?php
+ob_start();
+include('header.php');
+ // เริ่มการทำงานของ session เพื่อดึงค่า session
+
+// ตรวจสอบว่ามีการเข้าสู่ระบบแล้วหรือไม่ และตรวจสอบ admin_id
+if (!isset($_SESSION['user'])) {
+    header('Location: login.php'); // ถ้าไม่มีให้กลับไปหน้า login
+    exit;
+}
+
+$admin_id = $_SESSION['user']; // รับค่า admin_id ของผู้ใช้ที่ล็อกอินอยู่
+
+// ตรวจสอบว่า $admin_id เป็น array หรือไม่ และแปลงเป็น string ถ้าจำเป็น
+if (is_array($admin_id)) {
+    $admin_id = implode(',', $admin_id);
+}
+
+if (!is_string($admin_id) || empty($admin_id)) {
+    echo "เกิดข้อผิดพลาดในการดึงข้อมูล admin_id.";
+    exit;
+}
+?>
 
 <style>
     .btn-m {
         color: white;
         background-color: #FF00FF;
         border: 2px solid #E0E0E0;
-        /* ขอบสีเทาอ่อน */
         border-radius: 5px;
-        /* ทำให้ขอบมนเล็กน้อย */
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        /* เงาเบาบางใต้ปุ่ม */
         transition: box-shadow 0.3s ease;
-        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
     }
 
     .btn-m:hover {
         box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-        /* เงาชัดเจนขึ้นเมื่อ hover */
     }
 
     .btn-d {
         color: white;
         background-color: #808080;
         border: 2px solid #E0E0E0;
-        /* ขอบสีเทาอ่อน */
         border-radius: 5px;
-        /* ทำให้ขอบมนเล็กน้อย */
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        /* เงาเบาบางใต้ปุ่ม */
         transition: box-shadow 0.3s ease;
-        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
     }
 
     .btn-d:hover {
         box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-        /* เงาชัดเจนขึ้นเมื่อ hover */
     }
 </style>
 
@@ -81,48 +93,41 @@
                         $announcement_title = $_POST['announcement_title'];
                         $announcement_details = $_POST['announcement_details'];
 
-                        // Upload image handling for multiple files
-                        $announcement_images = []; // Initialize with an empty array
+                        // การอัพโหลดรูปภาพหลายไฟล์
+                        $announcement_images = [];
 
                         if (isset($_FILES['announcement_image'])) {
-                            $target_dir = "../uploads/"; // Directory where images will be uploaded
+                            $target_dir = "../uploads/";
 
-                            // Loop through each file
                             foreach ($_FILES['announcement_image']['name'] as $key => $filename) {
                                 if ($_FILES['announcement_image']['size'][$key] > 0) {
                                     $uploadOk = 1;
                                     $imageFileType = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-
-                                    // Generate unique file name to avoid conflicts
                                     $unique_filename = uniqid() . '.' . $imageFileType;
                                     $target_file = $target_dir . $unique_filename;
 
-                                    // Allow certain file formats
+                                    // ตรวจสอบประเภทไฟล์ที่อนุญาต
                                     if (!in_array($imageFileType, ["jpg", "png", "jpeg", "gif"])) {
-                                        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+                                        echo "ไฟล์ที่อนุญาต: JPG, JPEG, PNG, GIF เท่านั้น.";
                                         $uploadOk = 0;
                                     }
 
-                                    // Check if $uploadOk is set to 0 by an error
-                                    if ($uploadOk == 0) {
-                                        echo "Sorry, your file was not uploaded.";
-                                    } else {
+                                    if ($uploadOk == 1) {
                                         if (move_uploaded_file($_FILES["announcement_image"]["tmp_name"][$key], $target_file)) {
-                                            $announcement_images[] = $unique_filename; // Store only the filename
+                                            $announcement_images[] = $unique_filename;
                                         } else {
-                                            echo "Sorry, there was an error uploading your file.";
+                                            echo "เกิดข้อผิดพลาดในการอัพโหลดไฟล์.";
                                         }
                                     }
                                 }
                             }
                         }
 
-                        // Convert array of filenames to a comma-separated string for storage
                         $announcement_images_string = implode(',', $announcement_images);
 
-                        // Insert data into tb_announcements table
-                        $sql = "INSERT INTO tb_announcements (announcement_title, announcement_details, announcement_image)
-                                VALUES ('$announcement_title', '$announcement_details', '$announcement_images_string')";
+                        // บันทึกข้อมูลลงในตาราง tb_announcements พร้อม admin_id
+                        $sql = "INSERT INTO tb_announcements (announcement_title, announcement_details, announcement_image, admin_id)
+                                VALUES ('$announcement_title', '$announcement_details', '$announcement_images_string', '$admin_id')";
 
                         if ($cls_conn->write_base($sql) == true) {
                             echo $cls_conn->show_message('บันทึกข้อมูลสำเร็จ');

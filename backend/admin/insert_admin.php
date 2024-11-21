@@ -1,4 +1,4 @@
-<?php include('header.php');?>
+<?php include('header.php'); ?>
 
 <style>
     .btn-m {
@@ -58,31 +58,38 @@
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="admin_fullname">ชื่อผู้ดูแลระบบ<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="admin_fullname" name="admin_fullname" required="required" class="form-control col-md-7 col-xs-12"> </div>
+                                <input type="text" id="admin_fullname" name="admin_fullname" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="admin_email">อีเมลดูแลระบบ<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="email" id="admin_email" name="admin_email" required="required" class="form-control col-md-7 col-xs-12"> </div>
+                                <input type="email" id="admin_email" name="admin_email" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="admin_tel">เบอร์โทรศัพท์ผู้ดูแลระบบ<span class="required">:</span> </label>
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="admin_tel">เบอร์โทรศัพท์ผู้ดูแลระบบ<span class="required">:</span></label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="tel" id="admin_tel" name="admin_tel" required="required" class="form-control col-md-7 col-xs-12"> </div>
+                                <input type="tel" id="admin_tel" name="admin_tel" required="required" class="form-control col-md-7 col-xs-12" pattern="[0-9]{10}" maxlength="10" placeholder="กรอกเบอร์โทรศัพท์ 10 หลัก">
+                                <small class="text-muted">กรอกเฉพาะตัวเลข 10 หลัก เช่น 0812345678</small>
+                            </div>
                         </div>
+
 
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="admin_username">username<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="admin_username" name="admin_username" required="required" class="form-control col-md-7 col-xs-12"> </div>
+                                <input type="text" id="admin_username" name="admin_username" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="admin_password">รหัสผ่าน<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="password" id="admin_password" name="admin_password" required="required" class="form-control col-md-7 col-xs-12"> </div>
+                                <input type="password" id="admin_password" name="admin_password" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
                         </div>
 
                         <!-- เพิ่มช่องสำหรับอัปโหลดรูปโปรไฟล์ -->
@@ -101,7 +108,7 @@
                             </div>
                         </div>
                     </form>
-                    
+
                     <?php
                     if (isset($_POST['submit'])) {
                         $admin_fullname = $_POST['admin_fullname'];
@@ -109,7 +116,7 @@
                         $admin_tel = $_POST['admin_tel'];
                         $admin_username = $_POST['admin_username'];
                         $admin_password = $_POST['admin_password'];
-                        
+
                         // จัดการการอัปโหลดไฟล์
                         $admin_profile_pic = '';
                         if (isset($_FILES['admin_profile_pic']) && $_FILES['admin_profile_pic']['error'] == 0) {
@@ -119,7 +126,7 @@
                             }
                             $file_name = basename($_FILES['admin_profile_pic']['name']);
                             $target_path = $upload_dir . $file_name;
-                            
+
                             // ตรวจสอบว่าการอัปโหลดสำเร็จหรือไม่
                             if (move_uploaded_file($_FILES['admin_profile_pic']['tmp_name'], $target_path)) {
                                 $admin_profile_pic = $target_path; // บันทึกเส้นทางไฟล์
@@ -133,7 +140,7 @@
                         $sql .= " VALUES ('$admin_fullname', '$admin_email', '$admin_tel', '$admin_username', '$admin_password', '$admin_profile_pic')";
 
                         if ($cls_conn->write_base($sql) == true) {
-                            echo $cls_conn->show_message('บันทึกข้อมูลและรูปโปรไฟล์สำเร็จ');
+                            echo $cls_conn->show_message('บันทึกข้อมูลสำเร็จ');
                             echo $cls_conn->goto_page(1, 'show_admin.php');
                         } else {
                             echo $cls_conn->show_message('บันทึกข้อมูลไม่สำเร็จ');
@@ -146,4 +153,4 @@
         </div>
     </div>
 </div>
-<?php include('footer.php');?>
+<?php include('footer.php'); ?>

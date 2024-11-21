@@ -58,13 +58,13 @@
                                 <td><?= $row['teacher_id']; ?></td>
                                 <td><?= $row['teacher_fullname']; ?></td>
                                 <td><?= $row['teacher_username']; ?></td>
-                                <td><?= $row['teacher_password']; ?></td>
+                                <td><?= str_repeat('*', strlen($row['teacher_password'])); ?></td>
                                 <td><?= $row['teacher_tel']; ?></td>
                                 <td>
                                     <?php if (!empty($row['teacher_profile_pic'])): ?>
                                         <img src="<?= htmlspecialchars($row['teacher_profile_pic']); ?>" alt="Profile Picture" class="profile-pic">
                                     <?php else: ?>
-                                        <img src="profile_teacher/default_profile.png" alt="Default Profile Picture" class="profile-pic"> <!-- รูปโปรไฟล์เริ่มต้น -->
+                                        <img src="../teacher/profile_teacher/user.jpg" alt="Default Profile Picture" class="profile-pic"> <!-- รูปโปรไฟล์เริ่มต้น -->
                                     <?php endif; ?>
                                 </td>
                                 <td>

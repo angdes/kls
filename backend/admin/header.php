@@ -1,8 +1,8 @@
-<?php 
+<?php
 session_start();
-include('../../class_conn.php'); 
+include('../../class_conn.php');
 
-$cls_conn = new class_conn; 
+$cls_conn = new class_conn;
 
 // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
 if (!isset($_SESSION['user'])) {
@@ -25,7 +25,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 
     // ตรวจสอบว่ารูปภาพมีอยู่ในโฟลเดอร์ที่ระบุหรือไม่
     if (!file_exists($admin_profile_pic)) {
-        $admin_profile_pic = 'user.jpg'; // ถ้ารูปภาพไม่พบ ให้ใช้รูปภาพเริ่มต้น
+        $admin_profile_pic = 'profile_admin/user.jpg'; // ถ้ารูปภาพไม่พบ ให้ใช้รูปภาพเริ่มต้น
     }
 } else {
     // หากไม่พบข้อมูลในฐานข้อมูล ให้กลับไปหน้าเข้าสู่ระบบ
@@ -36,6 +36,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,7 +58,7 @@ if ($result && mysqli_num_rows($result) > 0) {
         <div class="main_container">
             <div class="col-md-3 left_col" style="background-color: white;">
                 <div class="left_col scroll-view" style="background-color: white;">
-                    <div class="navbar nav_title" style="border: 0; display: flex; align-items: center; background-color: white;  " >
+                    <div class="navbar nav_title" style="border: 0; display: flex; align-items: center; background-color: white;  ">
                         <a href="index.php" class="site_title">
                             <img src="../../images/123.jpg" alt="KPS" class="logo_img" style="max-width: 50px; border-radius: 50%; margin-bottom: 6px;">
                             <span class="site_title_text" style="color: magenta; font-size: 35px; margin-left: 15px; margin: 8px 0 15 0; font-weight: bold;">K.P</span>
@@ -84,6 +85,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                                                 </svg> เพิ่มข้อมูลผู้ดูแล</a></li>
                                         <li><a href="show_admin.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลผู้ดูแล</a></li>
                                     </ul>
+
                                 </li>
                                 <li><a style="color: black;"><i class="fa fa-chart-line"></i>จัดการประกาศ<span class="fa fa-chevron-down" style="color: black;"></span></a>
                                     <ul class="nav child_menu" style="background-color:  White Bubble ;">
@@ -91,11 +93,13 @@ if ($result && mysqli_num_rows($result) > 0) {
                                         <li><a href="show_announcements.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลประกาศ</a></li>
                                     </ul>
                                 </li>
-                                <li><a style="color: black;"><i class="fa fa-users"></i>ข้อมูลสมาชิก<span class="fa fa-chevron-down" style="color: black;"></span></a>
-                                    <ul class="nav child_menu" style="background-color:  White Bubble ;" >
+                                <li><a style="color: black;"><i class="fa fa-users"></i>จัดการข้อมูลสมาชิก<span class="fa fa-chevron-down" style="color: black;"></span></a>
+                                    <ul class="nav child_menu" style="background-color:  White Bubble ;">
                                         <li><a href="insert_member.php" style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลนักเรียน</a></li>
+                                        <li><a href="insert_member1.php" style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลนักเรียนแบบไฟล์</a></li>
                                         <li><a href="show_member.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลนักเรียน</a></li>
                                         <li><a href="insert_teacher.php" style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลครู</a></li>
+                                        <li><a href="insert_teacher1.php" style="color: black;"><i class="fa fa-plus-square"></i>เพิ่มข้อมูลครูแบบไฟล์</a></li>
                                         <li><a href="show_teacher.php" style="color: black;"><i class="fa fa-list"></i>แสดงข้อมูลครู</a></li>
                                     </ul>
                                 </li>
@@ -116,7 +120,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="color: white;">
                                     <img src="<?= htmlspecialchars($admin_profile_pic, ENT_QUOTES, 'UTF-8'); ?>" alt="Profile Picture" style="width: 33px; height: 33px; border-radius: 50%;">
                                     <span style="color: white;"><?= htmlspecialchars($admin_fullname, ENT_QUOTES, 'UTF-8'); ?>
-                                    <span class="fa fa-angle-down" style="color: white;"></span>
+                                        <span class="fa fa-angle-down" style="color: white;"></span>
                                 </a>
 
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -131,4 +135,5 @@ if ($result && mysqli_num_rows($result) > 0) {
             <!-- /top navigation -->
             <!-- page content -->
 </body>
+
 </html>

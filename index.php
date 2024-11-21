@@ -2,39 +2,48 @@
 <style>
     .text-detail {
         font-family: 'Kanit', sans-serif;
-            color: #555555;
-            font-size: 14.44px;
-        /* เปลี่ยนฟอนต์ตามที่คุณเลือก */
+        color: #555555;
+        font-size: 14.44px;
+    }
+    .x_panel {
+        border-radius: 10px;
+        border: 1px solid #e5e5e5;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 10px 16px rgba(0, 0, 0, 0.4);
     }
     .image-container {
         display: flex;
-        flex-wrap: wrap; /* Allows images to wrap into new rows if needed */
-        gap: 10px; /* Adds space between images */
+        flex-wrap: wrap;
+        gap: 10px;
         padding-left: 50px;
     }
 
     .image-container img {
-        max-width: 200px;
-        max-height: 200px;
+        max-width: 500px;
+        max-height: 500px;
         cursor: pointer;
         transition: transform 0.3s;
+        box-shadow: 0 10px 16px rgba(102, 51, 153, 0.5);
     }
 
     .image-container img:hover {
         transform: scale(1.05);
+        box-shadow: 0 10px 16px rgba(0, 0, 0, 0.8);
     }
 
     .image-container::before {
         content: '';
         position: absolute;
         top: 0;
-        left: -10px; /* Adjust this value to control the distance from the image */
+        left: -10px;
         height: 100%;
-        width: 5px; /* Width of the line */
-        background-color: #F97AB6; /* Color of the line */
+        width: 5px;
+        background-color: #CC33FF;
+        box-shadow: 0 5px 16px rgba(0, 0, 0, 0.1);
+
     }
 
-    /* Modal styles */
     .modal {
         display: none;
         position: fixed;
@@ -83,39 +92,48 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2 style="color: black;">รายการประกาศ</h2>
+                    <h3 style="color: black;"><b>ข่าวประกาศ</b></h3>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
-                <?php
-                $sql = "SELECT * FROM tb_announcements";
-                $result = $cls_conn->select_base($sql);
+                    <?php
+                    // ดึงข้อมูลประกาศพร้อมชื่อผู้ดูแลระบบที่ประกาศ
+                    $sql = "SELECT a.*, ad.admin_fullname FROM tb_announcements a
+                        JOIN tb_admin ad ON a.admin_id = ad.admin_id
+                        ORDER BY a.announcement_date DESC";
+                    $result = $cls_conn->select_base($sql);
 
-                if ($result && mysqli_num_rows($result) > 0) {
-                    while ($row = mysqli_fetch_array($result)) {
-                        // สมมติว่ารูปภาพถูกเก็บในรูปแบบคั่นด้วยจุลภาค
-                        $images = explode(',', $row['announcement_image']);
-                ?>
-                        <div class="announcement">
-                            <h2 style="color: #BA55D3;"><?php echo htmlspecialchars($row['announcement_title']); ?></h2>
-                            <hr>
-                            <div class="image-container">
-                                <?php foreach ($images as $image): ?>
-                                    <img src="backend/uploads/<?php echo trim(htmlspecialchars($image)); ?>" onclick="openModal(this.src)" alt="Announcement Image">
-                                <?php endforeach; ?>
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        while ($row = mysqli_fetch_array($result)) {
+                            // สมมติว่ารูปภาพถูกเก็บในรูปแบบคั่นด้วยจุลภาค
+                            $images = explode(',', $row['announcement_image']);
+                    ?>
+                            <div class="announcement">
+                                <h2 style="color: #6666FF;"> ⁂ <?php echo htmlspecialchars($row['announcement_title']); ?></h2>
+                                <p style="text-align: right; color: #666;">
+                                    ประกาศโดย: <?php echo htmlspecialchars($row['admin_fullname']); ?> | วันที่: <?php echo htmlspecialchars($row['announcement_date']); ?>
+                                </p>
+                                <hr>
+                                <div class="image-container">
+                                    <?php foreach ($images as $image): ?>
+                                        <img src="backend/uploads/<?php echo trim(htmlspecialchars($image)); ?>" onclick="openModal(this.src)" alt="Announcement Image">
+                                    <?php endforeach; ?>
+                                </div>
+                                <br>
+                                <p class="text-detail" style="padding-left: 50px;">
+                                    <?php echo htmlspecialchars($row['announcement_details']); ?>
+                                </p>
+                                <div class="x_title">
+                                    <div class="clearfix"></div>
+                                </div>
                             </div>
                             <br>
-                            <p class="text-detail" style="padding-left: 50px;">
-                                <?php echo htmlspecialchars($row['announcement_details']); ?>
-                            </p>
-                        </div>
-                        <br>
-                <?php
+                    <?php
+                        }
+                    } else {
+                        echo "<p>ไม่พบประกาศ</p>";
                     }
-                } else {
-                    echo "<p>ไม่พบประกาศ</p>";
-                }
-                ?>
+                    ?>
                 </div>
             </div>
         </div>

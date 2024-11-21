@@ -1,40 +1,30 @@
-<?php include('header.php');?>
+<?php include('header.php'); ?>
 
 <style>
-   .btn-m {
+    .btn-m {
         color: white;
         background-color: #FF00FF;
         border: 2px solid #E0E0E0;
-        /* ขอบสีเทาอ่อน */
         border-radius: 5px;
-        /* ทำให้ขอบมนเล็กน้อย */
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        /* เงาเบาบางใต้ปุ่ม */
         transition: box-shadow 0.3s ease;
-        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
     }
 
     .btn-m:hover {
         box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-        /* เงาชัดเจนขึ้นเมื่อ hover */
     }
 
     .btn-d {
         color: white;
         background-color: #808080;
         border: 2px solid #E0E0E0;
-        /* ขอบสีเทาอ่อน */
         border-radius: 5px;
-        /* ทำให้ขอบมนเล็กน้อย */
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        /* เงาเบาบางใต้ปุ่ม */
         transition: box-shadow 0.3s ease;
-        /* เพิ่มเอฟเฟกต์ transition เมื่อ hover */
     }
 
     .btn-d:hover {
         box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-        /* เงาชัดเจนขึ้นเมื่อ hover */
     }
 </style>
 
@@ -60,15 +50,14 @@
                         $result = $cls_conn->select_base($sql);
                         while ($row = mysqli_fetch_array($result)) {
                             $member_id = $row['member_id'];
+                            $member_year = $row['member_year'];
                             $member_number = $row['member_number'];
                             $member_fullname = $row['member_fullname'];
-                            $member_address = $row['member_address'];
+                            $member_gender = $row['member_gender']; // เพิ่มการดึงเพศ
                             $member_tel = $row['member_tel'];
-                            $member_email = $row['member_email'];
                             $member_username = $row['member_username'];
                             $member_password = $row['member_password'];
                             $member_status = $row['member_status'];
-                            $member_datetime = $row['member_datetime'];
                             $member_profile_pic = $row['member_profile_pic'];
                         }
                     }
@@ -78,9 +67,24 @@
                         <input type="hidden" name="member_id" value="<?= $member_id; ?>" />
 
                         <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_year">ปีการศึกษา<span class="required">:</span> </label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" id="member_year" name="member_year" value="<?= $member_year; ?>" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_number">รหัสประจำตัว<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input type="text" id="member_number" name="member_number" value="<?= $member_number; ?>" required="required" class="form-control col-md-7 col-xs-12" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_gender">เพศ<span class="required">:</span> </label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select id="member_gender" name="member_gender" required="required" class="form-control col-md-7 col-xs-12">
+                                    <option value="male" <?= $member_gender == 'male' ? 'selected' : ''; ?>>ชาย</option>
+                                    <option value="female" <?= $member_gender == 'female' ? 'selected' : ''; ?>>หญิง</option>
+                                </select>
                             </div>
                         </div>
 
@@ -92,13 +96,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_address">ที่อยู่<span class="required">:</span> </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="member_address" name="member_address" value="<?= $member_address; ?>" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_tel">เบอร์โทรศัพท์<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <input type="tel" id="member_tel" name="member_tel" value="<?= $member_tel; ?>" required="required" class="form-control col-md-7 col-xs-12">
@@ -106,18 +103,12 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_email">อีเมล<span class="required">:</span> </label>
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_username">username<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="email" id="member_email" name="member_email" value="<?= $member_email; ?>" required="required" class="form-control col-md-7 col-xs-12">
+                                <input type="text" id="member_username" name="member_username" value="<?= $member_username; ?>" required="required" class="form-control col-md-7 col-xs-12" readonly>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_username">username<span class="required">:</span> </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="member_username" name="member_username" value="<?= $member_username; ?>" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
 
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_password">รหัสผ่าน<span class="required">:</span> </label>
@@ -130,20 +121,12 @@
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_status">สถานะสมาชิก<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <select id="member_status" name="member_status" required="required" class="form-control col-md-7 col-xs-12">
-                                    <option value="1" <?= $member_status == '1' ? 'selected' : ''; ?>>Active</option>
-                                    <option value="0" <?= $member_status == '0' ? 'selected' : ''; ?>>Inactive</option>
+                                    <option value="1" <?= $member_status == '1' ? 'selected' : ''; ?>>นักเรียนภาคปกติ</option>
+                                    <option value="0" <?= $member_status == '0' ? 'selected' : ''; ?>>นักเรียนย้ายเข้า</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_datetime">วันเกิด<span class="required">:</span> </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="datetime-local" id="member_datetime" name="member_datetime" value="<?= $member_datetime; ?>" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-
-                        <!-- เพิ่มฟิลด์สำหรับอัปโหลดรูปภาพ -->
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="member_profile_pic">รูปโปรไฟล์<span class="required">:</span> </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -165,50 +148,42 @@
                     <?php
                     if (isset($_POST['submit'])) {
                         $member_fullname = $_POST['member_fullname'];
-                        $member_address = $_POST['member_address'];
+                        $member_year = $_POST['member_year'];
                         $member_tel = $_POST['member_tel'];
-                        $member_email = $_POST['member_email'];
+                        $member_gender = $_POST['member_gender'];
                         $member_username = $_POST['member_username'];
                         $member_password = $_POST['member_password'];
                         $member_status = $_POST['member_status'];
-                        $member_datetime = $_POST['member_datetime'];
 
-                        // จัดการการอัปโหลดรูปภาพ
                         if (isset($_FILES['member_profile_pic']) && $_FILES['member_profile_pic']['error'] === UPLOAD_ERR_OK) {
                             $fileTmpPath = $_FILES['member_profile_pic']['tmp_name'];
                             $fileName = $_FILES['member_profile_pic']['name'];
-                            $fileSize = $_FILES['member_profile_pic']['size'];
-                            $fileType = $_FILES['member_profile_pic']['type'];
-                            $fileNameCmps = explode(".", $fileName);
-                            $fileExtension = strtolower(end($fileNameCmps));
+                            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                            $allowedExtensions = ['jpg', 'jpeg', 'png'];
 
-                            $allowedfileExtensions = array('jpg', 'jpeg', 'png');
-                            if (in_array($fileExtension, $allowedfileExtensions)) {
-                                $uploadFileDir = '../../frontend/member/profile_member/';
-                                $dest_path = $uploadFileDir . $fileName;
+                            if (in_array($fileExtension, $allowedExtensions)) {
+                                $uploadDir = '../../frontend/member/profile_member/';
+                                $filePath = $uploadDir . basename($fileName);
 
-                                if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                                    $member_profile_pic = $dest_path;
-                                } else {
-                                    echo $cls_conn->show_message('There was an error moving the file to the upload directory.');
+                                if (move_uploaded_file($fileTmpPath, $filePath)) {
+                                    $member_profile_pic = $filePath;
                                 }
-                            } else {
-                                echo $cls_conn->show_message('Upload failed. Only JPG, JPEG, and PNG files are allowed.');
                             }
                         }
 
-                        $sql = "UPDATE tb_member SET";
-                        $sql .= " member_fullname='$member_fullname',";
-                        $sql .= " member_address='$member_address',";
-                        $sql .= " member_tel='$member_tel',";
-                        $sql .= " member_email='$member_email',";
-                        $sql .= " member_username='$member_username',";
-                        $sql .= " member_password='$member_password',";
-                        $sql .= " member_status='$member_status',";
-                        $sql .= " member_datetime='$member_datetime'";
+                        $sql = "UPDATE tb_member SET
+                                member_fullname='$member_fullname',
+                                member_year='$member_year',
+                                member_tel='$member_tel',
+                                member_gender='$member_gender',
+                                member_username='$member_username',
+                                member_password='$member_password',
+                                member_status='$member_status'";
+
                         if (isset($member_profile_pic)) {
                             $sql .= ", member_profile_pic='$member_profile_pic'";
                         }
+
                         $sql .= " WHERE member_id=$member_id";
 
                         if ($cls_conn->write_base($sql)) {
@@ -216,7 +191,6 @@
                             echo $cls_conn->goto_page(1, 'show_member.php');
                         } else {
                             echo $cls_conn->show_message('แก้ไขข้อมูลไม่สำเร็จ');
-                            echo $sql;
                         }
                     }
                     ?>

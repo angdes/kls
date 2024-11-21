@@ -1,4 +1,31 @@
-<?php include('header.php'); ?>
+<?php
+ob_start();
+include('header.php');
+ // เริ่มการทำงานของ session
+
+// ตรวจสอบว่ามีการเข้าสู่ระบบแล้วหรือไม่และตรวจสอบ admin_id
+if (!isset($_SESSION['user'])) {
+    header('Location: login.php'); // ถ้าไม่มีให้กลับไปหน้า login
+    exit;
+}
+
+// รับค่า admin_id ของผู้ใช้ที่ล็อกอินอยู่
+$admin_ids = $_SESSION['user']; // สมมติว่า $_SESSION['user'] เป็น array
+
+// ตรวจสอบว่า $admin_ids เป็น array หรือไม่
+if (is_array($admin_ids)) {
+    // แปลง array ของ admin_ids ให้เป็น string ที่คั่นด้วยจุลภาค (เพื่อใช้กับคำสั่ง SQL IN)
+    $admin_ids = implode(",", $admin_ids);
+}
+
+// ตรวจสอบว่าค่า admin_ids เป็น string และไม่มีการแปลงผิดพลาด
+if (!is_string($admin_ids) || empty($admin_ids)) {
+    echo "เกิดข้อผิดพลาดในการดึงข้อมูล admin_id.";
+    exit;
+}
+
+?>
+
 
 <style>
     .btn-hotpink {
@@ -29,6 +56,7 @@
         border: 1px solid #e5e5e5;
         padding: 20px;
         background-color: white;
+        box-shadow: 0 10px 16px rgba(0, 0, 0, 0.3);
     }
 
     .x_title {
@@ -137,38 +165,49 @@
                         </thead>
                         <tbody>
                             <?php
-                            $sql = "SELECT * FROM tb_announcements ORDER BY announcement_id";
+                            // ดึงข้อมูลประกาศที่ประกาศโดย admin_id ที่ล็อกอินอยู่
+                            $sql = "SELECT * FROM tb_announcements WHERE admin_id = '$admin_id' ORDER BY announcement_id";
                             $result = $cls_conn->select_base($sql);
+
                             $count = 0;
-                            while ($row = mysqli_fetch_array($result)) {
-                                $count++;
-                                $announcement_images = explode(',', $row['announcement_image']); // Split filenames into an array
+
+                            if ($result && mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_array($result)) {
+                                    $count++;
+                                    $announcement_images = explode(',', $row['announcement_image']); // แยกรูปภาพออกเป็น array
                             ?>
-                                <tr>
-                                    <td><?php echo $count; ?></td>
-                                    <td><?php echo htmlspecialchars($row['announcement_title']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['announcement_details']); ?></td>
-                                    <td>
-                                        <?php if (!empty($announcement_images[0])): ?>
-                                            <?php foreach ($announcement_images as $image): ?>
-                                                <img src="../uploads/<?php echo htmlspecialchars(trim($image)); ?>" onclick="openModal('../uploads/<?php echo htmlspecialchars(trim($image)); ?>')" style="max-width: 100px; max-height: 100px;">
-                                            <?php endforeach; ?>
-                                        <?php else: ?>
-                                            <span>ไม่มีรูปภาพ</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <a href="edit_announcement.php?id=<?php echo $row['announcement_id']; ?>" onclick="return confirm('คุณต้องการแก้ไขหรือไม่?')">
-                                            <img src="../../images/edit.png" alt="Edit" title="แก้ไข" style="cursor: pointer;">
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="delete_announcement.php?id=<?php echo $row['announcement_id']; ?>" onclick="return confirm('คุณต้องการลบหรือไม่?')">
-                                            <img src="../../images/delete.png" alt="Delete" title="ลบ" style="cursor: pointer;">
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php } ?>
+                                    <tr>
+                                        <td><?php echo $count; ?></td>
+                                        <td><?php echo htmlspecialchars($row['announcement_title']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['announcement_details']); ?></td>
+                                        <td>
+                                            <?php if (!empty($announcement_images[0])): ?>
+                                                <?php foreach ($announcement_images as $image): ?>
+                                                    <img src="../uploads/<?php echo htmlspecialchars(trim($image)); ?>"
+                                                        onclick="openModal('../uploads/<?php echo htmlspecialchars(trim($image)); ?>')"
+                                                        style="max-width: 100px; max-height: 100px;">
+                                                <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <span>ไม่มีรูปภาพ</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <a href="edit_announcement.php?id=<?php echo $row['announcement_id']; ?>" onclick="return confirm('คุณต้องการแก้ไขหรือไม่?')">
+                                                <img src="../../images/edit.png" alt="Edit" title="แก้ไข" style="cursor: pointer;">
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="delete_announcement.php?id=<?php echo $row['announcement_id']; ?>" onclick="return confirm('คุณต้องการลบหรือไม่?')">
+                                                <img src="../../images/delete.png" alt="Delete" title="ลบ" style="cursor: pointer;">
+                                            </a>
+                                        </td>
+                                    </tr>
+                            <?php
+                                }
+                            } else {
+                                echo "<tr><td colspan='6' align='center'>ไม่พบประกาศ</td></tr>";
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
